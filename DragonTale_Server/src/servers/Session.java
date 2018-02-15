@@ -1,0 +1,83 @@
+package servers;
+
+import java.io.IOException;
+import java.net.Socket;
+import java.util.UUID;
+import java.util.concurrent.ExecutorService;
+
+import PACKET.CommandPacket;
+import PACKET.WorldPacket;
+
+public class Session {
+	public UUID id = null;
+	protected int packet_size = 500;
+	public String accountName = null;
+	public ThreadPooledServer server = null;
+	public boolean connected = true;
+
+	public int pedhandle = -1;
+	public Socket clientSocket = null;
+	public WorkerRunnableTCP tcp = null;
+	public WorkerRunnableUDP udp = null;
+	public int udp_port = -1;
+	public static int udp_port_inc = 1;
+
+	public Session(Socket clientSocket, ExecutorService WorkerRunnable, ThreadPooledServer server) {
+		this.server = server;
+		this.clientSocket = clientSocket;
+		id = UUID.randomUUID();
+		this.udp_port = udp_port_inc++;
+		startTCP(WorkerRunnable);
+		startUDP(WorkerRunnable);
+		SendCommand(new CommandPacket(CommandPacket.UDP_PORT, udp_port));
+	}
+	public void setpedhandle(int pedhandle)
+	{
+		this.pedhandle = pedhandle;
+	}
+	public void startTCP(ExecutorService WorkerRunnable) {
+		System.out.println("Starting TCP...");
+		tcp = new WorkerRunnableTCP(this);
+		tcp.init();
+		WorkerRunnable.execute(tcp);
+		System.out.println("TCP running");
+	}
+
+	public void startUDP(ExecutorService WorkerRunnable) {
+		System.out.println("Starting UDP...");
+		udp = new WorkerRunnableUDP(this);
+		udp.init();
+		WorkerRunnable.execute(udp);
+		System.out.println("UDP running");
+	}
+
+	public void disconnect() {
+		if (!connected) {
+			return;
+		}
+		System.out.println("Client " + id + " has disconnected...");
+		connected = false;
+		if (udp != null)
+			udp.disconnect();
+
+		if (tcp != null)
+			tcp.disconnect();
+
+		try {
+			if (clientSocket != null)
+				clientSocket.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void SendWorldPacket(WorldPacket packet) {
+		if (udp != null && packet != null && connected)
+			udp.sendWorldPacket(packet);
+	}
+
+	public void SendCommand(CommandPacket packet) {
+		if (tcp != null && packet != null && connected)
+			tcp.sendCommand(packet);
+	}
+}
