@@ -1,9 +1,10 @@
 package GameState;
 
 import TileMap.*;
+import main.World;
+
 import java.awt.Graphics2D;
 import Audio.AudioPlayer;
-import DesertAdventures.World;
 
 
 public class OfflineState extends GameState {

@@ -1,18 +1,26 @@
-package component;
+package drawcomponenets;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.util.Iterator;
 
-import DesertAdventures.World;
 import Entity.ENTITY;
 import Network.Session;
+import main.World;
 
 public class DrawNamePlateComponent implements IRender {
 
 	World world;
 	ENTITY entity;
 	Session session;
+	
+	public DrawNamePlateComponent(World world,ENTITY entity,Session session )
+	{
+		this.world =world;
+		this.entity=entity;
+		this.session=session;
+	}
+	
 	@Override
 	public void draw(Graphics2D g,Iterator<IRender> it) {
 

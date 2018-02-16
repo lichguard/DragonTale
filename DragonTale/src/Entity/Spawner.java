@@ -1,9 +1,9 @@
 package Entity;
 
-import DesertAdventures.World;
 import Network.Session;
 import PACKET.NetworkSpawner;
 import PACKET.WorldPacket;
+import main.World;
 
 public class Spawner {
 
@@ -53,24 +53,13 @@ public class Spawner {
 			return;
 		}
 		
-		ENTITY entity = new ENTITY(type,handle,world,session,local_player,network);
-		WorldPacket p1  = new WorldPacket();
-		p1.x = x;
-		p1.y = y;
-		p1.facingRight = facing;
-		p1.timeframe = System.currentTimeMillis()+100;
-		entity.last_packet = p1;
-		WorldPacket p2  = new WorldPacket();
-		p2.x = x;
-		p2.y = y;
-		p2.facingRight = facing;
-		p2.timeframe = System.currentTimeMillis();
-		entity.new_packet = p2;
+		ENTITY entity = new ENTITY(type,handle,world,session,local_player,network,x,y,facing);
+		
 		entity.setPosition(x, y);
-		//entity.setMapPosition();
+		entity.setMapPosition();
 		entity.setRight(facing);
 		entity.setLeft(!facing);
-		entity.facingRight = facing;
+		entity.setFacingright(facing);
 		world.entities.put(handle, entity);
 	}
 }

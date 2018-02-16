@@ -92,19 +92,22 @@ public class World {
 		return (int) ((90.0 - (180.0 / Math.PI) * Math.atan2((double) y, (double) x)) + 360.0) % 360;
 	}
 
-	public ArrayList<ENTITY> getNearEntities(ENTITY entity, int range, int direction_start, int direction_end) {
-
+	public ArrayList<ENTITY> getNearEntities(int handle, int range, int direction_start, int direction_end) {
+		
 		ArrayList<ENTITY> returnObjects = new ArrayList<ENTITY>();
-		for (ENTITY entry : entities.values()) {
-			ENTITY close_entity = entry;
+		if (!entities.containsKey(handle))
+			return returnObjects;
+		
+		ENTITY entity = entities.get(handle);
+		for (ENTITY close_entity : entities.values()) {
 			if (close_entity == entity)
 				continue;
 			int dx = close_entity.getx() - entity.getx();
 			int dy = close_entity.gety() - entity.gety();
 			if (Math.abs(dx) + Math.abs(dy) <= range) {
 				double angle = getHeading(dx, dy);
-				if (direction_start < angle && angle < direction_end)
-					returnObjects.add(entry);
+				if (direction_start <= angle && angle <= direction_end)
+					returnObjects.add(close_entity);
 			}
 		}
 		return returnObjects;

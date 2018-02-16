@@ -5,7 +5,7 @@ import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 
-import DesertAdventures.Gameplay;
+import main.Gameplay;
 
 public class AudioPlayer {
 

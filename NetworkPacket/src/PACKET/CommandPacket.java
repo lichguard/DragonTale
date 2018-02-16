@@ -20,6 +20,7 @@ public class CommandPacket implements Serializable{
 	
 	public static final int ADD_SESSION =6;
 	public static final int REMOVE_SESSION =7;
+	public static final int REQUEST_SPAWN =8;
 	
 	public UUID session_id = null;
 	public int packet_code = 0;

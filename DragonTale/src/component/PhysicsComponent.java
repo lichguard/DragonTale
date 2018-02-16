@@ -1,9 +1,9 @@
 package component;
 
-import DesertAdventures.World;
 import Entity.ENTITY;
 import Network.Session;
 import TileMap.Tile;
+import main.World;
 
 public class PhysicsComponent implements IComponent {
 

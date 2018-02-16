@@ -1,8 +1,8 @@
 package component;
 
-import DesertAdventures.World;
 import Entity.ENTITY;
 import Network.Session;
+import main.World;
 
 public class BroadCastEntityComponent implements IComponent {
 

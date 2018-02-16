@@ -1,5 +1,6 @@
 package servers;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
@@ -12,8 +13,11 @@ import java.net.Socket;
 import java.io.IOException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
+import Entity.ENTITY;
 import PACKET.CommandPacket;
 import PACKET.WorldPacket;
+import game.World;
 
 public class ThreadPooledServer implements Runnable {
 
@@ -23,7 +27,7 @@ public class ThreadPooledServer implements Runnable {
 	protected boolean running = false;
 	protected Thread runningThread = null;
 	protected ExecutorService WorkerRunnable = Executors.newFixedThreadPool(2 * MAX_CONNECTIONS);
-	protected HashMap<UUID, Session> sessions = new HashMap<UUID, Session>(MAX_CONNECTIONS);
+	public HashMap<UUID, Session> sessions = new HashMap<UUID, Session>(MAX_CONNECTIONS);
 
 	public Queue<CommandPacket> commandsPackets = new LinkedList<CommandPacket>();
 	public Stack<WorldPacket> worldPackets = new Stack<WorldPacket>();
@@ -86,15 +90,17 @@ public class ThreadPooledServer implements Runnable {
 			}
 		}
 	}
-
-	public void BroadcastWorldPacket(WorldPacket packet) {
+/*
+	public void BroadcastWorldPacket(WorldPacket packet,ArrayList<ENTITY> entities) {
 		synchronized (sessions) {
-			for (UUID sessionid : sessions.keySet()) {
-				SendWorldPacket(sessionid, packet);
+			for (Session session : sessions.values()) {
+				if (session.pedhandle)
+					
+					SendWorldPacket(session.id, packet);
 			}
 		}
 	}
-
+*/
 	public boolean isRunning() {
 		return this.running;
 	}

@@ -19,6 +19,15 @@ public class WorldPacket implements Serializable {
 		
 	}
 	
+	public WorldPacket(int handle, float x, float y, boolean facing)
+	{
+		this.handle = handle;
+		this.x = x;
+		this.y =y ;
+		this.facingRight = facing;
+		this.timeframe = System.currentTimeMillis();
+	}
+	
 	public WorldPacket(WorldPacket packet)
 	{
 		clone(packet);

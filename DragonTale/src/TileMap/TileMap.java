@@ -10,9 +10,9 @@ import java.io.InputStreamReader;
 
 import javax.imageio.ImageIO;
 
-import java.io.InputStream;
+import main.Gameplay;
 
-import DesertAdventures.Gameplay;
+import java.io.InputStream;
 
 public class TileMap {
 

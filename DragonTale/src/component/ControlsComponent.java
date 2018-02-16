@@ -1,14 +1,17 @@
 package component;
 import java.util.LinkedList;
 import java.util.ListIterator;
-import DesertAdventures.CONTROLS;
-import DesertAdventures.Gameplay;
-import DesertAdventures.World;
+
 import Entity.ENTITY;
 import Network.Session;
 import PACKET.CommandPacket;
 import PACKET.NetworkSpawner;
 import PACKET.SpeechPacket;
+import drawcomponenets.DrawChatBoxComponenet;
+import drawcomponenets.IRender;
+import main.CONTROLS;
+import main.Gameplay;
+import main.World;
 
 public class ControlsComponent implements IComponent{
 
@@ -18,17 +21,33 @@ public class ControlsComponent implements IComponent{
 	public boolean typing = false;
 	public LinkedList<String> command_histroy = new LinkedList<String>();
 	public ListIterator<String> command_histroy_it;
+	public IRender chatboxcontrol = null;
 	
 	public ControlsComponent(World world,ENTITY entity,Session session )
 	{
 		this.world =world;
 		this.entity=entity;
 		this.session=session;
+		this.chatboxcontrol = new DrawChatBoxComponenet(entity); 
 	}
 	
 	@Override
 	public void update() {
-		update2();
+		handleInput();
+		world.tm.setPosition(Gameplay.WIDTH / 2 - entity.getx(),
+				Gameplay.HEIGHT / 2 - entity.gety());
+		
+		/*
+		if (!entity.flinching) {
+			ArrayList<ENTITY> entities = world.getCollisions(this.entity);
+			for (ENTITY enemy : entities) {
+				//if (enemy.type !=  1)
+				//	entity.gethit(1, (Enemy) enemy);
+
+			}
+		}
+		*/
+
 	}
 	
 	public void handleInput() {
@@ -37,10 +56,12 @@ public class ControlsComponent implements IComponent{
 			if (!typing) {
 				command_histroy_it = null;
 				typing = true;
+				entity.renders.add(chatboxcontrol);
 				CONTROLS.setCaptureText(true);
 			} else {
 				String command = CONTROLS.getCapturedText();
 				typing = false;
+				entity.renders.remove(chatboxcontrol);
 				CONTROLS.setCaptureText(false);
 				if (command.compareTo("") != 0) {
 
@@ -85,10 +106,10 @@ public class ControlsComponent implements IComponent{
 		entity.setGliding(CONTROLS.keyState[CONTROLS.GLIDE]);
 
 		if (CONTROLS.isPressed(CONTROLS.SCRATCH)) {
-			//entity.setattack2();
+		entity.setattack2();
 		}
 		if (CONTROLS.isPressed(CONTROLS.FIREBALL)) {
-			//entity.setattack();
+			entity.setattack();
 		}
 
 	}
@@ -117,24 +138,6 @@ public class ControlsComponent implements IComponent{
 
 	public void execute_user_command(String command) {
 
-	}
-
-	public void update2() {
-
-		handleInput();
-		world.tm.setPosition(Gameplay.WIDTH / 2 - entity.getx(),
-				Gameplay.HEIGHT / 2 - entity.gety());
-
-		/*
-		if (!entity.flinching) {
-			ArrayList<ENTITY> entities = world.getCollisions(this.entity);
-			for (ENTITY enemy : entities) {
-				//if (enemy.type !=  1)
-				//	entity.gethit(1, (Enemy) enemy);
-
-			}
-		}
-		*/
 	}
 
 

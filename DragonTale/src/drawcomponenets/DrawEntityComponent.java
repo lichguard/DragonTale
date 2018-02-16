@@ -1,11 +1,11 @@
-package component;
+package drawcomponenets;
 
 import java.awt.Graphics2D;
 import java.util.Iterator;
 
-import DesertAdventures.World;
 import Entity.ENTITY;
 import Network.Session;
+import main.World;
 
 public class DrawEntityComponent implements IRender{
 

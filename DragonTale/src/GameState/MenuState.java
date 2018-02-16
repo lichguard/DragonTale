@@ -1,12 +1,11 @@
 package GameState;
 
 import TileMap.Background;
+import main.CONTROLS;
 
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
-
-import DesertAdventures.CONTROLS;
 
 
 public class MenuState extends GameState {

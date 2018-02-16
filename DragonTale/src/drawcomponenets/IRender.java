@@ -1,4 +1,4 @@
-package component;
+package drawcomponenets;
 
 import java.awt.Graphics2D;
 import java.util.Iterator;

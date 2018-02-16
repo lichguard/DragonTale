@@ -1,4 +1,4 @@
-package component;
+package drawcomponenets;
 
 import java.awt.Color;
 import java.awt.Font;

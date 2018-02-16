@@ -1,8 +1,8 @@
 package component;
 
-import DesertAdventures.World;
 import Entity.ENTITY;
 import Network.Session;
+import main.World;
 
 public class AnimationComponent implements  IComponent {
 
@@ -29,10 +29,10 @@ public class AnimationComponent implements  IComponent {
 		}
 
 		// check done flinching
-		if (entity.flinching) {
-			if ((System.currentTimeMillis() - entity.flinchTimer) > 700)
-				entity.flinching = false;
-		}
+		//if (entity.flinching) {
+		//	if ((System.currentTimeMillis() - entity.flinchTimer) > 700)
+		//		entity.flinching = false;
+		//}
 
 		// set animation
 			if (entity.scratching) {

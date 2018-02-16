@@ -1,15 +1,23 @@
 package GameState;
 
 import TileMap.*;
+import main.CONTROLS;
+import main.World;
+
 import java.awt.Graphics2D;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
 import Audio.AudioPlayer;
-import DesertAdventures.CONTROLS;
-import DesertAdventures.World;
+import Entity.ENTITY;
 import Entity.Spawner;
+import Network.Session;
 import PACKET.CommandPacket;
 import PACKET.NetworkSpawner;
 import PACKET.SpeechPacket;
 import PACKET.WorldPacket;
+
 public class OnlineState extends GameState {
 
 	private World world;
@@ -17,6 +25,10 @@ public class OnlineState extends GameState {
 	private TileMap tileMap;
 	private Background bg;
 	private int playerhandle = -1;
+	//public ArrayList<Integer> requested_spawns_from_server = new ArrayList<Integer>();
+
+	public Map<Integer, Integer> requested_spawns_from_server = new HashMap<Integer,Integer>();
+	// ENTITY>();
 	public OnlineState(GameStateManager gsm) {
 		super(gsm);
 	}
@@ -53,7 +65,7 @@ public class OnlineState extends GameState {
 		populateMap();
 		bgmusic = new AudioPlayer("/Music/level1-1.mp3");
 		bgmusic.play();
-		
+
 		gsm.session.SendCommand(new CommandPacket(CommandPacket.REQUEST_HANDLE,
 				new NetworkSpawner(0, Spawner.PLAYERPED, 200, 200, true, true)));
 	}
@@ -74,14 +86,16 @@ public class OnlineState extends GameState {
 				CommandPacket packet = gsm.session.commandsPackets.poll();
 				switch (packet.packet_code) {
 				case CommandPacket.HANDLE:
-					playerhandle = (int)packet.data; break;
+					playerhandle = (int) packet.data;
+					break;
 				case CommandPacket.SPAWN:
+				
 					NetworkSpawner sp = (NetworkSpawner) packet.data;
 					if (playerhandle == sp.handle)
 						world.request_spawn(gsm.session, true, sp.handle, sp.type, sp.x, sp.y, sp.facing, false);
 					else
 						world.request_spawn(gsm.session, false, sp.handle, sp.type, sp.x, sp.y, sp.facing, sp.network);
-					
+
 					break;
 				case CommandPacket.SPEECH:
 					SpeechPacket data = (SpeechPacket) packet.data;
@@ -108,7 +122,18 @@ public class OnlineState extends GameState {
 				WorldPacket packet = gsm.session.worldPackets.pop();
 				if (world.entities.containsKey(packet.handle)) {
 					if (packet.handle != playerhandle)
-					world.entities.get(packet.handle).updatePacket(packet, world);
+						world.entities.get(packet.handle).updatePacket(packet, world);
+					
+					if (requested_spawns_from_server.containsKey(packet.handle))
+					{
+						requested_spawns_from_server.remove(packet.handle);
+					}
+				} else {
+					if (!requested_spawns_from_server.containsKey(packet.handle)) {
+						gsm.session.SendCommand(new CommandPacket(CommandPacket.REQUEST_SPAWN, packet.handle));
+						requested_spawns_from_server.put(packet.handle,packet.handle);
+						System.out.println("requesting handle: " + packet.handle);
+					}
 				}
 			}
 		}
@@ -116,7 +141,7 @@ public class OnlineState extends GameState {
 
 	@Override
 	public void draw(Graphics2D g) {
-		
+
 		bg.draw(g);
 		tileMap.draw(g);
 		world.draw(g);
@@ -138,11 +163,10 @@ public class OnlineState extends GameState {
 
 	@Override
 	public void handleInput() {
-		if (CONTROLS.isPressed(CONTROLS.ESCAPE))
-		{
-				gsm.requestState(GameStateManager.MAINMENUSTATE);
-				gsm.session.disconnect();
-					
+		if (CONTROLS.isPressed(CONTROLS.ESCAPE)) {
+			gsm.requestState(GameStateManager.MAINMENUSTATE);
+			gsm.session.disconnect();
+
 		}
 	}
 }

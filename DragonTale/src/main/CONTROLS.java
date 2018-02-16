@@ -1,4 +1,4 @@
-package DesertAdventures;
+package main;
 
 import java.awt.event.KeyEvent;
 

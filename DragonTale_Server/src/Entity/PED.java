@@ -202,7 +202,7 @@ public class PED extends ENTITY {
 	}
 
 	private void scratchAttack(World world) {
-
+/*
 		ArrayList<ENTITY> entities;
 		if (facingRight)
 			entities = world.getNearEntities((ENTITY) this, 45, 0, 180);
@@ -217,7 +217,7 @@ public class PED extends ENTITY {
 			}
 
 		}
-
+*/
 	}
 
 	public void update(World world) {

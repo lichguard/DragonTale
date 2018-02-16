@@ -1,4 +1,4 @@
-package DesertAdventures;
+package main;
 
 import java.awt.*;
 
@@ -8,7 +8,7 @@ import java.util.logging.Level;
 
 import javax.swing.JPanel;
 import GameState.GameStateManager;
-import DesertAdventures.LOGGER;
+import main.LOGGER;
 
 public class Gameplay extends JPanel implements Runnable, KeyListener {
 

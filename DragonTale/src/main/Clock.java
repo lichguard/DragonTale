@@ -1,4 +1,4 @@
-package DesertAdventures;
+package main;
 
 public class Clock {
 

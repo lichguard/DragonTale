@@ -1,14 +1,14 @@
-package component;
+package drawcomponenets;
 
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.util.Iterator;
 
-import DesertAdventures.Gameplay;
-import DesertAdventures.World;
 import Entity.ENTITY;
 import Network.Session;
+import main.Gameplay;
+import main.World;
 
 public class DrawHudComponent implements IRender {
 

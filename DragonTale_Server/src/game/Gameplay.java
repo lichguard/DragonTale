@@ -1,12 +1,16 @@
 package game;
 
 import java.awt.Point;
+import java.util.ArrayList;
+import java.util.Iterator;
+
 import Entity.ENTITY;
 import Entity.Spawner;
 import PACKET.CommandPacket;
 import PACKET.NetworkSpawner;
 import PACKET.WorldPacket;
 import TileMap.TileMap;
+import servers.Session;
 import servers.ThreadPooledServer;
 
 public class Gameplay implements Runnable {
@@ -41,13 +45,12 @@ public class Gameplay implements Runnable {
 		world = new World(tileMap);
 		(new Thread(server)).start();
 
-
 		Point[] points = new Point[] { new Point(353, 140) };
 
 		for (Point p : points) {
 			world.spawn_entity(Spawner.SLUGGER, p.x, p.y, true, false);
 		}
-	
+
 	}
 
 	public void addNotify() {
@@ -92,11 +95,11 @@ public class Gameplay implements Runnable {
 				case CommandPacket.REQUEST_HANDLE:
 					int handle = world.spawn_entity((NetworkSpawner) packet.data);
 					server.SendCommand(packet.session_id, new CommandPacket(CommandPacket.HANDLE, handle));
-					server.setsessionpedhandle(packet.session_id,handle);
-					for (ENTITY entity : world.entities.values()) {
-						server.SendCommand(packet.session_id,
-								new CommandPacket(CommandPacket.SPAWN, entity.getNetowrkSpawner()));
-					}
+					server.setsessionpedhandle(packet.session_id, handle);
+					//for (ENTITY entity : world.entities.values()) {
+					//	server.SendCommand(packet.session_id,
+					//			new CommandPacket(CommandPacket.SPAWN, entity.getNetowrkSpawner()));
+					//}
 					break;
 				case CommandPacket.SPAWN:
 					world.spawn_entity((NetworkSpawner) packet.data);
@@ -107,15 +110,16 @@ public class Gameplay implements Runnable {
 				case CommandPacket.DESPAWN:
 					world.despawn_entity((int) packet.data);
 					break;
-					/*
-				case CommandPacket.ADD_SESSION:
-					server.addSession(packet.session_id, (Session) packet.data );
+				case CommandPacket.REQUEST_SPAWN:
+					server.SendCommand(packet.session_id,
+							new CommandPacket(CommandPacket.SPAWN, world.entities.get((int)packet.data).getNetowrkSpawner()));
 					break;
-				case CommandPacket.REMOVE_SESSION:
-					server.removSession(packet.session_id);
-					world.despawn_entity((int) packet.data);
-					break;
-					*/
+				/*
+				 * case CommandPacket.ADD_SESSION: server.addSession(packet.session_id,
+				 * (Session) packet.data ); break; case CommandPacket.REMOVE_SESSION:
+				 * server.removSession(packet.session_id); world.despawn_entity((int)
+				 * packet.data); break;
+				 */
 				default:
 					System.out.println("Unknown CommandPacket code: " + packet.packet_code);
 					break;
@@ -138,26 +142,26 @@ public class Gameplay implements Runnable {
 			server.BroadcastCommand(new CommandPacket(CommandPacket.SPAWN, spawner.castNetworkSpawner()));
 		}
 		// send despawns
-		
+
 		for (int handle : world.entities_to_remove) {
 			server.BroadcastCommand(new CommandPacket(CommandPacket.DESPAWN, handle));
 		}
-		
+
 		if (System.currentTimeMillis() - lastbroadcast > 100) {
-			// send worldpackets
-			for (ENTITY entity : world.entities.values()) {
-				WorldPacket p = entity.getEntityPacket();
-				//System.out.println("handle: " +p.handle + " x: " + p.x + "y: " + p.y);
-				server.BroadcastWorldPacket(p);
-				
-				//System.out.println("h: " + p.handle + " x: " + p.x + " y: " + p.y);
+			synchronized (server.sessions) {
+
+				for (Session s : server.sessions.values()) {
+					ArrayList<ENTITY> entities_close = world.getNearEntities(s.pedhandle, Gameplay.WIDTH/2 + Gameplay.HEIGHT/2,0, 360);
+					for (ENTITY near : entities_close) {
+						server.SendWorldPacket(s.id, near.getEntityPacket());
+					}
+				}
 			}
 			lastbroadcast = System.currentTimeMillis();
 		}
-		
-		world.update();
-		
-	}
 
+		world.update();
+
+	}
 
 }

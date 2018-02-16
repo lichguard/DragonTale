@@ -1,13 +1,13 @@
-package component;
+package drawcomponenets;
 
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.util.Iterator;
 
-import DesertAdventures.World;
 import Entity.ENTITY;
 import Network.Session;
+import main.World;
 
 public class DrawNameComponent implements IRender {
 
@@ -15,6 +15,15 @@ public class DrawNameComponent implements IRender {
 	ENTITY entity;
 	Session session;
 	Font font = new Font("Arial", Font.PLAIN,14);
+
+	
+	public DrawNameComponent(World world,ENTITY entity,Session session )
+	{
+		this.world =world;
+		this.entity=entity;
+		this.session=session;
+	}
+	
 	@Override
 	public void draw(Graphics2D g,Iterator<IRender> it) {
 		g.setFont(font);

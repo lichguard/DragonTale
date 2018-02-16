@@ -298,8 +298,8 @@ public abstract class ENTITY {
 				last_packet.clone(new_packet);
 				new_packet.clone(p);
 				ping = (new_packet.timeframe - last_packet.timeframe  + ping ) / 2;
-				if (ping > 400)
-					ping = 400;
+				if (ping <= 0 || ping > 1000)
+					ping = 500;
 				interpolation_start = System.currentTimeMillis();
 				facingRight = last_packet.facingRight;
 				if (last_packet.currentAction != this.currentAction) {
