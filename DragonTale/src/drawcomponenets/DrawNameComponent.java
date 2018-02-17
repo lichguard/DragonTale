@@ -5,19 +5,19 @@ import java.awt.Font;
 import java.awt.Graphics2D;
 import java.util.Iterator;
 
-import Entity.ENTITY;
 import Network.Session;
+import entity.Entity;
 import main.World;
 
 public class DrawNameComponent implements IRender {
 
 	World world;
-	ENTITY entity;
+	Entity entity;
 	Session session;
 	Font font = new Font("Arial", Font.PLAIN,14);
 
 	
-	public DrawNameComponent(World world,ENTITY entity,Session session )
+	public DrawNameComponent(World world,Entity entity,Session session )
 	{
 		this.world =world;
 		this.entity=entity;

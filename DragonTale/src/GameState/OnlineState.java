@@ -1,18 +1,15 @@
 package GameState;
 
 import TileMap.*;
+import entity.Spawner;
 import main.CONTROLS;
 import main.World;
 
 import java.awt.Graphics2D;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 import Audio.AudioPlayer;
-import Entity.ENTITY;
-import Entity.Spawner;
-import Network.Session;
 import PACKET.CommandPacket;
 import PACKET.NetworkSpawner;
 import PACKET.SpeechPacket;
@@ -25,10 +22,8 @@ public class OnlineState extends GameState {
 	private TileMap tileMap;
 	private Background bg;
 	private int playerhandle = -1;
-	//public ArrayList<Integer> requested_spawns_from_server = new ArrayList<Integer>();
-
 	public Map<Integer, Integer> requested_spawns_from_server = new HashMap<Integer,Integer>();
-	// ENTITY>();
+
 	public OnlineState(GameStateManager gsm) {
 		super(gsm);
 	}
@@ -59,7 +54,7 @@ public class OnlineState extends GameState {
 		tileMap = new TileMap(30);
 		tileMap.loadTiles("/TileSets/grasstileset.gif");
 		tileMap.loadMap("/Maps/level1-1.map");
-		tileMap.setPosition(0, 0);
+		//tileMap.setPosition(0, 0);
 		tileMap.setTween(0.07f);
 		world = new World(tileMap);
 		populateMap();
@@ -91,9 +86,15 @@ public class OnlineState extends GameState {
 				case CommandPacket.SPAWN:
 				
 					NetworkSpawner sp = (NetworkSpawner) packet.data;
+					if (requested_spawns_from_server.containsKey(sp.handle))
+					{
+						requested_spawns_from_server.remove(sp.handle);
+					}
 					if (playerhandle == sp.handle)
+					{
 						world.request_spawn(gsm.session, true, sp.handle, sp.type, sp.x, sp.y, sp.facing, false);
-					else
+					}
+						else
 						world.request_spawn(gsm.session, false, sp.handle, sp.type, sp.x, sp.y, sp.facing, sp.network);
 
 					break;
@@ -124,10 +125,6 @@ public class OnlineState extends GameState {
 					if (packet.handle != playerhandle)
 						world.entities.get(packet.handle).updatePacket(packet, world);
 					
-					if (requested_spawns_from_server.containsKey(packet.handle))
-					{
-						requested_spawns_from_server.remove(packet.handle);
-					}
 				} else {
 					if (!requested_spawns_from_server.containsKey(packet.handle)) {
 						gsm.session.SendCommand(new CommandPacket(CommandPacket.REQUEST_SPAWN, packet.handle));
@@ -141,7 +138,6 @@ public class OnlineState extends GameState {
 
 	@Override
 	public void draw(Graphics2D g) {
-
 		bg.draw(g);
 		tileMap.draw(g);
 		world.draw(g);

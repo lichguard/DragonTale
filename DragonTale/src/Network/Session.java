@@ -104,6 +104,7 @@ public class Session {
 	}
 
 	public void SendCommand(CommandPacket packet) {
+		System.out.println("Sending command: " + packet.packet_code );
 		if (tcp != null && packet != null && connected)
 			tcp.sendCommand(packet);
 	}

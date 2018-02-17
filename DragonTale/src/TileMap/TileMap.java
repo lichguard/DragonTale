@@ -139,7 +139,13 @@ public class TileMap {
 		return tiles[r][c].getType();
 	}
 
-	public void setPosition(double x, float y) {
+	public void initPosition(float x, float y)
+	{
+		this.x = x;
+		this.y = y;
+	}
+	
+	public void setPosition(float x, float y) {
 		this.x += (x - this.x) * tween;
 		this.y += (y - this.y) * tween;
 

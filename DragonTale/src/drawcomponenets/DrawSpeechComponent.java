@@ -5,16 +5,16 @@ import java.awt.Font;
 import java.awt.Graphics2D;
 import java.util.Iterator;
 
-import Entity.ENTITY;
+import entity.Entity;
 
 
 public class DrawSpeechComponent implements IRender {
 
-	ENTITY entity;
+	Entity entity;
 	String text = "";
 	private Font font = new Font("Arial", Font.PLAIN,11);
 	long start_time = 0;
-	public DrawSpeechComponent(String text,ENTITY entity)
+	public DrawSpeechComponent(String text,Entity entity)
 	{
 		this.entity=entity;
 		this.text = text;

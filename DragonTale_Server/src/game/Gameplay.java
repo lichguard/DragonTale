@@ -2,7 +2,6 @@ package game;
 
 import java.awt.Point;
 import java.util.ArrayList;
-import java.util.Iterator;
 
 import Entity.ENTITY;
 import Entity.Spawner;
@@ -96,10 +95,10 @@ public class Gameplay implements Runnable {
 					int handle = world.spawn_entity((NetworkSpawner) packet.data);
 					server.SendCommand(packet.session_id, new CommandPacket(CommandPacket.HANDLE, handle));
 					server.setsessionpedhandle(packet.session_id, handle);
-					//for (ENTITY entity : world.entities.values()) {
-					//	server.SendCommand(packet.session_id,
-					//			new CommandPacket(CommandPacket.SPAWN, entity.getNetowrkSpawner()));
-					//}
+					for (ENTITY entity : world.entities.values()) {
+						server.SendCommand(packet.session_id,
+								new CommandPacket(CommandPacket.SPAWN, entity.getNetowrkSpawner()));
+					}
 					break;
 				case CommandPacket.SPAWN:
 					world.spawn_entity((NetworkSpawner) packet.data);
@@ -111,8 +110,10 @@ public class Gameplay implements Runnable {
 					world.despawn_entity((int) packet.data);
 					break;
 				case CommandPacket.REQUEST_SPAWN:
-					server.SendCommand(packet.session_id,
-							new CommandPacket(CommandPacket.SPAWN, world.entities.get((int)packet.data).getNetowrkSpawner()));
+					if (world.entities.containsKey((int) packet.data)) {
+						server.SendCommand(packet.session_id, new CommandPacket(CommandPacket.SPAWN,
+								world.entities.get((int) packet.data).getNetowrkSpawner()));
+					}
 					break;
 				/*
 				 * case CommandPacket.ADD_SESSION: server.addSession(packet.session_id,
@@ -151,7 +152,8 @@ public class Gameplay implements Runnable {
 			synchronized (server.sessions) {
 
 				for (Session s : server.sessions.values()) {
-					ArrayList<ENTITY> entities_close = world.getNearEntities(s.pedhandle, Gameplay.WIDTH/2 + Gameplay.HEIGHT/2,0, 360);
+					ArrayList<ENTITY> entities_close = world.getNearEntities(s.pedhandle,
+							Gameplay.WIDTH / 2 + Gameplay.HEIGHT / 2, 0, 360);
 					for (ENTITY near : entities_close) {
 						server.SendWorldPacket(s.id, near.getEntityPacket());
 					}

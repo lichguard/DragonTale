@@ -5,20 +5,20 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.util.Iterator;
 
-import Entity.ENTITY;
 import Network.Session;
+import entity.Entity;
 import main.Gameplay;
 import main.World;
 
 public class DrawHudComponent implements IRender {
 
 	World world;
-	ENTITY entity;
+	Entity entity;
 	Session session;
 	BufferedImage image;
 	private Font font = new Font("Arial", Font.PLAIN,11);
 
-	public DrawHudComponent(World world,ENTITY entity,Session session )
+	public DrawHudComponent(World world,Entity entity,Session session )
 	{
 		this.world =world;
 		this.entity=entity;

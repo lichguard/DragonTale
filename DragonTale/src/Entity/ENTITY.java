@@ -1,4 +1,4 @@
-package Entity;
+package entity;
 
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
@@ -7,22 +7,16 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Random;
-
 import javax.imageio.ImageIO;
-
 import Audio.AudioPlayer;
 import Network.Session;
-
 import PACKET.WorldPacket;
-import TileMap.Tile;
-import TileMap.TileMap;
 import component.AnimationComponent;
 import component.BroadCastEntityComponent;
 import component.ControlsComponent;
 import component.IComponent;
 import component.NetworkComponent;
 import component.PhysicsComponent;
-import drawcomponenets.DrawChatBoxComponenet;
 import drawcomponenets.DrawEntityComponent;
 import drawcomponenets.DrawHudComponent;
 import drawcomponenets.DrawNameComponent;
@@ -32,22 +26,21 @@ import drawcomponenets.IRender;
 import main.Gameplay;
 import main.World;
 
-public class ENTITY {
+public class Entity {
 
 	public ArrayList<IComponent> components = new ArrayList<IComponent>();
 	public ArrayList<IRender> renders = new ArrayList<IRender>();
-	public TileMap tileMap;
-	public int tileSize;
-	public float xmap;
-	public float ymap;
+	public World world;
 	public int handle;
-	public boolean isNetowrkEntity = false;
+	public int type;
 
 	// position and vector
 	public float x;
 	public float y;
 	public float dx;
 	public float dy;
+	public float xmap;
+	public float ymap;
 
 	// dimensions
 	public int width;
@@ -58,7 +51,7 @@ public class ENTITY {
 	public int cheight;
 
 	// collision
-	public int health = 1;
+	public int health;
 	public int currRow;
 	public int currCol;
 	public float xdest;
@@ -93,25 +86,16 @@ public class ENTITY {
 	public int affiliation;
 
 	public WorldPacket entity_packet = new WorldPacket();
-	public WorldPacket last_packet = new WorldPacket();
-	public WorldPacket new_packet = new WorldPacket();
+	public WorldPacket last_packet;
+	public WorldPacket new_packet;
 	public long ping = 200;
-	public long interpolation_start = 0;
+	public long interpolation_start;
 
 	public BufferedImage[][] sprites;
 	public HashMap<String, AudioPlayer> sfx;
 	public String name = "";
 
 	public int[] numFrames = { 2, 8, 1, 2, 4, 2, 5, 0, 0, 0 };
-	public int walkingframes;
-
-	public static final int IDLE = 0;
-	public static final int WALKING = 1;
-	public static final int JUMPING = 2;
-	public static final int FALLING = 3;
-	public static final int GLIDING = 4;
-	public static final int ATTACK1 = 5;
-	public static final int ATTACK2 = 6;
 
 	public boolean flinching;
 	public long filinchTimer;
@@ -148,12 +132,7 @@ public class ENTITY {
 		return this.previousAction;
 	}
 
-	// constructor
-	World world;
-
-	int type;
-
-	public ENTITY(int type, int handle, World world, Session session, boolean is_local_player, boolean is_network,
+	public Entity(int type, int handle, World world, Session session, boolean is_local_player, boolean is_network,
 			float x, float y, boolean facing) {
 		this.world = world;
 		this.handle = handle;
@@ -167,7 +146,6 @@ public class ENTITY {
 		this.type = type;
 		this.new_packet = packet2;
 		interpolation_start = packet2.timeframe;
-		// setMapPosition();
 		setPosition(x, y);
 		setRight(facing);
 		setLeft(!facing);
@@ -193,22 +171,25 @@ public class ENTITY {
 		this.name = Integer.toString(handle);
 		animation = new Animation();
 
-		renders.add(new DrawNameComponent(world, this, session));
+		
 		if (is_local_player) {
+			world.tm.initPosition(x, y);
 			components.add(new ControlsComponent(world, this, session));
-			components.add(new BroadCastEntityComponent(world, this, session));
-			renders.add(new DrawHudComponent(world, this, session));
-		} else {
-			renders.add(new DrawNamePlateComponent(world, this, session));
-		}
+			if (session != null)
+				components.add(new BroadCastEntityComponent(world, this, session));
 
+			renders.add(new DrawHudComponent(world, this, session));
+		}
+		
+		renders.add(new DrawNamePlateComponent(world, this, session));
+		renders.add(new DrawNameComponent(world, this, session));
 		if (is_network) {
 			components.add(new NetworkComponent(world, this, session));
-
 		} else {
 			components.add(new PhysicsComponent(world, this, session));
 			components.add(new AnimationComponent(world, this, session));
 		}
+		
 		renders.add(new DrawEntityComponent(world, this, session));
 		switch (type) {
 		case Spawner.PLAYERPED:
@@ -250,19 +231,19 @@ public class ENTITY {
 
 		// dy = -3.5;
 		falling = true;
-		numFrames[IDLE] = 6;
+		numFrames[Animation.IDLE] = 6;
 		// load sprites
 		try {
 			BufferedImage spritesheet = ImageIO.read(getClass().getResourceAsStream("/Sprites/Player/coin.png"));
 
 			// sprites = new BufferedImage[6];
 
-			for (int i = 0; i < numFrames[IDLE]; i++) {
-				sprites[IDLE][i] = spritesheet.getSubimage(i * width, 0, width, height);
+			for (int i = 0; i < numFrames[Animation.IDLE]; i++) {
+				sprites[Animation.IDLE][i] = spritesheet.getSubimage(i * width, 0, width, height);
 			}
 
 			animation = new Animation();
-			animation.setFrames(sprites[IDLE], numFrames[IDLE]);
+			animation.setFrames(sprites[Animation.IDLE], numFrames[Animation.IDLE]);
 			animation.setDelay(110);
 
 		} catch (Exception e) {
@@ -273,17 +254,17 @@ public class ENTITY {
 	public void explosion() {
 		width = 30;
 		height = 30;
-		numFrames[IDLE] = 6;
+		numFrames[Animation.IDLE] = 6;
 		try {
 			BufferedImage spritesheet = ImageIO.read(getClass().getResourceAsStream("/Sprites/Enemies/explosion.gif"));
 
 			// sprites = new BufferedImage[6];
 
-			for (int i = 0; i < numFrames[IDLE]; i++) {
-				sprites[IDLE][i] = spritesheet.getSubimage(i * width, 0, width, height);
+			for (int i = 0; i < numFrames[Animation.IDLE]; i++) {
+				sprites[Animation.IDLE][i] = spritesheet.getSubimage(i * width, 0, width, height);
 			}
 
-			animation.setFrames(sprites[IDLE], numFrames[IDLE]);
+			animation.setFrames(sprites[Animation.IDLE], numFrames[Animation.IDLE]);
 			animation.setDelay(50);
 
 		} catch (Exception e) {
@@ -301,18 +282,18 @@ public class ENTITY {
 		height = 30;
 		cwidth = 14;
 		cheight = 14;
-		numFrames[WALKING] = 4;
-		numFrames[ATTACK1] = 3;
+		numFrames[Animation.WALKING] = 4;
+		numFrames[Animation.ATTACK1] = 3;
 		try {
 			BufferedImage spritesheet = ImageIO.read(getClass().getResourceAsStream("/Sprites/Player/fireball.gif"));
-			for (int i = 0; i < numFrames[WALKING]; i++) {
-				sprites[WALKING][i] = spritesheet.getSubimage(i * width, 0, width, height);
+			for (int i = 0; i < numFrames[Animation.WALKING]; i++) {
+				sprites[Animation.WALKING][i] = spritesheet.getSubimage(i * width, 0, width, height);
 			}
-			for (int i = 0; i < numFrames[ATTACK1]; i++) {
-				sprites[ATTACK1][i] = spritesheet.getSubimage(i * width, height, width, height);
+			for (int i = 0; i < numFrames[Animation.ATTACK1]; i++) {
+				sprites[Animation.ATTACK1][i] = spritesheet.getSubimage(i * width, height, width, height);
 			}
 
-			animation.setFrames(sprites[WALKING], numFrames[WALKING]);
+			animation.setFrames(sprites[Animation.WALKING], numFrames[Animation.WALKING]);
 			animation.setDelay(70);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -324,13 +305,13 @@ public class ENTITY {
 		cwidth = 30;
 		width = 30;
 		height = 30;
-		numFrames[IDLE] = 2;
-		numFrames[WALKING] = 8;
-		numFrames[JUMPING] = 1;
-		numFrames[FALLING] = 2;
-		numFrames[GLIDING] = 4;
-		numFrames[ATTACK1] = 2;
-		numFrames[ATTACK2] = 4;
+		numFrames[Animation.IDLE] = 2;
+		numFrames[Animation.WALKING] = 8;
+		numFrames[Animation.JUMPING] = 1;
+		numFrames[Animation.FALLING] = 2;
+		numFrames[Animation.GLIDING] = 4;
+		numFrames[Animation.ATTACK1] = 2;
+		numFrames[Animation.ATTACK2] = 4;
 
 		try {
 			BufferedImage spritesheet = ImageIO
@@ -352,8 +333,8 @@ public class ENTITY {
 			e.printStackTrace();
 		}
 
-		currentAction = IDLE;
-		animation.setFrames(sprites[IDLE], numFrames[IDLE]);
+		currentAction = Animation.IDLE;
+		animation.setFrames(sprites[Animation.IDLE], numFrames[Animation.IDLE]);
 
 		// sfx = new HashMap<String, AudioPlayer>();
 		// sfx.put("jump", new AudioPlayer("/SFX/jump.mp3"));
@@ -368,17 +349,17 @@ public class ENTITY {
 		cwidth = 20;
 		cheight = 20;
 		health = maxHealth = 250;
-		numFrames[WALKING] = 3;
+		numFrames[Animation.WALKING] = 3;
 		// load sprites
 		try {
 			BufferedImage spritesheet = ImageIO
 					.read(getClass().getResourceAsStream("/Sprites/Enemies/pgmy_spirit.png"));
 
-			for (int i = 0; i < numFrames[WALKING]; i++) {
-				sprites[WALKING][i] = spritesheet.getSubimage(i * width, 0, width, height);
+			for (int i = 0; i < numFrames[Animation.WALKING]; i++) {
+				sprites[Animation.WALKING][i] = spritesheet.getSubimage(i * width, 0, width, height);
 			}
 
-			animation.setFrames(sprites[WALKING], numFrames[WALKING]);
+			animation.setFrames(sprites[Animation.WALKING], numFrames[Animation.WALKING]);
 			animation.setDelay(100);
 
 			right = true;
@@ -395,17 +376,17 @@ public class ENTITY {
 		cwidth = 30;
 		cheight = 20;
 		health = maxHealth = 100;
-		numFrames[WALKING] = 3;
+		numFrames[Animation.WALKING] = 3;
 		// load sprites
 		try {
 			BufferedImage spritesheet = ImageIO.read(getClass().getResourceAsStream("/Sprites/Enemies/slugger.gif"));
 
-			for (int i = 0; i < numFrames[WALKING]; i++) {
-				sprites[WALKING][i] = spritesheet.getSubimage(i * width, 0, width, height);
+			for (int i = 0; i < numFrames[Animation.WALKING]; i++) {
+				sprites[Animation.WALKING][i] = spritesheet.getSubimage(i * width, 0, width, height);
 			}
 
 			animation = new Animation();
-			animation.setFrames(sprites[WALKING], numFrames[WALKING]);
+			animation.setFrames(sprites[Animation.WALKING], numFrames[Animation.WALKING]);
 			animation.setDelay(300);
 
 			right = true;
@@ -421,7 +402,7 @@ public class ENTITY {
 		name = Integer.toString(handle);
 	}
 
-	public boolean intersects(ENTITY e) {
+	public boolean intersects(Entity e) {
 		return this.getRecangle().intersects(e.getRecangle());
 	}
 
@@ -534,40 +515,40 @@ public class ENTITY {
 
 	public void SetActionAnimation(int newaction) {
 		switch (newaction) {
-		case ATTACK2:
+		case Animation.ATTACK2:
 			// sfx.get("scratch").play();
-			animation.setFrames(sprites[ATTACK2], numFrames[ATTACK2]);
+			animation.setFrames(sprites[Animation.ATTACK2], numFrames[Animation.ATTACK2]);
 			animation.setDelay(50);
 			width = 60;
 			break;
-		case ATTACK1:
+		case Animation.ATTACK1:
 			// sfx.get("fireball").play();
-			animation.setFrames(sprites[ATTACK1], numFrames[ATTACK1]);
+			animation.setFrames(sprites[Animation.ATTACK1], numFrames[Animation.ATTACK1]);
 			animation.setDelay(100);
 			width = 30;
 			break;
-		case GLIDING:
-			animation.setFrames(sprites[GLIDING], numFrames[GLIDING]);
+		case Animation.GLIDING:
+			animation.setFrames(sprites[Animation.GLIDING], numFrames[Animation.GLIDING]);
 			animation.setDelay(100);
 			width = 30;
 			break;
-		case FALLING:
-			animation.setFrames(sprites[FALLING], numFrames[FALLING]);
+		case Animation.FALLING:
+			animation.setFrames(sprites[Animation.FALLING], numFrames[Animation.FALLING]);
 			animation.setDelay(100);
 			width = 30;
 			break;
-		case JUMPING:
-			animation.setFrames(sprites[JUMPING], numFrames[JUMPING]);
+		case Animation.JUMPING:
+			animation.setFrames(sprites[Animation.JUMPING], numFrames[Animation.JUMPING]);
 			animation.setDelay(-1);
 			width = 30;
 			break;
-		case WALKING:
-			animation.setFrames(sprites[WALKING], numFrames[WALKING]);
+		case Animation.WALKING:
+			animation.setFrames(sprites[Animation.WALKING], numFrames[Animation.WALKING]);
 			animation.setDelay(40);
 			width = 30;
 			break;
-		case IDLE:
-			animation.setFrames(sprites[IDLE], numFrames[IDLE]);
+		default:
+			animation.setFrames(sprites[Animation.IDLE], numFrames[Animation.IDLE]);
 			animation.setDelay(400);
 			width = 30;
 			break;
@@ -646,7 +627,7 @@ public class ENTITY {
 		gliding = b;
 	}
 
-	public void gethit(int damage, ENTITY enemy) {
+	public void gethit(int damage, Entity enemy) {
 		if (flinching)
 			return;
 		health -= damage;

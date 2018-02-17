@@ -1,17 +1,17 @@
 package component;
 
-import Entity.ENTITY;
 import Network.Session;
+import entity.Entity;
 import main.World;
 
 public class BroadCastEntityComponent implements IComponent {
 
 	World world;
-	ENTITY entity;
+	Entity entity;
 	Session session;
 	long lastbroadcast = 0;
 
-	public BroadCastEntityComponent(World world, ENTITY entity, Session session) {
+	public BroadCastEntityComponent(World world, Entity entity, Session session) {
 		this.world = world;
 		this.entity = entity;
 		this.session = session;

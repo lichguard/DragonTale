@@ -1,21 +1,20 @@
 package component;
 
-import Entity.ENTITY;
 import Network.Session;
 import TileMap.Tile;
+import entity.Entity;
 import main.World;
 
 public class PhysicsComponent implements IComponent {
 
+	public static int id = 0;
+	
 	World world;
-	ENTITY entity;
+	Entity entity;
 	Session session;
-	float xtemp = 0;
-	float ytemp = 0;
-	float xdest = 0;
-	float ydest = 0;
 
-	public PhysicsComponent(World world, ENTITY entity, Session session) {
+
+	public PhysicsComponent(World world, Entity entity, Session session) {
 		this.world = world;
 		this.entity = entity;
 		this.session = session;
@@ -110,7 +109,7 @@ public class PhysicsComponent implements IComponent {
 
 		if (entity.dy < 0 && (entity.topLeft || entity.topRight)) {
 			entity.dy = 0;
-			ytemp = entity.currRow * world.tm.getTileSize() + entity.cheight / 2;
+			entity.ytemp = entity.currRow * world.tm.getTileSize() + entity.cheight / 2;
 		}
 
 		if (entity.dy > 0 && (entity.bottomLeft || entity.bottomRight)) {

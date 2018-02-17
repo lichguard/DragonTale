@@ -1,16 +1,17 @@
 package component;
 
-import Entity.ENTITY;
 import Network.Session;
+import entity.Entity;
 import main.World;
 
 public class NetworkComponent implements IComponent {
 
+	public static int id = 1;
 	World world;
-	ENTITY entity;
+	Entity entity;
 	Session session;
 
-	public NetworkComponent(World world, ENTITY entity, Session session) {
+	public NetworkComponent(World world, Entity entity, Session session) {
 		this.world = world;
 		this.entity = entity;
 		this.session = session;

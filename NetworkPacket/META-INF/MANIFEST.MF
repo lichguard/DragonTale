@@ -4,3 +4,4 @@ Bundle-Name: NetworkPacket
 Bundle-SymbolicName: NetworkPacket
 Bundle-Version: 1.0.0.qualifier
 Export-Package: PACKET
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8

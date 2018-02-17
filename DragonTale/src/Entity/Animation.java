@@ -1,13 +1,24 @@
-package Entity;
+package entity;
 
 import java.awt.image.BufferedImage;
 
 
 public class Animation  {
 	
+	public static final int IDLE = 0;
+	public static final int WALKING = 1;
+	public static final int JUMPING = 2;
+	public static final int FALLING = 3;
+	public static final int GLIDING = 4;
+	public static final int ATTACK1 = 5;
+	public static final int ATTACK2 = 6;
+	
 	private BufferedImage[] frames;
 	private int numofframes;
 	private int currentFrame;
+	
+	public int height;
+	public int width;
 	
 	private long startTime;
 	private long delay;

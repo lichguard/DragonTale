@@ -1,8 +1,7 @@
-package Entity;
+package entity;
 
 import Network.Session;
 import PACKET.NetworkSpawner;
-import PACKET.WorldPacket;
 import main.World;
 
 public class Spawner {
@@ -53,7 +52,7 @@ public class Spawner {
 			return;
 		}
 		
-		ENTITY entity = new ENTITY(type,handle,world,session,local_player,network,x,y,facing);
+		Entity entity = new Entity(type,handle,world,session,local_player,network,x,y,facing);
 		
 		entity.setPosition(x, y);
 		entity.setMapPosition();

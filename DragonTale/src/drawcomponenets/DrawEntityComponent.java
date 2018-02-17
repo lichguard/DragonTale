@@ -3,17 +3,17 @@ package drawcomponenets;
 import java.awt.Graphics2D;
 import java.util.Iterator;
 
-import Entity.ENTITY;
 import Network.Session;
+import entity.Entity;
 import main.World;
 
 public class DrawEntityComponent implements IRender{
 
 	World world;
-	ENTITY entity;
+	Entity entity;
 	Session session;
 	
-	public DrawEntityComponent(World world,ENTITY entity,Session session )
+	public DrawEntityComponent(World world,Entity entity,Session session )
 	{
 		this.world =world;
 		this.entity=entity;

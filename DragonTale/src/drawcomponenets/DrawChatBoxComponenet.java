@@ -5,7 +5,7 @@ import java.awt.Font;
 import java.awt.Graphics2D;
 import java.util.Iterator;
 
-import Entity.ENTITY;
+import entity.Entity;
 import main.CONTROLS;
 import main.Gameplay;
 
@@ -13,9 +13,9 @@ import main.Gameplay;
 public class DrawChatBoxComponenet implements IRender {
 
 
-	ENTITY entity;
+	Entity entity;
 	private Font font = new Font("Arial", Font.PLAIN,11);
-	public DrawChatBoxComponenet(ENTITY entity)
+	public DrawChatBoxComponenet(Entity entity)
 	{
 		this.entity=entity;
 	}
