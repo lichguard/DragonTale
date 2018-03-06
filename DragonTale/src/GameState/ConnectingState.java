@@ -24,7 +24,7 @@ public class ConnectingState extends GameState {
 		// TODO Auto-generated method stub
 
 		if (oneround) { //oneround so we can draw connecting...
-			gsm.ConnectToServer();
+			//gsm.ConnectToServer();
 			if (gsm.session.isConnected())
 				gsm.requestState(GameStateManager.ONLINESTATE);
 			else

@@ -22,6 +22,9 @@ public class CommandPacket implements Serializable{
 	public static final int REMOVE_SESSION =7;
 	public static final int REQUEST_SPAWN =8;
 	
+	public static final int HAND_SHAKE = 9;
+	public static final int REQUEST_HAND_SHAKE = 10;
+	
 	public UUID session_id = null;
 	public int packet_code = 0;
 	public Object data = null;

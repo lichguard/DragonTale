@@ -26,7 +26,8 @@ public class Session {
 	public long lastbroadcast = 0;
 	public Queue<CommandPacket> commandsPackets = new LinkedList<CommandPacket>();
 	public Stack<WorldPacket> worldPackets = new Stack<WorldPacket>();
-
+	public String username = "";
+	public String password = "";
 	public boolean isConnected()
 	{
 		return connected;
@@ -38,20 +39,26 @@ public class Session {
 		}
 	}
 
-	public void Connect(String IP, int port) {
+	public void Connect(String IP, int port,String username,String password) {
 		if (connected) {
 			System.out.println("Can't connect, you are connected!");
 			return;
 		}
+		this.username = username;
+		this.password = password;
 		this.port = port;
 		this.IP = IP;
 		System.out.println("Connecting to " + IP + "@" + port);
 		try {
 			clientSocket = new Socket(IP, port);
 			connected = true;
-			startTCP();
-
 			System.out.println("Authenticating...");
+			if (!startTCP())
+			{
+				disconnect();
+				return;
+			}
+
 			System.out.println("Connected!");
 		} catch (UnknownHostException e) {
 			disconnect();
@@ -61,12 +68,14 @@ public class Session {
 		}
 	}
 
-	public void startTCP() {
+	public boolean startTCP() {
 		System.out.println("Starting TCP...");
 		tcp = new WorkerRunnableTCP(this);
-		tcp.init();
+		if (!tcp.init())
+			return false;
 		new Thread(tcp).start();
 		System.out.println("TCP running");
+		return true;
 	}
 
 	public void startUDP(int udp_port) {

@@ -16,7 +16,6 @@ public class WorkerRunnableTCP implements Runnable {
 
 	protected ObjectInputStream objectInput = null;
 	protected ObjectOutputStream objectOutput = null;
-
 	public WorkerRunnableTCP(Session session) {
 		this.session = session;
 	}
@@ -29,11 +28,35 @@ public class WorkerRunnableTCP implements Runnable {
 			objectOutput = new ObjectOutputStream(outStream);
 			objectInput = new ObjectInputStream(inputStream);
 
+			try {
+				Thread.sleep(2000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			sendCommand(new CommandPacket(CommandPacket.HAND_SHAKE, session.username + "," + session.password));
+			session.password = "";
+			try {
+				Thread.sleep(2000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			CommandPacket packet = (CommandPacket) objectInput.readObject();
+			
+			if (packet.packet_code != CommandPacket.HAND_SHAKE)
+				return false;
+			
+			 return (((String) packet.data).compareTo("accepted") == 0);
+
 		} catch (IOException e) {
 			e.printStackTrace();
 			return false;
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		return true;
+		return false;
 	}
 
 	public void run() {

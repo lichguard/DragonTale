@@ -2,6 +2,8 @@ package entity;
 
 import java.awt.image.BufferedImage;
 
+import javax.imageio.ImageIO;
+
 
 public class Animation  {
 	
@@ -13,6 +15,8 @@ public class Animation  {
 	public static final int ATTACK1 = 5;
 	public static final int ATTACK2 = 6;
 	
+	public int[] numFrames = { 2, 8, 1, 2, 4, 2, 5, 0, 0, 0 };
+	public BufferedImage[][] sprites;
 	private BufferedImage[] frames;
 	private int numofframes;
 	private int currentFrame;
@@ -59,12 +63,57 @@ public class Animation  {
 	}
 	
 	public int getFrame() {return currentFrame;}
+	
 	public BufferedImage getImage() {
 		
-		return frames[currentFrame];
-		
+		return frames[currentFrame];	
 	}
+	
 	public boolean hasPlayedOnce() {return playedonce;}
 	
+	public void load_entity(int type)
+	{
+		switch (type) {
+		case Spawner.PLAYERPED:
+			width = 30;
+			height = 30;
+			numFrames[Animation.IDLE] = 2;
+			numFrames[Animation.WALKING] = 8;
+			numFrames[Animation.JUMPING] = 1;
+			numFrames[Animation.FALLING] = 2;
+			numFrames[Animation.GLIDING] = 4;
+			numFrames[Animation.ATTACK1] = 2;
+			numFrames[Animation.ATTACK2] = 4;
+			try {
+				BufferedImage spritesheet = ImageIO
+						.read(getClass().getResourceAsStream("/Sprites/Player/playersprites.gif"));
+
+				for (int i = 0; i < 7; i++) {
+					// BufferedImage[] bi = new BufferedImage[numFrames[i]];
+					for (int j = 0; j < numFrames[i]; j++) {
+
+						if (i == 6)
+							sprites[i][j] = spritesheet.getSubimage(j * width * 2, i * height, width * 2, height);
+						else
+							sprites[i][j] = spritesheet.getSubimage(j * width, i * height, width, height);
+
+					}
+				}
+
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			this.setFrames(sprites[Animation.IDLE], numFrames[Animation.IDLE]);
+			break;
+
+		default:
+			break;
+		}
+		
+		
+		
+		
+		
+	}
 
 }

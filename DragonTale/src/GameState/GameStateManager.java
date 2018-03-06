@@ -9,7 +9,7 @@ public class GameStateManager {
 	private int currentState;
 	private int requestedState;
 	public Session session = null;
-	public static final int NUMGAMESTATES = 6;
+	public static final int NUMGAMESTATES = 7;
 	
 	public static final int MAINMENUSTATE = 0;
 	public static final int LOADSTATE = 1;
@@ -17,18 +17,19 @@ public class GameStateManager {
 	public static final int ONLINESTATE = 3;
 	public static final int SERVERSTATE = 4;
 	public static final int CONNECTINGSTATE = 5;
+	public static final int LOGINSTATE = 6;
 	
 	public GameStateManager() {
 		gameStates = new GameState[NUMGAMESTATES];
 		currentState = requestedState = LOADSTATE;
 		loadState(currentState);
-		requestState(MAINMENUSTATE);
+		requestState(LOGINSTATE);
 	}
 	
-	public void ConnectToServer()
+	public void ConnectToServer(String username,String password)
 	{
 		session = new Session();
-		session.Connect("localhost", 9000);
+		session.Connect("localhost", 9000,username,password);
 	}
 
 	private void loadState(int state) {
@@ -42,6 +43,8 @@ public class GameStateManager {
 			gameStates[currentState] = new OfflineState(this);
 		else if (currentState == CONNECTINGSTATE)
 			gameStates[currentState] = new ConnectingState(this);
+		else if (currentState == LOGINSTATE)
+			gameStates[currentState] = new LoginState(this);
 		
 		gameStates[currentState].init();
 	}

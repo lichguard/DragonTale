@@ -14,7 +14,7 @@ public class Session {
 	public String accountName = null;
 	public ThreadPooledServer server = null;
 	public boolean connected = true;
-
+	public int AccountID = -1;
 	public int pedhandle = -1;
 	public Socket clientSocket = null;
 	public WorkerRunnableTCP tcp = null;
@@ -27,20 +27,32 @@ public class Session {
 		this.clientSocket = clientSocket;
 		id = UUID.randomUUID();
 		this.udp_port = udp_port_inc++;
-		startTCP(WorkerRunnable);
+		if (!startTCP(WorkerRunnable)) {
+			this.SendCommand(new CommandPacket(CommandPacket.HAND_SHAKE, "refused"));
+			server.removeSession(id);
+			return;
+		}
+		this.SendCommand(new CommandPacket(CommandPacket.HAND_SHAKE, "accepted"));
 		startUDP(WorkerRunnable);
 		SendCommand(new CommandPacket(CommandPacket.UDP_PORT, udp_port));
 	}
-	public void setpedhandle(int pedhandle)
-	{
+
+	public void setpedhandle(int pedhandle) {
 		this.pedhandle = pedhandle;
 	}
-	public void startTCP(ExecutorService WorkerRunnable) {
+
+	public boolean startTCP(ExecutorService WorkerRunnable) {
 		System.out.println("Starting TCP...");
 		tcp = new WorkerRunnableTCP(this);
-		tcp.init();
+		if (!tcp.init())
+			return false;
 		WorkerRunnable.execute(tcp);
 		System.out.println("TCP running");
+		return true;
+	}
+
+	public void handshake() {
+		SendCommand(new CommandPacket(CommandPacket.UDP_PORT, udp_port));
 	}
 
 	public void startUDP(ExecutorService WorkerRunnable) {

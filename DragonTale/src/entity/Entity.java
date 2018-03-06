@@ -11,6 +11,7 @@ import javax.imageio.ImageIO;
 import Audio.AudioPlayer;
 import Network.Session;
 import PACKET.WorldPacket;
+import UI.Textbox;
 import component.AnimationComponent;
 import component.BroadCastEntityComponent;
 import component.ControlsComponent;
@@ -28,6 +29,7 @@ import main.World;
 
 public class Entity {
 
+	
 	public ArrayList<IComponent> components = new ArrayList<IComponent>();
 	public ArrayList<IRender> renders = new ArrayList<IRender>();
 	public World world;
@@ -41,7 +43,7 @@ public class Entity {
 	public float dy;
 	public float xmap;
 	public float ymap;
-
+	public Textbox txtbox;
 	// dimensions
 	public int width;
 	public int height;
@@ -150,7 +152,8 @@ public class Entity {
 		setRight(facing);
 		setLeft(!facing);
 		setFacingright(facing);
-
+		txtbox = new Textbox();
+		txtbox.visible = false;
 		width = 30;
 		height = 30;
 		cwidth = 20;
@@ -181,8 +184,7 @@ public class Entity {
 			renders.add(new DrawHudComponent(world, this, session));
 		}
 		
-		renders.add(new DrawNamePlateComponent(world, this, session));
-		renders.add(new DrawNameComponent(world, this, session));
+		
 		if (is_network) {
 			components.add(new NetworkComponent(world, this, session));
 		} else {
@@ -193,12 +195,17 @@ public class Entity {
 		renders.add(new DrawEntityComponent(world, this, session));
 		switch (type) {
 		case Spawner.PLAYERPED:
+			renders.add(new DrawNamePlateComponent(world, this, session));
+			renders.add(new DrawNameComponent(world, this, session));
 			playerped();
 			break;
 		case Spawner.SLUGGER:
+			renders.add(new DrawNamePlateComponent(world, this, session));
+
 			slugger();
 			break;
 		case Spawner.ARACHNIK:
+			renders.add(new DrawNamePlateComponent(world, this, session));
 			arachnik();
 			break;
 		case Spawner.COIN:

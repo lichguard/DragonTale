@@ -7,6 +7,7 @@ import Network.Session;
 import PACKET.CommandPacket;
 import PACKET.NetworkSpawner;
 import PACKET.SpeechPacket;
+import UI.Textbox;
 import drawcomponenets.DrawChatBoxComponenet;
 import drawcomponenets.IRender;
 import entity.Entity;
@@ -23,12 +24,13 @@ public class ControlsComponent implements IComponent {
 	public LinkedList<String> command_histroy = new LinkedList<String>();
 	public ListIterator<String> command_histroy_it;
 	public IRender chatboxcontrol = null;
-
+	public Textbox txtbox;
 	public ControlsComponent(World world, Entity entity, Session session) {
 		this.world = world;
 		this.entity = entity;
 		this.session = session;
 		this.chatboxcontrol = new DrawChatBoxComponenet(entity);
+		this.txtbox = entity.txtbox;
 	}
 
 	@Override
@@ -53,12 +55,16 @@ public class ControlsComponent implements IComponent {
 				command_histroy_it = null;
 				typing = true;
 				entity.renders.add(chatboxcontrol);
-				CONTROLS.setCaptureText(true);
+				this.txtbox.focus();
+				txtbox.text = "";
+				//CONTROLS.setCaptureText(true);
 			} else {
-				String command = CONTROLS.getCapturedText();
+				String command = txtbox.text;// CONTROLS.getCapturedText();
 				typing = false;
+				
 				entity.renders.remove(chatboxcontrol);
-				CONTROLS.setCaptureText(false);
+				this.txtbox.unfocus();
+				//CONTROLS.setCaptureText(false);
 				if (command.compareTo("") != 0) {
 
 					command_histroy.push(command);
@@ -84,11 +90,13 @@ public class ControlsComponent implements IComponent {
 				if (command_histroy_it == null)
 					command_histroy_it = command_histroy.listIterator();
 				if (command_histroy_it.hasNext()) {
-					CONTROLS.setText((String) command_histroy_it.next());
+					txtbox.text = (String) command_histroy_it.next();
+					//CONTROLS.setText((String) command_histroy_it.next());
 				} else {
 					command_histroy_it = command_histroy.listIterator();
 					if (command_histroy_it.hasNext()) {
-						CONTROLS.setText((String) command_histroy_it.next());
+						txtbox.text = (String) command_histroy_it.next();
+						//CONTROLS.setText((String) command_histroy_it.next());
 					}
 				}
 			}

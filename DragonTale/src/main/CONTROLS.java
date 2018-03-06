@@ -1,6 +1,6 @@
 package main;
-
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
 
 //this class contains a boolean array of current and previous key states
 //for the 10 keys that are used for this game.
@@ -8,7 +8,7 @@ import java.awt.event.KeyEvent;
 
 public class CONTROLS {
 	
-	public static final int NUM_KEYS = 10;
+	public static final int NUM_KEYS = 14;
 	
 	public static boolean keyState[] = new boolean[NUM_KEYS];
 	public static boolean prevKeyState[] = new boolean[NUM_KEYS];
@@ -26,11 +26,19 @@ public class CONTROLS {
 	public static int UP = 7;
 	public static int DOWN = 8;
 	public static int ESCAPE = 9;
+	public static int TAB = 10;
+	public static int RMB = 11;
+	public static int LMB = 12;
+	public static int MMB = 13;
+	public static UI.Control focused_control = null;
 	
-	public static StringBuilder capturedText = new StringBuilder();
-	public static int curret = 0;
-	public static boolean captureText = false;
-	
+	public static void Mouseset(MouseEvent e,boolean b)
+	{
+		if(e.getButton() == MouseEvent.BUTTON2)  keyState[RMB] = b ; //Last_time[RIGHT] = System.nanoTime();}
+		else if(e.getButton() == MouseEvent.BUTTON1) keyState[LMB] =b;
+		else if(e.getButton() == MouseEvent.BUTTON3) keyState[MMB] =b;
+		
+	}
 	public static void keySet(KeyEvent key, int i, boolean b) {
 		if(i == KeyEvent.VK_RIGHT)  keyState[RIGHT] = b ; //Last_time[RIGHT] = System.nanoTime();}
 		else if(i == KeyEvent.VK_LEFT) keyState[LEFT] = b;
@@ -42,7 +50,14 @@ public class CONTROLS {
 		else if(i == KeyEvent.VK_UP) keyState[UP] = b;
 		else if(i == KeyEvent.VK_DOWN) keyState[DOWN] = b;
 		else if(i == KeyEvent.VK_ESCAPE) keyState[ESCAPE] = b;
+		else if(i == KeyEvent.VK_TAB) keyState[TAB] = b;
+
+		if (focused_control != null)
+		{
+			focused_control.KeyBoardEvent(key,i,b);
+		}
 		
+		/*
 		if (captureText & b)
 		{
 			if (i == KeyEvent.VK_BACK_SPACE && capturedText.length() > 0)
@@ -51,9 +66,10 @@ public class CONTROLS {
 				if (key.getKeyChar() >= 32 && key.getKeyChar() <= 126)
 				capturedText.append(key.getKeyChar());
 		}
+		*/
 		
 	}
-	
+	/*
 	public static String getCapturedText()
 	{
 		return capturedText.toString();
@@ -66,13 +82,14 @@ public class CONTROLS {
 	{
 		capturedText = new StringBuilder();
 	}
-	
+	*/
+	/*
 	public static void setCaptureText(boolean capture)
 	{
 		captureText = capture;
 		clearCapturedText();
 	}
-	
+	*/
 	public static void update() {
 		for(int i = 0; i < NUM_KEYS; i++) {
 			prevKeyState[i] = keyState[i];

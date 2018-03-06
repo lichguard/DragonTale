@@ -10,7 +10,7 @@ import javax.swing.JPanel;
 import GameState.GameStateManager;
 import main.LOGGER;
 
-public class Gameplay extends JPanel implements Runnable, KeyListener {
+public class Gameplay extends JPanel implements Runnable, KeyListener,MouseListener {
 
 	private static final long serialVersionUID = 1L;
 	public static final int WIDTH = 320; // 320
@@ -32,6 +32,7 @@ public class Gameplay extends JPanel implements Runnable, KeyListener {
 		setPreferredSize(new Dimension(WIDTH * SCALE, HEIGHT * SCALE));
 		setFocusable(true);
 		requestFocus();
+		setFocusTraversalKeysEnabled(false); 
 	}
 
 	private void init() {
@@ -46,6 +47,7 @@ public class Gameplay extends JPanel implements Runnable, KeyListener {
 		if (thread == null) {
 			thread = new Thread(this);
 			addKeyListener(this);
+			addMouseListener(this);
 			thread.start();
 		}
 	}
@@ -105,6 +107,35 @@ public class Gameplay extends JPanel implements Runnable, KeyListener {
 	@Override
 	public void keyTyped(KeyEvent key) {
 		
+	}
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		// TODO Auto-generated method stub
+		CONTROLS.Mouseset(e,true);
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		// TODO Auto-generated method stub
+		CONTROLS.Mouseset(e,false);
 	}
 
 

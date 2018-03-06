@@ -6,7 +6,6 @@ import java.awt.Graphics2D;
 import java.util.Iterator;
 
 import entity.Entity;
-import main.CONTROLS;
 import main.Gameplay;
 
 
@@ -27,7 +26,7 @@ public class DrawChatBoxComponenet implements IRender {
 			g.setColor(Color.black);
 			g.fillRect(17, Gameplay.HEIGHT - 60, 120, 15);
 			g.setColor(Color.white);
-			g.drawString(CONTROLS.getCapturedText() , 20, Gameplay.HEIGHT - 50);
+			g.drawString(entity.txtbox.text , 20, Gameplay.HEIGHT - 50);
 	}
 
 }
