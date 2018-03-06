@@ -44,7 +44,7 @@ public class WorkerRunnableTCP implements Runnable {
 			
 				int accountid = DB.GetUserfromDB(userdata[0], userdata[1]);
 				
-				if (accountid == 0)
+				if (accountid == -1)
 					return false;
 				
 				this.session.AccountID = accountid;

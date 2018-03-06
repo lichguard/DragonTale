@@ -1,15 +1,16 @@
 package GameState;
 
+import java.awt.Button;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
 
 import TileMap.Background;
+import UI.Messagebox;
 import UI.Textbox;
 import main.CONTROLS;
 
 public class LoginState extends GameState {
-
 
 	protected Background bg;
 
@@ -18,13 +19,16 @@ public class LoginState extends GameState {
 	protected Color titleColor;
 	protected Font titleFont;
 	protected Font font;
-	private Textbox password_txtbox;
-	private Textbox username_txtbox;
+	protected Textbox password_txtbox;
+	protected Textbox username_txtbox;
+	protected Button login_button;
+	protected Thread connecting_thread = null;
+	Messagebox msgbox = new Messagebox("");
 
 	public LoginState(GameStateManager gsm) {
 		super(gsm);
 		try {
-			bg = new Background("/Backgrounds/menubg.gif", 1);
+			bg = new Background("/Backgrounds/menubg.gif", 0.1);
 			bg.setVector(-0.1, 0);
 			titleColor = new Color(128, 0, 0);
 			titleFont = new Font("Century Gothic", Font.PLAIN, 28);
@@ -35,13 +39,19 @@ public class LoginState extends GameState {
 		username_txtbox = new Textbox();
 		username_txtbox.setposition(0.35f, 0.35f);
 		username_txtbox.setsize(0.3f, 0.02f);
-		username_txtbox.focus();
+		username_txtbox.bgcolor = new Color(0, 0, 0, 190);
 
 		password_txtbox = new Textbox();
 		password_txtbox.setposition(0.35f, 0.5f);
 		password_txtbox.setsize(0.3f, 0.02f);
+		password_txtbox.bgcolor = new Color(0, 0, 0, 190);
 		password_txtbox.setpassword(true);
-		// password_txtbox.focus();
+
+		
+		this.registerControl(username_txtbox);
+		this.registerControl(password_txtbox);
+		super.controltab();
+		connecting_thread = new Thread(new Runnable() {public void run() {}});
 	}
 
 	@Override
@@ -54,31 +64,41 @@ public class LoginState extends GameState {
 	public void update() {
 		bg.update();
 		handleInput();
+
+		if (gsm.session != null) {
+			if (!connecting_thread.isAlive())
+				if (gsm.session.isConnected())
+					if (gsm.session.authenticate())
+					gsm.requestState(GameStateManager.ONLINESTATE);
+		}
+
 	}
+
 	@Override
 	public void handleInput() {
 
-		if (CONTROLS.isPressed(CONTROLS.TAB)) {
-			if (username_txtbox.isfocused()) {
-				password_txtbox.focus();
-			} else {
-				username_txtbox.focus();
-			}
-		}
+		super.handleInput();
+		if (CONTROLS.isPressed(CONTROLS.ENTER) && (!connecting_thread.isAlive())
+				&& (username_txtbox.isfocused() || password_txtbox.isfocused()) ) {
 
-		if (CONTROLS.isPressed(CONTROLS.ENTER)) {
-			gsm.ConnectToServer(username_txtbox.text,password_txtbox.text);
-			if (gsm.session.isConnected())
-				gsm.requestState(GameStateManager.ONLINESTATE);
+			msgbox.setText("Connecting...");
+			this.registerControl(msgbox);
+			connecting_thread = new Thread(new Runnable() {
+				public void run() {
+					msgbox.setText("Initiating...");
+					gsm.ConnectToServer(msgbox,"localhost", 9000, username_txtbox.text, password_txtbox.text);
+					password_txtbox.setText("");
+				}
+			});
+			connecting_thread.start();
 		}
-		// gsm.requestState(GameStateManager.CONNECTINGSTATE);
 
 		if (CONTROLS.isPressed(CONTROLS.ESCAPE)) {
 			System.exit(0);
 		}
 
 	}
-	
+
 	@Override
 	public void draw(Graphics2D g) {
 		bg.draw(g);
@@ -89,11 +109,7 @@ public class LoginState extends GameState {
 		g.setFont(font);
 		g.drawString("Login", 140, 180);
 		g.setFont(font);
-		username_txtbox.draw(g);
-		password_txtbox.draw(g);
-		
+		super.draw(g);
 	}
 
-
-	
 }

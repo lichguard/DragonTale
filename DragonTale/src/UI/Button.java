@@ -1,5 +1,5 @@
 package UI;
 
-public class Button {
+public class Button extends Control{
 
 }

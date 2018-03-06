@@ -12,7 +12,7 @@ public class Session {
 	public UUID id = null;
 	protected int packet_size = 500;
 	public String accountName = null;
-	public ThreadPooledServer server = null;
+	public LoginServer server = null;
 	public boolean connected = true;
 	public int AccountID = -1;
 	public int pedhandle = -1;
@@ -22,7 +22,7 @@ public class Session {
 	public int udp_port = -1;
 	public static int udp_port_inc = 1;
 
-	public Session(Socket clientSocket, ExecutorService WorkerRunnable, ThreadPooledServer server) {
+	public Session(Socket clientSocket, ExecutorService WorkerRunnable, LoginServer server) {
 		this.server = server;
 		this.clientSocket = clientSocket;
 		id = UUID.randomUUID();
@@ -37,6 +37,10 @@ public class Session {
 		SendCommand(new CommandPacket(CommandPacket.UDP_PORT, udp_port));
 	}
 
+	public void swithctoserver(LoginServer server)
+	{
+		this.server = server;
+	}
 	public void setpedhandle(int pedhandle) {
 		this.pedhandle = pedhandle;
 	}

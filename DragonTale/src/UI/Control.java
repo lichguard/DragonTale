@@ -1,8 +1,10 @@
 package UI;
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 
+import GameState.GameState;
 import main.CONTROLS;
 import main.Gameplay;
 
@@ -15,7 +17,23 @@ public abstract class Control {
 	public int width = 0;
 	public int height = 0;
 	public boolean visible = true;
+	public Color bgcolor = new Color(0,0,0,255);
+	public Color forecolor = new Color(255,255,255,255);
+	public boolean delete_control = false;
+	public GameState parent = null;
 	
+	public void setparent(GameState parent)
+	{
+		this.parent = parent;
+	}
+	public synchronized void setText(String txt)
+	{
+		this.text = txt;
+	}
+	public void destory()
+	{
+		delete_control= true;
+	}
 	public void setvisible(boolean t)
 	{
 		this.visible = t;

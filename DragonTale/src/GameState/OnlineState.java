@@ -160,7 +160,7 @@ public class OnlineState extends GameState {
 	@Override
 	public void handleInput() {
 		if (CONTROLS.isPressed(CONTROLS.ESCAPE)) {
-			gsm.requestState(GameStateManager.MAINMENUSTATE);
+			gsm.requestState(GameStateManager.LOGINSTATE);
 			gsm.session.disconnect();
 
 		}

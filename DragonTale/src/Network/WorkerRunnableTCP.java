@@ -7,6 +7,7 @@ import java.io.OutputStream;
 import java.io.EOFException;
 import java.io.IOException;
 import PACKET.CommandPacket;
+import UI.Control;
 
 public class WorkerRunnableTCP implements Runnable {
 	protected Session session;
@@ -20,7 +21,7 @@ public class WorkerRunnableTCP implements Runnable {
 		this.session = session;
 	}
 
-	public boolean init() {
+	public boolean init(Control status) {
 		try {
 			outStream = session.clientSocket.getOutputStream();
 			inputStream = session.clientSocket.getInputStream();
@@ -28,20 +29,23 @@ public class WorkerRunnableTCP implements Runnable {
 			objectOutput = new ObjectOutputStream(outStream);
 			objectInput = new ObjectInputStream(inputStream);
 
+			status.setText("Authenticating...");
 			try {
-				Thread.sleep(2000);
+				Thread.sleep(200);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			sendCommand(new CommandPacket(CommandPacket.HAND_SHAKE, session.username + "," + session.password));
 			session.password = "";
+			/*
 			try {
-				Thread.sleep(2000);
+				Thread.sleep(200);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			*/
 			CommandPacket packet = (CommandPacket) objectInput.readObject();
 			
 			if (packet.packet_code != CommandPacket.HAND_SHAKE)

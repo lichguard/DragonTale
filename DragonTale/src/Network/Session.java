@@ -9,6 +9,7 @@ import java.util.Stack;
 
 import PACKET.CommandPacket;
 import PACKET.WorldPacket;
+import UI.Control;
 
 public class Session {
 
@@ -39,11 +40,18 @@ public class Session {
 		}
 	}
 
-	public void Connect(String IP, int port,String username,String password) {
+	public boolean authenticate()
+	{
+		
+		return true;
+	}
+	public void Connect(Control status,String IP, int port,String username,String password) {
 		if (connected) {
+			status.setText("Connection failed, you are connected!");
 			System.out.println("Can't connect, you are connected!");
 			return;
 		}
+		status.setText("Connecting...");
 		this.username = username;
 		this.password = password;
 		this.port = port;
@@ -52,26 +60,41 @@ public class Session {
 		try {
 			clientSocket = new Socket(IP, port);
 			connected = true;
-			System.out.println("Authenticating...");
-			if (!startTCP())
+			status.setText("Connecting...");
+			if (!startTCP(status))
 			{
 				disconnect();
+				status.setText("The information you have entered is not valid.");
 				return;
 			}
 
+			status.setText("Connected!");
 			System.out.println("Connected!");
+			
+			try {
+				Thread.sleep(200);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
 		} catch (UnknownHostException e) {
+			status.setText("Unknonw error occured!");
 			disconnect();
+			return;
 		} catch (IOException e) {
 			System.out.println("Server offline!");
+			status.setText("Server is offline");
 			disconnect();
+			return;
 		}
+
 	}
 
-	public boolean startTCP() {
+	public boolean startTCP(Control status) {
 		System.out.println("Starting TCP...");
 		tcp = new WorkerRunnableTCP(this);
-		if (!tcp.init())
+		if (!tcp.init(status))
 			return false;
 		new Thread(tcp).start();
 		System.out.println("TCP running");

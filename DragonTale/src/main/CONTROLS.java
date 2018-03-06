@@ -30,13 +30,18 @@ public class CONTROLS {
 	public static int RMB = 11;
 	public static int LMB = 12;
 	public static int MMB = 13;
+	public static int mousex = 0;
+	public static int mousey = 0;
 	public static UI.Control focused_control = null;
 	
 	public static void Mouseset(MouseEvent e,boolean b)
 	{
-		if(e.getButton() == MouseEvent.BUTTON2)  keyState[RMB] = b ; //Last_time[RIGHT] = System.nanoTime();}
-		else if(e.getButton() == MouseEvent.BUTTON1) keyState[LMB] =b;
-		else if(e.getButton() == MouseEvent.BUTTON3) keyState[MMB] =b;
+		if(e.getButton() == MouseEvent.BUTTON1)  keyState[LMB] = b ; //Last_time[RIGHT] = System.nanoTime();}
+		else if(e.getButton() == MouseEvent.BUTTON3) keyState[RMB] =b;
+		else if(e.getButton() == MouseEvent.BUTTON2) keyState[MMB] =b;
+		
+		mousex = e.getX();
+		mousey = e.getY();
 		
 	}
 	public static void keySet(KeyEvent key, int i, boolean b) {

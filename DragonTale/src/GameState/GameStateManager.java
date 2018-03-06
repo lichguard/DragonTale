@@ -1,6 +1,7 @@
 package GameState;
 
 import Network.Session;
+import UI.Control;
 
 
 public class GameStateManager {
@@ -26,10 +27,10 @@ public class GameStateManager {
 		requestState(LOGINSTATE);
 	}
 	
-	public void ConnectToServer(String username,String password)
+	public void ConnectToServer(Control status, String host, int port, String username,String password)
 	{
 		session = new Session();
-		session.Connect("localhost", 9000,username,password);
+		session.Connect(status, host, port,username,password);
 	}
 
 	private void loadState(int state) {

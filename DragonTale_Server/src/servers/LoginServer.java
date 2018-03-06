@@ -15,7 +15,7 @@ import PACKET.CommandPacket;
 import PACKET.WorldPacket;
 
 
-public class ThreadPooledServer implements Runnable {
+public class LoginServer implements Runnable {
 
 	private static final int MAX_CONNECTIONS = 10;
 	protected int serverPort = 9000;
@@ -28,7 +28,7 @@ public class ThreadPooledServer implements Runnable {
 	public Queue<CommandPacket> commandsPackets = new LinkedList<CommandPacket>();
 	public Stack<WorldPacket> worldPackets = new Stack<WorldPacket>();
 
-	public ThreadPooledServer(int port) {
+	public LoginServer(int port) {
 		this.serverPort = port;
 	}
 

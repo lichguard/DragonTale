@@ -10,7 +10,7 @@ import PACKET.NetworkSpawner;
 import PACKET.WorldPacket;
 import TileMap.TileMap;
 import servers.Session;
-import servers.ThreadPooledServer;
+import servers.LoginServer;
 
 public class Gameplay implements Runnable {
 
@@ -27,7 +27,7 @@ public class Gameplay implements Runnable {
 	private long targetTime = 1000 / target_FPS;
 	public World world;
 	public TileMap tileMap;
-	public ThreadPooledServer server;
+	public LoginServer server;
 	public long lastbroadcast = 0;
 
 	public Gameplay() {
@@ -40,7 +40,7 @@ public class Gameplay implements Runnable {
 		tileMap.loadMap("/Maps/level1-1.map");
 		tileMap.setPosition(0, 0);
 		tileMap.setTween(0.07);
-		server = new ThreadPooledServer(9000);
+		server = new LoginServer(9000);
 		world = new World(tileMap);
 		(new Thread(server)).start();
 
