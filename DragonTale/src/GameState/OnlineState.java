@@ -50,6 +50,7 @@ public class OnlineState extends GameState {
 
 	@Override
 	public void init() {
+		super.init();
 		bg = new Background("/Backgrounds/grassbg1.gif", 0.1);
 		tileMap = new TileMap(30);
 		tileMap.loadTiles("/TileSets/grasstileset.gif");
@@ -67,7 +68,7 @@ public class OnlineState extends GameState {
 
 	@Override
 	public void update() {
-
+		super.update();
 		dispatchCommands();
 		dispatchWorldPackets();
 		world.update();
@@ -159,6 +160,7 @@ public class OnlineState extends GameState {
 
 	@Override
 	public void handleInput() {
+		super.handleInput();
 		if (CONTROLS.isPressed(CONTROLS.ESCAPE)) {
 			gsm.requestState(GameStateManager.LOGINSTATE);
 			gsm.session.disconnect();

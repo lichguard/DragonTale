@@ -13,6 +13,7 @@ public class Textbox extends Control {
 	{
 		this.text = txt;
 	}
+	
 	public void setpassword(boolean pass) {
 		this.password = pass;
 	}
@@ -20,6 +21,7 @@ public class Textbox extends Control {
 	@Override
 	public void KeyBoardEvent(KeyEvent key, int i,boolean b) {
 
+		super.KeyBoardEvent(key, i, b);
 		if (!b)
 			return;
 		

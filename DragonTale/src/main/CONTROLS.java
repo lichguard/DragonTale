@@ -9,13 +9,8 @@ import java.awt.event.MouseEvent;
 public class CONTROLS {
 	
 	public static final int NUM_KEYS = 14;
-	
 	public static boolean keyState[] = new boolean[NUM_KEYS];
 	public static boolean prevKeyState[] = new boolean[NUM_KEYS];
-	
-//	public static long Last_time[] = new long[NUM_KEYS];
-	
-	
 	public static int RIGHT = 0;
 	public static int LEFT = 1;
 	public static int JUMP = 2;
@@ -44,6 +39,7 @@ public class CONTROLS {
 		mousey = e.getY();
 		
 	}
+	
 	public static void keySet(KeyEvent key, int i, boolean b) {
 		if(i == KeyEvent.VK_RIGHT)  keyState[RIGHT] = b ; //Last_time[RIGHT] = System.nanoTime();}
 		else if(i == KeyEvent.VK_LEFT) keyState[LEFT] = b;

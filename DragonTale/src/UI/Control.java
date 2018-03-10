@@ -1,10 +1,9 @@
 package UI;
+
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
-
-import GameState.GameState;
 import main.CONTROLS;
 import main.Gameplay;
 
@@ -17,57 +16,78 @@ public abstract class Control {
 	public int width = 0;
 	public int height = 0;
 	public boolean visible = true;
-	public Color bgcolor = new Color(0,0,0,255);
-	public Color forecolor = new Color(255,255,255,255);
+	public Color bgcolor = new Color(0, 0, 0, 255);
+	public Color forecolor = new Color(255, 255, 255, 255);
 	public boolean delete_control = false;
-	public GameState parent = null;
+	public UIManager parent = null;
+	public Action action = null;
 	
-	public void setparent(GameState parent)
+	public void setforecolor(Color color)
 	{
+		this.forecolor = color;
+	}
+	public void setparent(UIManager parent) {
 		this.parent = parent;
 	}
-	public synchronized void setText(String txt)
-	{
+
+	public synchronized void setText(String txt) {
 		this.text = txt;
 	}
-	public void destory()
-	{
-		delete_control= true;
-	}
-	public void setvisible(boolean t)
-	{
-		this.visible = t;
-	}
-	public boolean isfocused() {
-		return CONTROLS.focused_control == (Control)this;
+
+	public void destory() {
+		parent.unregisterControl(this);
 	}
 
-	public void setfont(Font f)
-	{
+	public void setvisible(boolean v) {
+		this.visible = v;
+	}
+
+	public boolean isfocused() {
+		return CONTROLS.focused_control == (Control) this;
+	}
+
+	public void setfont(Font f) {
 		this.font = f;
 	}
-	
+
 	public void setposition(float x, float y) {
-		this.x = (int) ((float)Gameplay.WIDTH * x);
-		this.y = (int) ((float)Gameplay.HEIGHT * y);
+		
+		if (x > 1 || y > 1 || x < 0 || y < 0)
+			throw new Error("Invalid Position");
+			
+		this.x = (int) ((float) Gameplay.WIDTH * x);
+		this.y = (int) ((float) Gameplay.HEIGHT * y);
 	}
 
 	public void setsize(float width, float height) {
-		this.width = (int) ((float)Gameplay.WIDTH * width);
-		this.height = (int) ((float)Gameplay.HEIGHT * height);
+		if (width > 1 || height > 1 || width < 0 || height < 0)
+			throw new Error("Invalid size");
+		
+		this.width = (int) ((float) Gameplay.WIDTH * width);
+		this.height = (int) ((float) Gameplay.HEIGHT * height);
 
 	}
 
+	public void registerAction(Action action)
+	{
+		this.action = action;
+	}
+	
 	public void KeyBoardEvent(KeyEvent key, int i, boolean b) {
+		if (i == KeyEvent.VK_ENTER && b) {
+			if (action != null)
+				action.execute();
+		}
 	}
 
 	public void focus() {
-
-		CONTROLS.focused_control = this;
+		if (parent != null)
+			parent.requestFocus(this);
 	}
-	public void unfocus() {
 
-		CONTROLS.focused_control = null;
+	public void unfocus() {
+		if (parent != null)
+			parent.requestunFocus(this);
 	}
 
 	public void draw(Graphics2D g) {

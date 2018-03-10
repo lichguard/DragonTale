@@ -34,6 +34,7 @@ public class DrawHudComponent implements IRender {
 		// g.drawString(player.getFire() / 100 + "/" + player.getMaxFire()/100, 30, 45);
 		g.drawString("Coins: " + entity.coins, 30, 65);
 
+		
 		if (!Gameplay.DEBUG)
 			return;
 		g.drawString("SpeedX: " + entity.getdx(), Gameplay.WIDTH - 100, 25);

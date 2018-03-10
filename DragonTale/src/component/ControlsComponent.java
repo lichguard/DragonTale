@@ -55,7 +55,8 @@ public class ControlsComponent implements IComponent {
 				command_histroy_it = null;
 				typing = true;
 				entity.renders.add(chatboxcontrol);
-				this.txtbox.focus();
+				CONTROLS.focused_control = this.txtbox;
+				//this.txtbox.focus();
 				txtbox.text = "";
 				//CONTROLS.setCaptureText(true);
 			} else {
@@ -63,7 +64,8 @@ public class ControlsComponent implements IComponent {
 				typing = false;
 				
 				entity.renders.remove(chatboxcontrol);
-				this.txtbox.unfocus();
+				CONTROLS.focused_control = null;
+				//this.txtbox.unfocus();
 				//CONTROLS.setCaptureText(false);
 				if (command.compareTo("") != 0) {
 

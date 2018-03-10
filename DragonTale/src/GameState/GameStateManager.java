@@ -34,16 +34,12 @@ public class GameStateManager {
 	}
 
 	private void loadState(int state) {
-		if (currentState == MAINMENUSTATE)
-			gameStates[currentState] = new MainMenuState(this);
-		else if (currentState == ONLINESTATE)
+		if (currentState == ONLINESTATE)
 			gameStates[currentState] = new OnlineState(this);
 		else if (currentState == LOADSTATE)
 			gameStates[currentState] = new LoadState(this);
 		else if (currentState == OFFLINESTATE)
 			gameStates[currentState] = new OfflineState(this);
-		else if (currentState == CONNECTINGSTATE)
-			gameStates[currentState] = new ConnectingState(this);
 		else if (currentState == LOGINSTATE)
 			gameStates[currentState] = new LoginState(this);
 		

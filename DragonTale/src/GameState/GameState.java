@@ -1,67 +1,35 @@
 package GameState;
 
 import java.awt.Graphics2D;
-import java.util.Vector;
-
-
-import UI.Control;
-import main.CONTROLS;
+import UI.UIManager;
 
 public abstract class GameState {
 
-	public GameStateManager gsm;
-	public Vector<Control> controls;
-	public int focsed_control = -1;
-
+	protected GameStateManager gsm;
+	protected UIManager uimanager;
+	
 	public GameState(GameStateManager gsm) {
-		controls = new Vector<Control>();
 		this.gsm = gsm;
+		uimanager = new UIManager();
 	}
 
-	public abstract void init();
-
-	public abstract void update();
-
-	public void draw(Graphics2D g) {
-		for (int i = 0; i < controls.size(); i++) {
-			Control c = controls.get(i);
-			if (c.visible)
-				c.draw(g);
-
-			if (c.delete_control) {
-				controls.remove(i);
-				c.delete_control = false;
-				c.setparent(null);
-				i--;
-				controltab();
-			}
-		}
-	}
-
-	public void registerControl(Control c) {
-		controls.addElement(c);
-
-		c.focus();
-		c.setparent(this);
-	}
-
-	public void unregisterControl(Control c) {
-	}
-
-	public void controltab()
+	public void init() 
 	{
-		if (controls.size() > 0) {
-			focsed_control += 1;
-			if (controls.size() <= focsed_control)
-				focsed_control = 0;
-
-			controls.get(focsed_control).focus();
-		}
 	}
-	public void handleInput() {
-		if (CONTROLS.isPressed(CONTROLS.TAB)) {
-			controltab();
-		}
+
+	public void update()
+	{
+		uimanager.update();
+	}
+
+	public void draw(Graphics2D g)
+	{
+		uimanager.draw(g);
+	}
+
+	public void handleInput()
+	{
+		uimanager.handleInput();
 	}
 
 }

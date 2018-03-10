@@ -9,15 +9,21 @@ import main.Gameplay;
 public class Messagebox extends Control {
 
 
-	public Messagebox(String message)
+	public Messagebox(UIManager parent,String message)
 	{
 		this.text = message;
 		this.setposition(0.2f, 0.37f);
 		this.setsize(0.25f, 0.15f);
 		this.font = new Font("Arial", Font.PLAIN, 11);
+		this.setparent(parent);
+		this.action = new Action() { @Override public void execute() 
+		{parent.DisableMessageBox();
+		
+		}};
+		
 	}
 	public void KeyBoardEvent(KeyEvent key, int i, boolean b) {
-		
+		super.KeyBoardEvent(key, i, b);
 		if (key.getKeyCode() == KeyEvent.VK_ENTER && b)
 		{
 			this.delete_control = true;

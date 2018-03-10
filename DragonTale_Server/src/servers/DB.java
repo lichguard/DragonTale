@@ -15,6 +15,7 @@ public class DB {
 			con = DriverManager.getConnection("jdbc:mysql://localhost:3306/?useSSL=false", "gameserver", "gameserver");
 		} catch (Exception e) {
 			e.printStackTrace();
+			con = null;
 		}
 		return con;
 	}
