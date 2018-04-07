@@ -71,12 +71,12 @@ public class Session {
 			status.setText("Connected!");
 			System.out.println("Connected!");
 			
-			try {
-				Thread.sleep(200);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+		//	try {
+			//	Thread.sleep(200);
+			//} catch (InterruptedException e) {
+				//// TODO Auto-generated catch block
+				//e.printStackTrace();
+			//}
 			
 		} catch (UnknownHostException e) {
 			status.setText("Unknonw error occured!");

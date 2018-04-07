@@ -7,7 +7,7 @@ import java.sql.Statement;
 import java.util.Random;
 
 public class DB {
-	public static boolean enableSQL = true;
+	public static boolean enableSQL = false;
 	public static Connection getMySQLConnection() {
 		Connection con = null;
 		try {

@@ -48,11 +48,9 @@ public class LoginServer implements Runnable {
 			try {
 				clientSocket = this.serverSocket.accept();
 				clientSocket.setReuseAddress(true);
+				Session session = new Session(clientSocket, WorkerRunnable, this);
+				addSession(session.id, session);
 				
-				synchronized (sessions) {
-					Session session = new Session(clientSocket, WorkerRunnable, this);
-					sessions.put(session.id, session);
-				}
 			} catch (IOException e) {
 				if (running)
 					throw new RuntimeException("Error accepting client connection", e);
@@ -64,11 +62,16 @@ public class LoginServer implements Runnable {
 
 	public void addSession(UUID sessionid, Session session)
 	{
+		synchronized (sessions) {
 		sessions.put(sessionid, session);
+		}
 	}
+	
 	public void removeSession(UUID sessionid)
 	{
+		synchronized (sessions) {
 		this.removesession(sessionid);
+		}
 	}
 	
 	public void SendCommand(UUID to, CommandPacket data) {

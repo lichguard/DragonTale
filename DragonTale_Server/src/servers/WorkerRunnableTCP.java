@@ -23,7 +23,7 @@ public class WorkerRunnableTCP implements Runnable {
 	}
 
 	public boolean init() {
-		//connect_to_mysql();
+		// connect_to_mysql();
 		try {
 			outStream = session.clientSocket.getOutputStream();
 			inputStream = session.clientSocket.getInputStream();
@@ -32,27 +32,24 @@ public class WorkerRunnableTCP implements Runnable {
 			objectInput = new ObjectInputStream(inputStream);
 
 			CommandPacket packet = (CommandPacket) objectInput.readObject();
-			if (packet.packet_code == CommandPacket.HAND_SHAKE)
-			{
-				String[] userdata = ((String)packet.data).split(",",2);
-				
-				if (userdata[0].compareTo("admin") == 0 && userdata[1].compareTo("admin") == 0)
-				{
+			if (packet.packet_code == CommandPacket.HAND_SHAKE) {
+				String[] userdata = ((String) packet.data).split(",", 2);
+
+				if (userdata[0].compareTo("admin") == 0 && userdata[1].compareTo("admin") == 0) {
 					this.session.AccountID = 0;
 					return true;
 				}
-			
+
 				int accountid = DB.GetUserfromDB(userdata[0], userdata[1]);
-				
+
 				if (accountid == -1)
 					return false;
-				
+
 				this.session.AccountID = accountid;
 				return true;
-			}
-			else
+			} else
 				return false;
-			
+
 		} catch (IOException e) {
 			e.printStackTrace();
 			return false;
@@ -101,13 +98,22 @@ public class WorkerRunnableTCP implements Runnable {
 		try {
 			if (objectInput != null)
 				objectInput.close();
-
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		try {
 			if (objectOutput != null)
 				objectOutput.close();
-
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		try {
 			if (inputStream != null)
 				inputStream.close();
-
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		try {
 			if (outStream != null)
 				outStream.close();
 

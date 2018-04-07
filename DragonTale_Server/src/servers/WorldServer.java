@@ -10,10 +10,7 @@ import java.util.UUID;
 import PACKET.CommandPacket;
 import PACKET.WorldPacket;
 
-public class WorldServer {
-	public HashMap<UUID, Session> sessions = new HashMap<UUID, Session>();
-	public Queue<CommandPacket> commandsPackets = new LinkedList<CommandPacket>();
-	public Stack<WorldPacket> worldPackets = new Stack<WorldPacket>();
+public class WorldServer extends Server {
 
 	public WorldServer() {
 
