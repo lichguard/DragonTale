@@ -8,9 +8,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Random;
 import javax.imageio.ImageIO;
-
 import Audio.AudioPlayer;
 import Network.Session;
+
 import PACKET.WorldPacket;
 import UI.Textbox;
 import component.AnimationComponent;
@@ -604,6 +604,9 @@ public class Entity {
 
 	public void setattack2() {
 		scratching = true;
+		
+		//gsm.session.SendCommand(new CommandPacket(CommandPacket.REQUEST_HANDLE,
+		//		new NetworkSpawner(0, Spawner.PLAYERPED, 200, 200, true, true)));
 	}
 
 	public WorldPacket getEntityPacket() {

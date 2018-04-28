@@ -7,7 +7,6 @@ import java.awt.Graphics2D;
 import TileMap.Background;
 import UI.Action;
 import UI.Button;
-import UI.Control;
 import UI.Messagebox;
 import UI.Textbox;
 import main.CONTROLS;

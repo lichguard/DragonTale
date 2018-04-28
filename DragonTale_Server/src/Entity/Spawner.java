@@ -1,11 +1,14 @@
 package Entity;
 
 
+import java.util.logging.Level;
+
 import Entity.Enemies.Arachnik;
 import Entity.Enemies.PlayerPED;
 import Entity.Enemies.Slugger;
 import PACKET.NetworkSpawner;
 import game.World;
+import main.LOGGER;
 
 
 public class Spawner {
@@ -73,7 +76,7 @@ public class Spawner {
 		entity.setLeft(!facing);
 		entity.facingRight = facing;
 		entity.setHandle(handle);
-		System.out.println("new handle: " + handle);
+		LOGGER.log(Level.INFO, "new handle: " + handle, this);
 		world.entities.put(handle, entity);
 	}
 }

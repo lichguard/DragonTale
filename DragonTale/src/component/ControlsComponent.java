@@ -2,6 +2,7 @@ package component;
 
 import java.util.LinkedList;
 import java.util.ListIterator;
+import java.util.logging.Level;
 
 import Network.Session;
 import PACKET.CommandPacket;
@@ -13,6 +14,7 @@ import drawcomponenets.IRender;
 import entity.Entity;
 import main.CONTROLS;
 import main.Gameplay;
+import main.LOGGER;
 import main.World;
 
 public class ControlsComponent implements IComponent {
@@ -125,9 +127,9 @@ public class ControlsComponent implements IComponent {
 		switch (args[0]) {
 		case "spawn":
 			if (session == null)
-				System.out.println("spawning offline is not supported yet");
+				LOGGER.log(Level.WARNING, "spawning offline is not supported yet", this);
 				else
-			session.SendCommand(new CommandPacket(CommandPacket.SPAWN, new NetworkSpawner(-1, Integer.parseInt(args[1]),
+					session.SendCommand(new CommandPacket(CommandPacket.SPAWN, new NetworkSpawner(-1, Integer.parseInt(args[1]),
 					entity.getx() + (30 * (entity.facingRight ? 1 : -1)), entity.gety(), entity.facingRight, false)));
 			break;
 		case "setspeed":

@@ -30,9 +30,9 @@ public class DrawNamePlateComponent implements IRender {
 			int PlateBold = 4;
 
 			g.setColor(Color.RED);
-			g.fillRect(XPOS, YPOS, (int) (entity.width * precentage), PlateBold);
+			g.fillRect(XPOS, YPOS, (int) (entity.getCWidth() * precentage), PlateBold);
 			g.setColor(Color.BLACK);
-			g.fillRect(XPOS + (int) (entity.width * precentage), YPOS, (int) (entity.width * (1 - precentage)), PlateBold);
+			g.fillRect(XPOS + (int) (entity.getCWidth() * precentage), YPOS, (int) (entity.getCWidth() * (1 - precentage)), PlateBold);
 
 		
 	}

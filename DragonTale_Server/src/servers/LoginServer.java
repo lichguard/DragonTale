@@ -11,8 +11,11 @@ import java.net.Socket;
 import java.io.IOException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.logging.Level;
+
 import PACKET.CommandPacket;
 import PACKET.WorldPacket;
+import main.LOGGER;
 
 
 public class LoginServer implements Runnable {
@@ -34,7 +37,7 @@ public class LoginServer implements Runnable {
 
 	public void run() {
 
-		System.out.println("Initializing server...");
+		LOGGER.log(Level.INFO, "Initializing server...", this);
 		this.runningThread = Thread.currentThread();
 		try {
 			this.serverSocket = new ServerSocket(this.serverPort);
@@ -42,7 +45,7 @@ public class LoginServer implements Runnable {
 			return;
 		}
 		running = true;
-		System.out.println("Waiting for clients...");
+		LOGGER.log(Level.INFO, "Waiting for clients...", this);
 		while (running) {
 			Socket clientSocket = null;
 			try {
@@ -57,7 +60,7 @@ public class LoginServer implements Runnable {
 			}
 		}
 		this.WorkerRunnable.shutdown();
-		System.out.println("Server Stopped");
+		LOGGER.log(Level.INFO, "Server Stopped", this);
 	}
 
 	public void addSession(UUID sessionid, Session session)
@@ -125,7 +128,7 @@ public class LoginServer implements Runnable {
 
 	public void stop() {
 		if (!running) {
-			System.out.println("Server is not running, can't stop");
+			LOGGER.log(Level.WARNING, "Server is not running, can't stop", this);
 			return;
 		}
 

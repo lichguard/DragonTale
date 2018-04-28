@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
+import java.util.logging.Level;
 
 import Network.Session;
 import TileMap.TileMap;
@@ -27,13 +28,13 @@ public class World {
 
 	public int request_spawn(Session session, boolean local_player, int handle, int type, float x, float y,
 			boolean facing, boolean network) {
-		System.out.println("Requesting Entity type: " + type + " , handle: " + handle);
+		LOGGER.log(Level.INFO, "Requesting Entity type: " + type + " , handle: " + handle, this);
 		spawn_requests.push(new Spawner(this, session, local_player, handle, type, x, y, facing, network));
 		return handle;
 	}
 
 	public void request_despawn(int handle) {
-		System.out.println("Requesting despawn of handle: " + handle);
+		LOGGER.log(Level.INFO, "Requesting despawn of handle: " + handle, this);
 		despawn_requests.push(handle);
 	}
 

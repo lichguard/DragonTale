@@ -18,9 +18,9 @@ public class World {
 	public Map<Integer, ENTITY> entities = new HashMap<Integer, ENTITY>();
 	public Stack<Integer> entities_to_remove = new Stack<Integer>();
 	public Stack<Spawner> entities_to_spawn = new Stack<Spawner>();
-	
+
 	public TileMap tm;
-	
+
 	public World(TileMap tm) {
 		this.tm = tm;
 	}
@@ -28,25 +28,25 @@ public class World {
 	public int entitity_count() {
 		return entities.size();
 	}
-	
+
 	public int spawn_entity(NetworkSpawner sp) {
 		if (Entity.Spawner.entities_count <= sp.type || sp.type < 0)
 			return 0;
 
-		//System.out.println("creating entity of type: " + type);
+		// System.out.println("creating entity of type: " + type);
 		int handle = handle_generator++;
 		entities_to_spawn.push(new Spawner(handle, sp.type, sp.x, sp.y, sp.facing, sp.network));
 		return handle;
 	}
-	
+
 	public int spawn_entity(int type, double x, double y, boolean facing, boolean network) {
 		if (Entity.Spawner.entities_count <= type || type < 0)
 			return 0;
 
-		//System.out.println("creating entity of type: " + type);
+		// System.out.println("creating entity of type: " + type);
 		int handle = handle_generator++;
 		entities_to_spawn.push(new Spawner(handle, type, x, y, facing, network));
-		
+
 		return handle;
 	}
 
@@ -55,25 +55,23 @@ public class World {
 	}
 
 	public void update() {
-		
-			// removes entities that are destined to be removed
-			while (!entities_to_spawn.isEmpty()) {
-				Spawner s = entities_to_spawn.pop();
-				s.create_entity(this);
-			}
 
-			while (!entities_to_remove.isEmpty()) {
-				entities.remove(entities_to_remove.pop());
-			}
+		// removes entities that are destined to be removed
+		while (!entities_to_spawn.isEmpty()) {
+			Spawner s = entities_to_spawn.pop();
+			s.create_entity(this);
+		}
 
-			// update all entities in world
-			for (ENTITY entity : entities.values()) {
-				entity.update(this);
-			}
+		while (!entities_to_remove.isEmpty()) {
+			entities.remove(entities_to_remove.pop());
+		}
+
+		// update all entities in world
+		for (ENTITY entity : entities.values()) {
+			entity.update(this);
+		}
 	}
 
-	
-	
 	public ArrayList<ENTITY> getCollisions(ENTITY entity) {
 
 		ArrayList<ENTITY> returnObjects = new ArrayList<ENTITY>();
@@ -93,11 +91,11 @@ public class World {
 	}
 
 	public ArrayList<ENTITY> getNearEntities(int handle, int range, int direction_start, int direction_end) {
-		
+
 		ArrayList<ENTITY> returnObjects = new ArrayList<ENTITY>();
 		if (!entities.containsKey(handle))
 			return returnObjects;
-		
+
 		ENTITY entity = entities.get(handle);
 		for (ENTITY close_entity : entities.values()) {
 			if (close_entity == entity)
@@ -106,8 +104,11 @@ public class World {
 			int dy = close_entity.gety() - entity.gety();
 			if (Math.abs(dx) + Math.abs(dy) <= range) {
 				double angle = getHeading(dx, dy);
+				
 				if (direction_start <= angle && angle <= direction_end)
+				{
 					returnObjects.add(close_entity);
+				}
 			}
 		}
 		return returnObjects;

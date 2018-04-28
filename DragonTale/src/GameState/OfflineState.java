@@ -3,9 +3,12 @@ package GameState;
 import TileMap.*;
 import entity.Spawner;
 import main.CONTROLS;
+import main.LOGGER;
 import main.World;
 
 import java.awt.Graphics2D;
+import java.util.logging.Level;
+
 import Audio.AudioPlayer;
 
 public class OfflineState extends GameState {
@@ -73,7 +76,8 @@ public class OfflineState extends GameState {
 
 	protected void finalize() {
 		bgmusic.close();
-		System.out.println("Destroyed");
+		
+		LOGGER.log(Level.INFO,"Destroyed", this);
 	}
 
 	@Override

@@ -4,9 +4,11 @@ import java.io.IOException;
 import java.net.Socket;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
+import java.util.logging.Level;
 
 import PACKET.CommandPacket;
 import PACKET.WorldPacket;
+import main.LOGGER;
 
 public class Session {
 	public UUID id = null;
@@ -46,12 +48,11 @@ public class Session {
 	}
 
 	public boolean startTCP(ExecutorService WorkerRunnable) {
-		System.out.println("Starting TCP...");
 		tcp = new WorkerRunnableTCP(this);
 		if (!tcp.init())
 			return false;
 		WorkerRunnable.execute(tcp);
-		System.out.println("TCP running");
+		LOGGER.log(Level.INFO, "TCP running", this);
 		return true;
 	}
 
@@ -60,18 +61,17 @@ public class Session {
 	}
 
 	public void startUDP(ExecutorService WorkerRunnable) {
-		System.out.println("Starting UDP...");
 		udp = new WorkerRunnableUDP(this);
 		udp.init();
 		WorkerRunnable.execute(udp);
-		System.out.println("UDP running");
+		LOGGER.log(Level.INFO, "UDP running", this);
 	}
 
 	public void disconnect() {
 		if (!connected) {
 			return;
 		}
-		System.out.println("Client " + id + " has disconnected...");
+		LOGGER.log(Level.INFO, "Client " + id + " has disconnected...", this);
 		connected = false;
 		if (udp != null)
 			udp.disconnect();

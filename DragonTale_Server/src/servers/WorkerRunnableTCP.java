@@ -4,10 +4,12 @@ import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
+import java.util.logging.Level;
 import java.io.EOFException;
 import java.io.IOException;
 
 import PACKET.CommandPacket;
+import main.LOGGER;
 
 public class WorkerRunnableTCP implements Runnable {
 	protected Session session;
@@ -66,7 +68,7 @@ public class WorkerRunnableTCP implements Runnable {
 				CommandPacket packet;
 				packet = (CommandPacket) objectInput.readObject();
 				packet.session_id = session.id;
-				System.out.println("Reveiving command: " + packet.packet_code);
+				LOGGER.log(Level.INFO, "Reveiving command: " + packet.getCommandName(), this);
 				synchronized (session.server.commandsPackets) {
 					session.server.commandsPackets.add(packet);
 				}
@@ -76,7 +78,7 @@ public class WorkerRunnableTCP implements Runnable {
 		} catch (ClassNotFoundException | IOException e) {
 			if (session.connected) {
 				e.printStackTrace();
-				System.out.println("An error has occured with client..");
+				LOGGER.log(Level.SEVERE, "An error has occured with client..", this);
 			}
 		}
 
@@ -84,7 +86,7 @@ public class WorkerRunnableTCP implements Runnable {
 	}
 
 	public void sendCommand(CommandPacket packet) {
-		System.out.println("Sending command: " + packet.packet_code);
+		LOGGER.log(Level.INFO, "Sending command: " +  packet.getCommandName(), this);
 		try {
 			objectOutput.writeObject(packet);
 		} catch (IOException e) {

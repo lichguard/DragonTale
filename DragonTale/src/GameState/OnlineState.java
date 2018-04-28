@@ -3,11 +3,13 @@ package GameState;
 import TileMap.*;
 import entity.Spawner;
 import main.CONTROLS;
+import main.LOGGER;
 import main.World;
 
 import java.awt.Graphics2D;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
 
 import Audio.AudioPlayer;
 import PACKET.CommandPacket;
@@ -110,7 +112,7 @@ public class OnlineState extends GameState {
 					gsm.session.startUDP((int) packet.data);
 					break;
 				default:
-					System.out.println("Unknown CommandPacket code: " + packet.packet_code);
+					LOGGER.log(Level.WARNING,"Unknown CommandPacket code: " + packet.packet_code, this);
 					break;
 				}
 			}
@@ -130,7 +132,7 @@ public class OnlineState extends GameState {
 					if (!requested_spawns_from_server.containsKey(packet.handle)) {
 						gsm.session.SendCommand(new CommandPacket(CommandPacket.REQUEST_SPAWN, packet.handle));
 						requested_spawns_from_server.put(packet.handle,packet.handle);
-						System.out.println("requesting handle: " + packet.handle);
+						LOGGER.log(Level.INFO,"requesting handle: " + packet.handle, this);
 					}
 				}
 			}
@@ -154,7 +156,7 @@ public class OnlineState extends GameState {
 
 	protected void finalize() {
 		bgmusic.close();
-		System.out.println("closing onlinestate");
+		LOGGER.log(Level.INFO,"closing onlinestate", this);
 		gsm.session.disconnect();
 	}
 

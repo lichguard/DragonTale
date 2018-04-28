@@ -10,7 +10,10 @@ import java.io.ObjectOutputStream;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
+import java.util.logging.Level;
+
 import PACKET.WorldPacket;
+import main.LOGGER;
 
 public class WorkerRunnableUDP implements Runnable {
 
@@ -52,7 +55,7 @@ public class WorkerRunnableUDP implements Runnable {
 		} catch (IOException e) {
 			if (session.connected) {
 				e.printStackTrace();
-				System.out.println("An error has occured with client..");
+				LOGGER.log(Level.SEVERE, "An error has occured with client..", this);
 			}
 		}
 		session.server.removesession(session.id);
@@ -74,7 +77,7 @@ public class WorkerRunnableUDP implements Runnable {
 			if (session.connected) {
 				e.printStackTrace();
 				session.disconnect();
-				System.out.println("An error has occured with client..");
+				LOGGER.log(Level.SEVERE, "An error has occured with client..", this);
 			}
 		}
 

@@ -1,7 +1,10 @@
 package entity;
 
+import java.util.logging.Level;
+
 import Network.Session;
 import PACKET.NetworkSpawner;
+import main.LOGGER;
 import main.World;
 
 public class Spawner {
@@ -48,7 +51,7 @@ public class Spawner {
 	{
 		if (world.entities.containsKey(handle))
 		{
-			System.out.println("Spawn failed because handle " + handle + " exists!");
+			LOGGER.log(Level.SEVERE,"Spawn failed because handle " + handle + " exists!", this);
 			return;
 		}
 		

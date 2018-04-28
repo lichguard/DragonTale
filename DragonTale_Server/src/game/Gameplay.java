@@ -2,6 +2,7 @@ package game;
 
 import java.awt.Point;
 import java.util.ArrayList;
+import java.util.logging.Level;
 
 import Entity.ENTITY;
 import Entity.Spawner;
@@ -9,6 +10,7 @@ import PACKET.CommandPacket;
 import PACKET.NetworkSpawner;
 import PACKET.WorldPacket;
 import TileMap.TileMap;
+import main.LOGGER;
 import servers.Session;
 import servers.LoginServer;
 
@@ -122,7 +124,7 @@ public class Gameplay implements Runnable {
 				 * packet.data); break;
 				 */
 				default:
-					System.out.println("Unknown CommandPacket code: " + packet.packet_code);
+					LOGGER.log(Level.WARNING, "Unknown CommandPacket code: " + packet.packet_code, this);
 					break;
 				}
 			}

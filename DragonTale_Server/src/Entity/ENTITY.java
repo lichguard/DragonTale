@@ -1,7 +1,7 @@
 package Entity;
 
 import java.awt.Rectangle;
-
+import java.util.ArrayList;
 
 import game.World;
 import PACKET.NetworkSpawner;
@@ -309,7 +309,7 @@ public abstract class ENTITY {
 						//setattack();
 						world.spawn_entity(Spawner.FIREBALL, x, y, facingRight, false);
 					} else if (last_packet.currentAction == 6) {
-						//setattack2();
+						setmeleeattack(world);
 						//scratchAttack(world);
 
 					}
@@ -317,6 +317,26 @@ public abstract class ENTITY {
 			}
 		}
 
+		public void setmeleeattack(World world)
+		{
+			int direction_start= 0;
+			int direction_end = 180;
+			if (!facingRight) 
+			{
+				direction_start= 180;
+				direction_end = 360;
+			}
+		 ArrayList<ENTITY> entities =	world.getNearEntities(handle, 40, direction_start, direction_end);
+		 for (ENTITY entity : entities)
+			{
+				if (entity instanceof Enemy)
+				{
+					((Enemy)entity).hit(20);
+					//break
+				}
+			}
+
+		}
 		public void say(String s) {
 		
 		}

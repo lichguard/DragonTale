@@ -6,10 +6,12 @@ import java.net.UnknownHostException;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Stack;
+import java.util.logging.Level;
 
 import PACKET.CommandPacket;
 import PACKET.WorldPacket;
 import UI.Control;
+import main.LOGGER;
 
 public class Session {
 
@@ -48,15 +50,16 @@ public class Session {
 	public void Connect(Control status,String IP, int port,String username,String password) {
 		if (connected) {
 			status.setText("Connection failed, you are connected!");
-			System.out.println("Can't connect, you are connected!");
+			LOGGER.log(Level.WARNING, "Can't connect, you are connected!", this);
 			return;
 		}
+		
 		status.setText("Connecting...");
 		this.username = username;
 		this.password = password;
 		this.port = port;
 		this.IP = IP;
-		System.out.println("Connecting to " + IP + "@" + port);
+		LOGGER.log(Level.INFO, "Connecting to " + IP + "@" + port, this);
 		try {
 			clientSocket = new Socket(IP, port);
 			connected = true;
@@ -69,7 +72,7 @@ public class Session {
 			}
 
 			status.setText("Connected!");
-			System.out.println("Connected!");
+			LOGGER.log(Level.INFO, "Connected!", this);
 			
 		//	try {
 			//	Thread.sleep(200);
@@ -83,7 +86,7 @@ public class Session {
 			disconnect();
 			return;
 		} catch (IOException e) {
-			System.out.println("Server offline!");
+			LOGGER.log(Level.WARNING, "Server offline!", this);
 			status.setText("Server is offline");
 			disconnect();
 			return;
@@ -92,29 +95,29 @@ public class Session {
 	}
 
 	public boolean startTCP(Control status) {
-		System.out.println("Starting TCP...");
+		LOGGER.log(Level.INFO, "Starting TCP...", this);
 		tcp = new WorkerRunnableTCP(this);
 		if (!tcp.init(status))
 			return false;
 		new Thread(tcp).start();
-		System.out.println("TCP running");
+		LOGGER.log(Level.INFO, "TCP running", this);
 		return true;
 	}
 
 	public void startUDP(int udp_port) {
-		System.out.println("Starting UDP...");
+		LOGGER.log(Level.INFO, "Starting UDP...", this);
 		this.udp_port = udp_port;
 		udp = new WorkerRunnableUDP(this);
 		udp.init();
 		new Thread(udp).start();
-		System.out.println("UDP running");
+		LOGGER.log(Level.INFO, "UDP running", this);
 	}
 
 	public void disconnect() {
 		if (!connected) {
 			return;
 		}
-		System.out.println("Disconnected from server...");
+		LOGGER.log(Level.INFO, "Disconnected from server...", this);
 		connected = false;
 		if (udp != null)
 			udp.disconnect();
@@ -136,7 +139,7 @@ public class Session {
 	}
 
 	public void SendCommand(CommandPacket packet) {
-		System.out.println("Sending command: " + packet.packet_code );
+		LOGGER.log(Level.INFO, "Sending command: " + packet.packet_code, this);
 		if (tcp != null && packet != null && connected)
 			tcp.sendCommand(packet);
 	}
