@@ -1,7 +1,7 @@
 package component;
 
-import Network.Session;
-import entity.Entity;
+import dt.entity.Entity;
+import dt.network.Session;
 import main.World;
 
 public class NetworkComponent implements IComponent {

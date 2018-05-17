@@ -1,4 +1,4 @@
-package servers;
+package dt.network;
 
 import java.io.InputStream;
 import java.io.ObjectInputStream;
@@ -7,27 +7,23 @@ import java.io.OutputStream;
 import java.util.logging.Level;
 import java.io.EOFException;
 import java.io.IOException;
-
 import PACKET.CommandPacket;
-import database.MySQLDB;
-import database.IDB;
+import UI.Control;
 import main.LOGGER;
 
 public class WorkerRunnableTCP implements Runnable {
 	protected Session session;
+
 	protected InputStream inputStream = null;
 	protected OutputStream outStream = null;
-	protected String username;
-	protected String password;
+
 	protected ObjectInputStream objectInput = null;
 	protected ObjectOutputStream objectOutput = null;
-
 	public WorkerRunnableTCP(Session session) {
 		this.session = session;
 	}
 
-	public boolean init() {
-		// connect_to_mysql();
+	public boolean init(Control status) {
 		try {
 			outStream = session.clientSocket.getOutputStream();
 			inputStream = session.clientSocket.getInputStream();
@@ -35,27 +31,33 @@ public class WorkerRunnableTCP implements Runnable {
 			objectOutput = new ObjectOutputStream(outStream);
 			objectInput = new ObjectInputStream(inputStream);
 
-			CommandPacket packet = (CommandPacket) objectInput.readObject();
-			if (packet.packet_code == CommandPacket.HAND_SHAKE) {
-				String[] userdata = ((String) packet.data).split(",", 2);
-
-				if (userdata[0].equals("admin") && userdata[1].equals("admin")) {
-					this.session.AccountID = 0;
-					return true;
-				}
-				
-				IDB db = MySQLDB.getInstance();
-				this.session.AccountID =  db.GetUserfromDB(userdata[0], userdata[1]);
-
-				return (this.session.AccountID != -1);
-			} else {
-				
-				LOGGER.log(Level.WARNING,"Expected HAND_SHAKE packet!",this);
-				return false;
+			status.setText("Authenticating...");
+			try {
+				Thread.sleep(200);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
+			sendCommand(new CommandPacket(CommandPacket.HAND_SHAKE, session.username + "," + session.password));
+			session.password = "";
+			/*
+			try {
+				Thread.sleep(200);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			*/
+			CommandPacket packet = (CommandPacket) objectInput.readObject();
+			
+			if (packet.packet_code != CommandPacket.HAND_SHAKE)
+				return false;
+			
+			 return (((String) packet.data).compareTo("accepted") == 0);
 
 		} catch (IOException e) {
 			e.printStackTrace();
+			return false;
 		} catch (ClassNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -68,31 +70,34 @@ public class WorkerRunnableTCP implements Runnable {
 			while (session.connected) {
 				CommandPacket packet;
 				packet = (CommandPacket) objectInput.readObject();
-				packet.session_id = session.id;
-				LOGGER.log(Level.INFO, "Reveiving command: " + packet.getCommandName(), this);
-				synchronized (session.server.commandsPackets) {
-					session.server.commandsPackets.add(packet);
+				LOGGER.log(Level.INFO, "Receieving command: " + packet.getCommandName(), this);
+				synchronized (session.commandsPackets) {
+					session.commandsPackets.add(packet);
 				}
 			}
-
-		} catch (EOFException e) {
-		} catch (ClassNotFoundException | IOException e) {
+			
+		} 
+		catch (EOFException e)
+		{
+				disconnect();
+		}
+		catch (ClassNotFoundException | IOException e) {
 			if (session.connected) {
 				e.printStackTrace();
-				LOGGER.log(Level.SEVERE, "An error has occured with client..", this);
+				LOGGER.log(Level.SEVERE,"An error has occured with server..", this);
 			}
 		}
 
-		session.server.removesession(session.id);
+		session.disconnect();
 	}
 
 	public void sendCommand(CommandPacket packet) {
-		LOGGER.log(Level.INFO, "Sending command: " +  packet.getCommandName(), this);
+		LOGGER.log(Level.INFO, "Sending command: " + packet.getCommandName(), this);
 		try {
 			objectOutput.writeObject(packet);
 		} catch (IOException e) {
 			e.printStackTrace();
-			session.server.removesession(session.id);
+			session.disconnect();
 		}
 	}
 
@@ -101,22 +106,13 @@ public class WorkerRunnableTCP implements Runnable {
 		try {
 			if (objectInput != null)
 				objectInput.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		try {
+
 			if (objectOutput != null)
 				objectOutput.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		try {
+
 			if (inputStream != null)
 				inputStream.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		try {
+
 			if (outStream != null)
 				outStream.close();
 

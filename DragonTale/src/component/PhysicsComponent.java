@@ -1,8 +1,8 @@
 package component;
 
-import Network.Session;
 import TileMap.Tile;
-import entity.Entity;
+import dt.entity.Entity;
+import dt.network.Session;
 import main.World;
 
 public class PhysicsComponent implements IComponent {

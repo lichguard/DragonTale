@@ -7,7 +7,8 @@ import java.awt.image.BufferedImage;
 import java.util.logging.Level;
 
 import javax.swing.JPanel;
-import GameState.GameStateManager;
+
+import dt.gamestate.GameStateManager;
 import main.LOGGER;
 
 public class Gameplay extends JPanel implements Runnable, KeyListener,MouseListener {

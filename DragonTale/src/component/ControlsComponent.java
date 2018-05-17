@@ -4,14 +4,14 @@ import java.util.LinkedList;
 import java.util.ListIterator;
 import java.util.logging.Level;
 
-import Network.Session;
 import PACKET.CommandPacket;
 import PACKET.NetworkSpawner;
 import PACKET.SpeechPacket;
 import UI.Textbox;
 import drawcomponenets.DrawChatBoxComponenet;
 import drawcomponenets.IRender;
-import entity.Entity;
+import dt.entity.Entity;
+import dt.network.Session;
 import main.CONTROLS;
 import main.Gameplay;
 import main.LOGGER;

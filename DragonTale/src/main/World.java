@@ -7,10 +7,10 @@ import java.util.Map;
 import java.util.Stack;
 import java.util.logging.Level;
 
-import Network.Session;
 import TileMap.TileMap;
-import entity.Entity;
-import entity.Spawner;
+import dt.entity.Entity;
+import dt.entity.Spawner;
+import dt.network.Session;
 
 public class World {
 	public Map<Integer, Entity> entities = new HashMap<Integer, Entity>();

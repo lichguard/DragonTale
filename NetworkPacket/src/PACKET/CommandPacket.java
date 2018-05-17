@@ -7,7 +7,7 @@ public class CommandPacket implements Serializable{
 
 	private static final long serialVersionUID = 2L;
 	
-	private static final String[] COMMANDS_STRING = {"SPAWN","DESPAWN","SPEECH","REQUEST_HANDLE","HANDLE","REQUEST_UDP_PORT","UDP_PORT","ADD_SESSION","REMOVE_SESSION","REQUEST_SPAWN","HAND_SHAKE","REQUEST_HAND_SHAKE","MELEE_ATTACK"};
+	private static final String[] COMMANDS_STRING = {"SPAWN","DESPAWN","SPEECH","REQUEST_HANDLE","HANDLE","REQUEST_UDP_PORT","UDP_PORT","ADD_SESSION","REMOVE_SESSION","REQUEST_SPAWN","HAND_SHAKE","REQUEST_HAND_SHAKE","MELEE_ATTACK","PING_REQUEST","PING_RESPONSE"};
 
 	public static final int SPAWN =0;
 	public static final int DESPAWN =1;
@@ -23,6 +23,8 @@ public class CommandPacket implements Serializable{
 	public static final int REQUEST_HAND_SHAKE = 11;
 	public static final int MELEE_ATTACK = 12;
 	
+	public static final int PING_REQUEST = 13;
+	public static final int PING_RESPONSE = 14;
 	public UUID session_id = null;
 	public int packet_code = 0;
 	public Object data = null;

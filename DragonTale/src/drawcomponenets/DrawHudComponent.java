@@ -5,8 +5,8 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.util.Iterator;
 
-import Network.Session;
-import entity.Entity;
+import dt.entity.Entity;
+import dt.network.Session;
 import main.Gameplay;
 import main.World;
 
