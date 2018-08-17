@@ -21,13 +21,12 @@ public class WorkerRunnableTCP implements Runnable {
 	protected String password;
 	protected ObjectInputStream objectInput = null;
 	protected ObjectOutputStream objectOutput = null;
-
 	public WorkerRunnableTCP(Session session) {
 		this.session = session;
 	}
 
-	public boolean init() {
-		// connect_to_mysql();
+	public void start() throws Exception {
+		
 		try {
 			outStream = session.clientSocket.getOutputStream();
 			inputStream = session.clientSocket.getInputStream();
@@ -39,60 +38,59 @@ public class WorkerRunnableTCP implements Runnable {
 			if (packet.packet_code == CommandPacket.HAND_SHAKE) {
 				String[] userdata = ((String) packet.data).split(",", 2);
 
-				if (userdata[0].equals("admin") && userdata[1].equals("admin")) {
-					this.session.AccountID = 0;
-					return true;
+				this.session.AccountID = 0;
+				if (!userdata[0].equals("admin") && userdata[1].equals("admin")) {
+					IDB db = MySQLDB.getInstance();
+					this.session.AccountID =  db.GetUserfromDB(userdata[0], userdata[1]);
+					if (this.session.AccountID == -1) {
+						session.SendCommand(new CommandPacket(CommandPacket.HAND_SHAKE, "refused"));
+						throw new Exception("Invalid account!");
+					}
 				}
 				
-				IDB db = MySQLDB.getInstance();
-				this.session.AccountID =  db.GetUserfromDB(userdata[0], userdata[1]);
-
-				return (this.session.AccountID != -1);
-			} else {
+				session.SendCommand(new CommandPacket(CommandPacket.HAND_SHAKE, "accepted"));
+				session.SendCommand(new CommandPacket(CommandPacket.UDP_PORT,session.udp_port));
 				
-				LOGGER.log(Level.WARNING,"Expected HAND_SHAKE packet!",this);
-				return false;
+				Server.getInstance().WorkerRunnable.execute(this);
+			} else {
+				throw new Exception("Expected HAND_SHAKE packet!");
 			}
-
 		} catch (IOException e) {
-			e.printStackTrace();
+			throw e;
 		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return false;
+			throw e;
+		}	
 	}
 
 	public void run() {
 		try {
-			while (session.connected) {
+			while (session.clientSocket != null && !session.clientSocket.isClosed()) {
 				CommandPacket packet;
 				packet = (CommandPacket) objectInput.readObject();
 				packet.session_id = session.id;
-				LOGGER.log(Level.INFO, "Reveiving command: " + packet.getCommandName(), this);
-				synchronized (session.server.commandsPackets) {
-					session.server.commandsPackets.add(packet);
-				}
+				LOGGER.log(Level.INFO, " IN from " + session.pedhandle  + ", data: " + packet.toString(), this);
+				
+				Server.getInstance().commandsPackets.add(packet);
 			}
 
 		} catch (EOFException e) {
-		} catch (ClassNotFoundException | IOException e) {
-			if (session.connected) {
-				e.printStackTrace();
-				LOGGER.log(Level.SEVERE, "An error has occured with client..", this);
+		} 
+		catch (ClassNotFoundException | IOException e) {
+			if (session.clientSocket != null && !session.clientSocket.isClosed()) {
+				//LOGGER.log(Level.SEVERE, "An error has occured with client---- PRINTING STACK TRACE:", this);
+				//e.printStackTrace();
 			}
 		}
-
-		session.server.removesession(session.id);
+		Server.getInstance().removeSession(session.id);
 	}
 
 	public void sendCommand(CommandPacket packet) {
-		LOGGER.log(Level.INFO, "Sending command: " +  packet.getCommandName(), this);
+		LOGGER.log(Level.INFO, "OUT to " + session.pedhandle + packet.toString(), this);
 		try {
 			objectOutput.writeObject(packet);
 		} catch (IOException e) {
 			e.printStackTrace();
-			session.server.removesession(session.id);
+			Server.getInstance().removeSession(session.id);
 		}
 	}
 

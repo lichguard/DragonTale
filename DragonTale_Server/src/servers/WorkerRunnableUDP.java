@@ -18,6 +18,7 @@ import main.LOGGER;
 public class WorkerRunnableUDP implements Runnable {
 
 	protected Session session = null;
+	protected Thread runningThread = null;
 	protected InputStream inputStream = null;
 	protected ObjectInputStream objectInput = null;
 	protected DatagramSocket socket = null;
@@ -26,12 +27,13 @@ public class WorkerRunnableUDP implements Runnable {
 	protected byte[] outbuf = null;
 	protected byte[] inbuf = null;
 	protected long last_packet_received_time = 0;
+	protected int port = 0;
 
 	public WorkerRunnableUDP(Session session) {
 		this.session = session;
 	}
 
-	public boolean init() {
+	public void start() throws SocketException {
 		outbuf = new byte[session.packet_size];
 		inbuf = new byte[session.packet_size];
 		outpacket = new DatagramPacket(outbuf, outbuf.length, session.clientSocket.getInetAddress(),
@@ -40,61 +42,51 @@ public class WorkerRunnableUDP implements Runnable {
 		try {
 			socket = new DatagramSocket(session.clientSocket.getPort() + session.udp_port);
 		} catch (SocketException e) {
-			e.printStackTrace();
-			return false;
+			throw e;
 		}
-		return true;
+		
+		Server.getInstance().WorkerRunnable.execute(this);
 	}
 
 	public void run() {
 		try {
-			while (session.connected) {
+			while (session.clientSocket != null && !session.clientSocket.isClosed()) {
 				socket.receive(inpacket);
-				dispatchPacket();
+				ByteArrayInputStream in = new ByteArrayInputStream(inpacket.getData());
+				ObjectInputStream is = new ObjectInputStream(in);
+				WorldPacket packet = (WorldPacket) is.readObject();
+				is.close();
+				in.close();
+				Server.getInstance().worldPackets.add(packet);
 			}
-		} catch (IOException e) {
-			if (session.connected) {
+		} catch (Exception e) {
+			if (session.clientSocket != null && !session.clientSocket.isClosed()) {
+				LOGGER.log(Level.SEVERE, "An error has occured with client---- PRINTING STACK TRACE:", this);
 				e.printStackTrace();
-				LOGGER.log(Level.SEVERE, "An error has occured with client..", this);
 			}
 		}
-		session.server.removesession(session.id);
+		Server.getInstance().removeSession(session.id);
 	}
 
-	public void dispatchPacket() {
-		ByteArrayInputStream in = new ByteArrayInputStream(inpacket.getData());
-		ObjectInputStream is;
-		try {
-			is = new ObjectInputStream(in);
-			WorldPacket packet = (WorldPacket) is.readObject();
-			//if (packet.timeframe > last_packet_received_time) {
-				synchronized (session.server.worldPackets) {
-					session.server.worldPackets.add(packet);
-				}
-			//	last_packet_received_time = packet.timeframe;
-			//}
-		} catch (ClassNotFoundException | IOException e) {
-			if (session.connected) {
-				e.printStackTrace();
-				session.disconnect();
-				LOGGER.log(Level.SEVERE, "An error has occured with client..", this);
-			}
-		}
-
-	}
 
 	public void sendWorldPacket(WorldPacket packet) {
-		
-		ByteArrayOutputStream bStream = new ByteArrayOutputStream();
 		try {
+			ByteArrayOutputStream bStream = new ByteArrayOutputStream();
 			ObjectOutput oo = new ObjectOutputStream(bStream);
+			bStream = new ByteArrayOutputStream();
+			oo = new ObjectOutputStream(bStream);
 			oo.writeObject(packet);
 			outpacket.setData(bStream.toByteArray());
+			bStream.close();
+			oo.close();
 			socket.send(outpacket);
 		} catch (IOException e) {
 			e.printStackTrace();
-			session.server.removesession(session.id);
+			Server.getInstance().removeSession(session.id);
 		}
+		
+		
+
 	}
 
 	public void disconnect() {

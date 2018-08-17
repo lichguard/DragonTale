@@ -12,7 +12,7 @@ import PACKET.WorldPacket;
 import TileMap.TileMap;
 import main.LOGGER;
 import servers.Session;
-import servers.LoginServer;
+import servers.Server;
 
 public class Gameplay implements Runnable {
 
@@ -29,7 +29,6 @@ public class Gameplay implements Runnable {
 	private long targetTime = 1000 / target_FPS;
 	public World world;
 	public TileMap tileMap;
-	public LoginServer server;
 	public long lastbroadcast = 0;
 
 	public Gameplay() {
@@ -42,10 +41,10 @@ public class Gameplay implements Runnable {
 		tileMap.loadMap("/Maps/level1-1.map");
 		tileMap.setPosition(0, 0);
 		tileMap.setTween(0.07);
-		server = new LoginServer(9000);
+		Server.getInstance().start();
 		world = new World(tileMap);
-		(new Thread(server)).start();
 
+		
 		Point[] points = new Point[] { new Point(353, 140) };
 
 		for (Point p : points) {
@@ -82,14 +81,14 @@ public class Gameplay implements Runnable {
 			}
 
 		}
-		server.stop();
+		Server.getInstance().shutdown();
 
 	}
 
 	public void update() {
 		// updates world
 		// disptach commands
-		synchronized (server.commandsPackets) {
+		Server server = Server.getInstance();
 			while (!server.commandsPackets.isEmpty()) {
 				CommandPacket packet = server.commandsPackets.poll();
 				switch (packet.packet_code) {
@@ -128,16 +127,16 @@ public class Gameplay implements Runnable {
 					break;
 				}
 			}
-		}
+		
 
 		// dispatch worldpackets
-		synchronized (server.worldPackets) {
+
 			while (!server.worldPackets.isEmpty()) {
 				WorldPacket packet = server.worldPackets.pop();
 				if (world.entities.containsKey(packet.handle)) {
 					world.entities.get(packet.handle).updatePacket(packet, world);
 				}
-			}
+			
 		}
 
 		// send spawns

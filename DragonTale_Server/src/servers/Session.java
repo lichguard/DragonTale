@@ -3,7 +3,6 @@ package servers;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.UUID;
-import java.util.concurrent.ExecutorService;
 import java.util.logging.Level;
 
 import PACKET.CommandPacket;
@@ -12,79 +11,55 @@ import main.LOGGER;
 
 public class Session {
 	public UUID id = null;
+	public Socket clientSocket = null;
+	
 	protected int packet_size = 500;
 	public String accountName = null;
-	public LoginServer server = null;
 	public boolean connected = true;
 	public int AccountID = -1;
 	public int pedhandle = -1;
-	public Socket clientSocket = null;
+	
 	public WorkerRunnableTCP tcp = null;
 	public WorkerRunnableUDP udp = null;
 	public int udp_port = -1;
 	public static int udp_port_inc = 1;
 
-	public Session(Socket clientSocket, ExecutorService WorkerRunnable, LoginServer server) {
-		this.server = server;
+	public Session(Socket clientSocket) throws Exception {
 		this.clientSocket = clientSocket;
 		id = UUID.randomUUID();
 		this.udp_port = udp_port_inc++;
-		if (!startTCP(WorkerRunnable)) {
-			this.SendCommand(new CommandPacket(CommandPacket.HAND_SHAKE, "refused"));
-			server.removeSession(id);
-			return;
-		}
-		this.SendCommand(new CommandPacket(CommandPacket.HAND_SHAKE, "accepted"));
-		startUDP(WorkerRunnable);
-		SendCommand(new CommandPacket(CommandPacket.UDP_PORT, udp_port));
 	}
 
-	public void swithctoserver(LoginServer server)
-	{
-		this.server = server;
-	}
 	public void setpedhandle(int pedhandle) {
 		this.pedhandle = pedhandle;
 	}
 
-	public boolean startTCP(ExecutorService WorkerRunnable) {
+	public void establishConnection() throws Exception {
 		tcp = new WorkerRunnableTCP(this);
-		if (!tcp.init())
-			return false;
-		WorkerRunnable.execute(tcp);
-		LOGGER.log(Level.INFO, "TCP running", this);
-		return true;
-	}
-
-	public void handshake() {
-		SendCommand(new CommandPacket(CommandPacket.UDP_PORT, udp_port));
-	}
-
-	public void startUDP(ExecutorService WorkerRunnable) {
+		tcp.start();
 		udp = new WorkerRunnableUDP(this);
-		udp.init();
-		WorkerRunnable.execute(udp);
-		LOGGER.log(Level.INFO, "UDP running", this);
+		udp.start();
 	}
-
+	
 	public void disconnect() {
-		if (!connected) {
-			return;
-		}
 		LOGGER.log(Level.INFO, "Client " + id + " has disconnected...", this);
-		connected = false;
+		Server.getInstance().commandsPackets.add(new CommandPacket(CommandPacket.DESPAWN, this.pedhandle));
+		
+		try {
+			if (clientSocket != null && !clientSocket.isClosed()) {
+				clientSocket.close();
+				clientSocket = null;
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
 		if (udp != null)
 			udp.disconnect();
 
 		if (tcp != null)
 			tcp.disconnect();
 
-		try {
-			if (clientSocket != null)
-				clientSocket.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 	}
 
 	public void SendWorldPacket(WorldPacket packet) {
