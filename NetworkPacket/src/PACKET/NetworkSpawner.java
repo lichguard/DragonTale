@@ -21,4 +21,9 @@ public class NetworkSpawner implements Serializable {
 		this.handle = handle;
 	}
 	
+	@Override
+	public String toString()
+	{
+		return "NetworkSpawner type:" + type + " handle: " + handle;
+	}
 }

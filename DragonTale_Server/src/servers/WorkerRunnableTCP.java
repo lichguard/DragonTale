@@ -68,7 +68,7 @@ public class WorkerRunnableTCP implements Runnable {
 				CommandPacket packet;
 				packet = (CommandPacket) objectInput.readObject();
 				packet.session_id = session.id;
-				LOGGER.log(Level.INFO, " IN from " + session.pedhandle  + ", data: " + packet.toString(), this);
+				LOGGER.log(Level.INFO, " IN-(" + session.pedhandle  + ") [" + packet.toString() + "]", this);
 				
 				Server.getInstance().commandsPackets.add(packet);
 			}
@@ -85,7 +85,7 @@ public class WorkerRunnableTCP implements Runnable {
 	}
 
 	public void sendCommand(CommandPacket packet) {
-		LOGGER.log(Level.INFO, "OUT to " + session.pedhandle + packet.toString(), this);
+		LOGGER.log(Level.INFO, "OUT-(" + session.pedhandle + ") [" + packet.toString() + "]", this);
 		try {
 			objectOutput.writeObject(packet);
 		} catch (IOException e) {

@@ -39,4 +39,10 @@ public class CommandPacket implements Serializable{
 	{
 		return COMMANDS_STRING[packet_code];
 	}
+	
+	@Override
+	public String toString()
+	{
+		return getCommandName() + " data: " + data.toString();
+	}
 }

@@ -12,4 +12,10 @@ public class SpeechPacket implements Serializable {
 		this.handle = handle;
 		this.text = text;
 	}
+	
+	@Override
+	public String toString()
+	{
+		return "SpeechPacket handle:" + handle + " txt: " + text;
+	}
 }

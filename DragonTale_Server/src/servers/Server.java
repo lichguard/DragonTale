@@ -31,6 +31,7 @@ public class Server implements Runnable {
 	public ConcurrentLinkedDeque<WorldPacket> worldPackets = new ConcurrentLinkedDeque<WorldPacket>();
 	private static volatile Object syncroot = new Object();
 	private static Server instance = null;
+	
 	////////////MANAGING SERVER///////////////////////
 	public static Server getInstance() {
 		if (instance == null) {
@@ -67,12 +68,8 @@ public class Server implements Runnable {
 			}
 		}
 		
-		//closes the server thread
-		if (this.runningThread != null && this.runningThread != Thread.currentThread()) {
-			if (this.runningThread.isAlive()) {
-				this.runningThread.interrupt();
-			}
-			//TODO: wait for thread?
+		while (sessions.size() > 0) {
+			this.removeSession(sessions.entrySet().iterator().next().getKey());
 		}
 		
 		//closed the running workers
@@ -80,10 +77,14 @@ public class Server implements Runnable {
 			this.WorkerRunnable.shutdown();
 		}
 		
-		while (sessions.size() > 0) {
-			this.removeSession(sessions.entrySet().iterator().next().getKey());
+		//closes the server thread
+		if (this.runningThread != null && this.runningThread != Thread.currentThread()) {
+			if (this.runningThread.isAlive()) {
+				this.runningThread.interrupt();
+			}
 		}
 		
+
 		LOGGER.log(Level.INFO, "Server Stopped", this);
 	}
 	
@@ -178,9 +179,7 @@ public class Server implements Runnable {
 
 	public void setsessionpedhandle(UUID sessionid, int pedhandle)
 	{
-		synchronized (sessions) {
 			sessions.get(sessionid).setpedhandle(pedhandle);
-		}
 	}
 
 }
