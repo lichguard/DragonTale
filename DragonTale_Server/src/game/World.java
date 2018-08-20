@@ -4,21 +4,34 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
+import java.util.concurrent.ConcurrentLinkedDeque;
 
 import Entity.ENTITY;
 
 import Entity.Spawner;
 import PACKET.NetworkSpawner;
 import TileMap.TileMap;
+import network.WorldSession;
 
 public class World {
 	public static final int MAX_ENTITIES = 100;
 
+	Map<Integer, WorldSession> SessionMap;
+	ConcurrentLinkedDeque<WorldSession> m_sessionAddQueue;
+	WorldSession FindSession(int id) {return null;};
+	void AddSession(WorldSession s) {};
+	boolean RemoveSession(int id) {return false;};
+	
 	public int handle_generator = 1;
 	public Map<Integer, ENTITY> entities = new HashMap<Integer, ENTITY>();
 	public Stack<Integer> entities_to_remove = new Stack<Integer>();
 	public Stack<Spawner> entities_to_spawn = new Stack<Spawner>();
-
+	private static World instance = null;
+	
+	public World getInstance() {
+		return instance;
+	}
+	
 	public TileMap tm;
 
 	public World(TileMap tm) {

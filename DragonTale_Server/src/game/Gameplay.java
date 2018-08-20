@@ -11,8 +11,8 @@ import PACKET.NetworkSpawner;
 import PACKET.WorldPacket;
 import TileMap.TileMap;
 import main.LOGGER;
-import servers.Session;
-import servers.Server;
+import network.Listener;
+import network.WorldSession;
 
 public class Gameplay implements Runnable {
 
@@ -41,7 +41,7 @@ public class Gameplay implements Runnable {
 		tileMap.loadMap("/Maps/level1-1.map");
 		tileMap.setPosition(0, 0);
 		tileMap.setTween(0.07);
-		Server.getInstance().start();
+		Listener.getInstance().start();
 		world = new World(tileMap);
 
 		
@@ -81,14 +81,14 @@ public class Gameplay implements Runnable {
 			}
 
 		}
-		Server.getInstance().shutdown();
+		Listener.getInstance().shutdown();
 
 	}
 
 	public void update() {
 		// updates world
 		// disptach commands
-		Server server = Server.getInstance();
+		Listener server = Listener.getInstance();
 			while (!server.commandsPackets.isEmpty()) {
 				CommandPacket packet = server.commandsPackets.poll();
 				switch (packet.packet_code) {
@@ -152,7 +152,7 @@ public class Gameplay implements Runnable {
 		if (System.currentTimeMillis() - lastbroadcast > 100) {
 			synchronized (server.sessions) {
 
-				for (Session s : server.sessions.values()) {
+				for (WorldSession s : server.sessions.values()) {
 					ArrayList<ENTITY> entities_close = world.getNearEntities(s.pedhandle,
 							Gameplay.WIDTH / 2 + Gameplay.HEIGHT / 2, 0, 360);
 					for (ENTITY near : entities_close) {

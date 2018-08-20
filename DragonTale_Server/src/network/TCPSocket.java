@@ -1,4 +1,4 @@
-package servers;
+package network;
 
 import java.io.InputStream;
 import java.io.ObjectInputStream;
@@ -13,23 +13,24 @@ import database.MySQLDB;
 import database.IDB;
 import main.LOGGER;
 
-public class WorkerRunnableTCP implements Runnable {
-	protected Session session;
+public class TCPSocket implements Runnable {
+	protected WorldSocket worldsocket = null;
 	protected InputStream inputStream = null;
 	protected OutputStream outStream = null;
 	protected String username;
 	protected String password;
 	protected ObjectInputStream objectInput = null;
 	protected ObjectOutputStream objectOutput = null;
-	public WorkerRunnableTCP(Session session) {
-		this.session = session;
+	
+	public TCPSocket(WorldSocket worldsocket) {
+		this.worldsocket = worldsocket;
 	}
 
 	public void start() throws Exception {
 		
 		try {
-			outStream = session.clientSocket.getOutputStream();
-			inputStream = session.clientSocket.getInputStream();
+			outStream = worldsocket.clientSocket.getOutputStream();
+			inputStream = worldsocket.clientSocket.getInputStream();
 
 			objectOutput = new ObjectOutputStream(outStream);
 			objectInput = new ObjectInputStream(inputStream);
@@ -38,20 +39,20 @@ public class WorkerRunnableTCP implements Runnable {
 			if (packet.packet_code == CommandPacket.HAND_SHAKE) {
 				String[] userdata = ((String) packet.data).split(",", 2);
 
-				this.session.AccountID = 0;
+				this.worldsocket.AccountID = 0;
 				if (!userdata[0].equals("admin") && userdata[1].equals("admin")) {
 					IDB db = MySQLDB.getInstance();
-					this.session.AccountID =  db.GetUserfromDB(userdata[0], userdata[1]);
-					if (this.session.AccountID == -1) {
-						session.SendCommand(new CommandPacket(CommandPacket.HAND_SHAKE, "refused"));
+					this.worldsocket.AccountID =  db.GetUserfromDB(userdata[0], userdata[1]);
+					if (this.worldsocket.AccountID == -1) {
+						sendCommand(new CommandPacket(CommandPacket.HAND_SHAKE, "refused"));
 						throw new Exception("Invalid account!");
 					}
 				}
 				
-				session.SendCommand(new CommandPacket(CommandPacket.HAND_SHAKE, "accepted"));
-				session.SendCommand(new CommandPacket(CommandPacket.UDP_PORT,session.udp_port));
+				sendCommand(new CommandPacket(CommandPacket.HAND_SHAKE, "accepted"));
+				sendCommand(new CommandPacket(CommandPacket.UDP_PORT,worldsocket.udp_port));
 				
-				Server.getInstance().WorkerRunnable.execute(this);
+				Listener.getInstance().WorkerRunnable.execute(this);
 			} else {
 				throw new Exception("Expected HAND_SHAKE packet!");
 			}
@@ -64,33 +65,34 @@ public class WorkerRunnableTCP implements Runnable {
 
 	public void run() {
 		try {
-			while (session.clientSocket != null && !session.clientSocket.isClosed()) {
+			while (worldsocket.clientSocket != null && !worldsocket.clientSocket.isClosed()) {
 				CommandPacket packet;
 				packet = (CommandPacket) objectInput.readObject();
-				packet.session_id = session.id;
-				LOGGER.log(Level.INFO, " IN-(" + session.pedhandle  + ") [" + packet.toString() + "]", this);
+				packet.session_id = worldsocket.id;
+				LOGGER.log(Level.INFO, " IN-(" + worldsocket.pedhandle  + ") [" + packet.toString() + "]", this);
 				
-				Server.getInstance().commandsPackets.add(packet);
+				worldsocket.ProcessIncomingData(packet);
+				//Listener.getInstance().commandsPackets.add(packet);
 			}
 
 		} catch (EOFException e) {
 		} 
 		catch (ClassNotFoundException | IOException e) {
-			if (session.clientSocket != null && !session.clientSocket.isClosed()) {
+			if (worldsocket.clientSocket != null && !worldsocket.clientSocket.isClosed()) {
 				//LOGGER.log(Level.SEVERE, "An error has occured with client---- PRINTING STACK TRACE:", this);
 				//e.printStackTrace();
 			}
 		}
-		Server.getInstance().removeSession(session.id);
+		Listener.getInstance().removeSession(worldsocket.id);
 	}
 
 	public void sendCommand(CommandPacket packet) {
-		LOGGER.log(Level.INFO, "OUT-(" + session.pedhandle + ") [" + packet.toString() + "]", this);
+		LOGGER.log(Level.INFO, "OUT-(" + worldsocket.pedhandle + ") [" + packet.toString() + "]", this);
 		try {
 			objectOutput.writeObject(packet);
 		} catch (IOException e) {
 			e.printStackTrace();
-			Server.getInstance().removeSession(session.id);
+			Listener.getInstance().removeSession(worldsocket.id);
 		}
 	}
 

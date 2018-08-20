@@ -1,4 +1,4 @@
-package servers;
+package network;
 import java.util.Map;
 import java.util.Queue;
 import java.util.UUID;
@@ -17,34 +17,34 @@ import PACKET.CommandPacket;
 import PACKET.WorldPacket;
 import main.LOGGER;
 
-public class Server implements Runnable {
+public class Listener implements Runnable {
 
 	private static final int MAX_CONNECTIONS = 10;
 	protected int serverPort = 9000;
 	protected ServerSocket serverSocket = null;
 	protected Thread runningThread = null;
 	protected ExecutorService WorkerRunnable = Executors.newFixedThreadPool(3 * MAX_CONNECTIONS);
-	public ConcurrentHashMap<UUID, Session> sessions = new ConcurrentHashMap<UUID, Session>(MAX_CONNECTIONS);
-	public ConcurrentHashMap<UUID, Session> newSessions = new ConcurrentHashMap<UUID, Session>(MAX_CONNECTIONS);
+	public ConcurrentHashMap<UUID, WorldSession> sessions = new ConcurrentHashMap<UUID, WorldSession>(MAX_CONNECTIONS);
+	public ConcurrentHashMap<UUID, WorldSession> newSessions = new ConcurrentHashMap<UUID, WorldSession>(MAX_CONNECTIONS);
 	
 	public Queue<CommandPacket> commandsPackets = new ConcurrentLinkedQueue<CommandPacket>();
 	public ConcurrentLinkedDeque<WorldPacket> worldPackets = new ConcurrentLinkedDeque<WorldPacket>();
 	private static volatile Object syncroot = new Object();
-	private static Server instance = null;
+	private static Listener instance = null;
 	
 	////////////MANAGING SERVER///////////////////////
-	public static Server getInstance() {
+	public static Listener getInstance() {
 		if (instance == null) {
 			synchronized (syncroot) {
 				if (instance == null) {
-					instance = new Server(9000);
+					instance = new Listener(9000);
 				}
 			}
 		}
 		return instance;
 	}
 	
-	private Server(int port) {
+	private Listener(int port) {
 		this.serverPort = port;
 	}
 
@@ -123,9 +123,9 @@ public class Server implements Runnable {
 	////////////   UTILITY///////////////////////
 	public void addSession(Socket clientSocket)
 	{
-		Session session =  null;
+		WorldSession session =  null;
 		try {
-			session = new Session(clientSocket);
+			session = new WorldSession(clientSocket);
 			synchronized (syncroot) {
 				newSessions.put(session.id, session);
 				session.establishConnection();
@@ -133,14 +133,15 @@ public class Server implements Runnable {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			removeSession(session.id);
+			session.disconnect();
+			//removeSession(session.id);
 		}
 	}
 	
 	public void removeSession(UUID sessionid)
 	{
-		Session deletedSession = null;
-		Session deletednewSession = null;
+		WorldSession deletedSession = null;
+		WorldSession deletednewSession = null;
 		synchronized (syncroot) {
 			deletedSession = sessions.remove(sessionid);
 			deletednewSession = newSessions.remove(sessionid);
@@ -163,7 +164,7 @@ public class Server implements Runnable {
 	
 	public void BroadcastCommand(CommandPacket packet) {
 		synchronized (syncroot) {
-			for (Map.Entry<UUID, Session> session : sessions.entrySet()) {
+			for (Map.Entry<UUID, WorldSession> session : sessions.entrySet()) {
 				SendCommand(session.getKey(), packet);
 			}
 		}
@@ -171,7 +172,7 @@ public class Server implements Runnable {
 	
 	public void BroadWorldPacket(WorldPacket packet) {
 		synchronized (syncroot) {
-			for (Map.Entry<UUID, Session> session : sessions.entrySet()) {
+			for (Map.Entry<UUID, WorldSession> session : sessions.entrySet()) {
 				SendWorldPacket(session.getKey(), packet);
 			}
 		}

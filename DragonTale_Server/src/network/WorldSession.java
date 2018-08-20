@@ -1,4 +1,4 @@
-package servers;
+package network;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -9,7 +9,12 @@ import PACKET.CommandPacket;
 import PACKET.WorldPacket;
 import main.LOGGER;
 
-public class Session {
+public class WorldSession {
+	
+	//std::deque<WorldPacket *> m_recvQueue queue;
+	//
+	public WorldSocket worldsocket = null;
+	
 	public UUID id = null;
 	public Socket clientSocket = null;
 	
@@ -19,12 +24,17 @@ public class Session {
 	public int AccountID = -1;
 	public int pedhandle = -1;
 	
-	public WorkerRunnableTCP tcp = null;
-	public WorkerRunnableUDP udp = null;
+	public TCPSocket tcp = null;
+	public UDPSocket udp = null;
 	public int udp_port = -1;
 	public static int udp_port_inc = 1;
 
-	public Session(Socket clientSocket) throws Exception {
+	/*
+	 * HANDLERS FOR EVERYTHING
+	 */
+	
+	
+	public WorldSession(Socket clientSocket) throws Exception {
 		this.clientSocket = clientSocket;
 		id = UUID.randomUUID();
 		this.udp_port = udp_port_inc++;
@@ -35,15 +45,15 @@ public class Session {
 	}
 
 	public void establishConnection() throws Exception {
-		tcp = new WorkerRunnableTCP(this);
-		tcp.start();
-		udp = new WorkerRunnableUDP(this);
-		udp.start();
+		//tcp = new TCPSocket(this);
+		//tcp.start();
+		//udp = new UDPSocket(this);
+		//udp.start();
 	}
 	
 	public void disconnect() {
 		LOGGER.log(Level.INFO, "Client " + id + " has disconnected...", this);
-		Server.getInstance().commandsPackets.add(new CommandPacket(CommandPacket.DESPAWN, this.pedhandle));
+		Listener.getInstance().commandsPackets.add(new CommandPacket(CommandPacket.DESPAWN, this.pedhandle));
 		
 		try {
 			if (clientSocket != null && !clientSocket.isClosed()) {
@@ -71,4 +81,5 @@ public class Session {
 		if (tcp != null && packet != null && connected)
 			tcp.sendCommand(packet);
 	}
+
 }

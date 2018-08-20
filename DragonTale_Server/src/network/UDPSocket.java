@@ -1,4 +1,4 @@
-package servers;
+package network;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -15,9 +15,10 @@ import java.util.logging.Level;
 import PACKET.WorldPacket;
 import main.LOGGER;
 
-public class WorkerRunnableUDP implements Runnable {
+public class UDPSocket implements Runnable {
 
-	protected Session session = null;
+	protected WorldSocket worldsocket = null;
+	protected WorldSession session = null;
 	protected Thread runningThread = null;
 	protected InputStream inputStream = null;
 	protected ObjectInputStream objectInput = null;
@@ -29,7 +30,7 @@ public class WorkerRunnableUDP implements Runnable {
 	protected long last_packet_received_time = 0;
 	protected int port = 0;
 
-	public WorkerRunnableUDP(Session session) {
+	public UDPSocket(WorldSession session) {
 		this.session = session;
 	}
 
@@ -45,7 +46,7 @@ public class WorkerRunnableUDP implements Runnable {
 			throw e;
 		}
 		
-		Server.getInstance().WorkerRunnable.execute(this);
+		Listener.getInstance().WorkerRunnable.execute(this);
 	}
 
 	public void run() {
@@ -57,7 +58,7 @@ public class WorkerRunnableUDP implements Runnable {
 				WorldPacket packet = (WorldPacket) is.readObject();
 				is.close();
 				in.close();
-				Server.getInstance().worldPackets.add(packet);
+				worldsocket.ProcessIncomingData(packet);
 			}
 		} catch (Exception e) {
 			if (session.clientSocket != null && !session.clientSocket.isClosed()) {
@@ -65,7 +66,7 @@ public class WorkerRunnableUDP implements Runnable {
 				e.printStackTrace();
 			}
 		}
-		Server.getInstance().removeSession(session.id);
+		Listener.getInstance().removeSession(session.id);
 	}
 
 
@@ -82,7 +83,7 @@ public class WorkerRunnableUDP implements Runnable {
 			socket.send(outpacket);
 		} catch (IOException e) {
 			e.printStackTrace();
-			Server.getInstance().removeSession(session.id);
+			Listener.getInstance().removeSession(session.id);
 		}
 		
 		
