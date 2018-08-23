@@ -24,8 +24,8 @@ public class Listener implements Runnable {
 	protected ServerSocket serverSocket = null;
 	protected Thread runningThread = null;
 	protected ExecutorService WorkerRunnable = Executors.newFixedThreadPool(3 * MAX_CONNECTIONS);
-	public ConcurrentHashMap<UUID, WorldSession> sessions = new ConcurrentHashMap<UUID, WorldSession>(MAX_CONNECTIONS);
-	public ConcurrentHashMap<UUID, WorldSession> newSessions = new ConcurrentHashMap<UUID, WorldSession>(MAX_CONNECTIONS);
+	//public ConcurrentHashMap<UUID, WorldSession> sessions = new ConcurrentHashMap<UUID, WorldSession>(MAX_CONNECTIONS);
+	//public ConcurrentHashMap<UUID, WorldSession> newSessions = new ConcurrentHashMap<UUID, WorldSession>(MAX_CONNECTIONS);
 	
 	public Queue<CommandPacket> commandsPackets = new ConcurrentLinkedQueue<CommandPacket>();
 	public ConcurrentLinkedDeque<WorldPacket> worldPackets = new ConcurrentLinkedDeque<WorldPacket>();
@@ -98,7 +98,7 @@ public class Listener implements Runnable {
 			runningThread.interrupt();
 		}
 
-		while (serverSocket != null && !serverSocket.isClosed()) {
+		while (serverSocket != null && !serverSocket.isClosed() && !this.runningThread.isInterrupted()) {
 			LOGGER.log(Level.INFO, "Waiting for new client...", this);
 			Socket clientSocket = null;
 			try {

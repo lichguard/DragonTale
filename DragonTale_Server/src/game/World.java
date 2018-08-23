@@ -2,7 +2,9 @@ package game;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Stack;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
@@ -16,8 +18,12 @@ import network.WorldSession;
 public class World {
 	public static final int MAX_ENTITIES = 100;
 
+	//session in world
 	Map<Integer, WorldSession> SessionMap;
+	
+	//session waiting to be added to world
 	ConcurrentLinkedDeque<WorldSession> m_sessionAddQueue;
+
 	WorldSession FindSession(int id) {return null;};
 	void AddSession(WorldSession s) {};
 	boolean RemoveSession(int id) {return false;};
@@ -67,6 +73,23 @@ public class World {
 		entities_to_remove.push(handle);
 	}
 
+	public void UpdateSession() {
+		///- Add new sessions
+		synchronized (m_sessionAddQueue) {
+			for (WorldSession s : m_sessionAddQueue) {
+				SessionMap.put(s.id, s);
+			}
+			m_sessionAddQueue.clear();
+		}
+		
+		for (Iterator<WorldSession> iterator = SessionMap.values().iterator(); iterator.hasNext();) {
+			WorldSession s = (WorldSession) iterator.next();
+			if(!s.Update())
+				iterator.remove();
+		}
+		
+	}
+	
 	public void update() {
 
 		// removes entities that are destined to be removed

@@ -5,7 +5,7 @@ import java.util.UUID;
 
 public class CommandPacket implements Serializable{
 
-	private static final long serialVersionUID = 2L;
+	private static final long serialVersionUID = 1L;
 	
 	private static final String[] COMMANDS_STRING = {"SPAWN","DESPAWN","SPEECH","REQUEST_HANDLE","HANDLE","REQUEST_UDP_PORT","UDP_PORT","ADD_SESSION","REMOVE_SESSION","REQUEST_SPAWN","HAND_SHAKE","REQUEST_HAND_SHAKE","MELEE_ATTACK","PING_REQUEST","PING_RESPONSE"};
 

@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 public class NetworkSpawner implements Serializable {
 
-	private static final long serialVersionUID = 3L;
+	private static final long serialVersionUID = 1L;
 	public int type;
 	public float x;
 	public float y;
