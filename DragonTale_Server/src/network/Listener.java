@@ -1,20 +1,15 @@
 package network;
-import java.util.Map;
-import java.util.Queue;
 import java.util.UUID;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
 import java.io.IOException;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentLinkedDeque;
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.logging.Level;
 
-import PACKET.CommandPacket;
-import PACKET.WorldPacket;
 import main.LOGGER;
 
 public class Listener implements Runnable {
@@ -23,12 +18,9 @@ public class Listener implements Runnable {
 	protected int serverPort = 9000;
 	protected ServerSocket serverSocket = null;
 	protected Thread runningThread = null;
-	protected ExecutorService WorkerRunnable = Executors.newFixedThreadPool(3 * MAX_CONNECTIONS);
-	//public ConcurrentHashMap<UUID, WorldSession> sessions = new ConcurrentHashMap<UUID, WorldSession>(MAX_CONNECTIONS);
-	//public ConcurrentHashMap<UUID, WorldSession> newSessions = new ConcurrentHashMap<UUID, WorldSession>(MAX_CONNECTIONS);
+	protected ExecutorService WorkerRunnable = null;
+	protected ConcurrentMap<UUID, WorldSocket> worldsockets = null;
 	
-	public Queue<CommandPacket> commandsPackets = new ConcurrentLinkedQueue<CommandPacket>();
-	public ConcurrentLinkedDeque<WorldPacket> worldPackets = new ConcurrentLinkedDeque<WorldPacket>();
 	private static volatile Object syncroot = new Object();
 	private static Listener instance = null;
 	
@@ -46,6 +38,8 @@ public class Listener implements Runnable {
 	
 	private Listener(int port) {
 		this.serverPort = port;
+		WorkerRunnable = Executors.newFixedThreadPool(3 * MAX_CONNECTIONS);
+		worldsockets = new ConcurrentHashMap<UUID, WorldSocket>();
 	}
 
 	public void start() {
@@ -57,8 +51,13 @@ public class Listener implements Runnable {
 		runningThread.start();
 	}
 	
+	public void requestShutDown() {
+		if (runningThread != null && runningThread.isAlive() && !runningThread.isInterrupted())
+			runningThread.interrupt();
+	}
+	
 	public void shutdown() {
-		
+
 		//closed the server socket
 		if (this.serverSocket != null && !this.serverSocket.isClosed()) {
 			try {
@@ -66,10 +65,6 @@ public class Listener implements Runnable {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-		}
-		
-		while (sessions.size() > 0) {
-			this.removeSession(sessions.entrySet().iterator().next().getKey());
 		}
 		
 		//closed the running workers
@@ -104,8 +99,16 @@ public class Listener implements Runnable {
 			try {
 				clientSocket = this.serverSocket.accept();
 				clientSocket.setReuseAddress(true);
-				addSession(clientSocket);
-
+				WorldSocket ws = new WorldSocket(clientSocket);
+				worldsockets.put(ws.id, ws);
+				try {
+					ws.start();
+				} catch (Exception e) {
+					ws.disconnect();
+					worldsockets.remove(ws.id);
+					LOGGER.log(Level.INFO, "removing the client!", this);
+					e.printStackTrace();
+				}
 			} catch (SocketException e) {
 				LOGGER.log(Level.INFO, "Closing server thread since the server socket has been closed!", this);
 				break;
@@ -119,68 +122,6 @@ public class Listener implements Runnable {
 		this.shutdown();
 	}
 
-	
-	////////////   UTILITY///////////////////////
-	public void addSession(Socket clientSocket)
-	{
-		WorldSession session =  null;
-		try {
-			session = new WorldSession(clientSocket);
-			synchronized (syncroot) {
-				newSessions.put(session.id, session);
-				session.establishConnection();
-				sessions.put(session.id, newSessions.remove(session.id));
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			session.disconnect();
-			//removeSession(session.id);
-		}
-	}
-	
-	public void removeSession(UUID sessionid)
-	{
-		WorldSession deletedSession = null;
-		WorldSession deletednewSession = null;
-		synchronized (syncroot) {
-			deletedSession = sessions.remove(sessionid);
-			deletednewSession = newSessions.remove(sessionid);
-		}
-		
-		if (deletedSession != null)
-			deletedSession.disconnect();
-		
-		if (deletednewSession != null)
-			deletednewSession.disconnect();
-	}
-	
-	public void SendCommand(UUID to, CommandPacket data) {
-		sessions.get(to).SendCommand(data);
-	}
 
-	public void SendWorldPacket(UUID to, WorldPacket packet) {
-		sessions.get(to).SendWorldPacket(packet);
-	}
-	
-	public void BroadcastCommand(CommandPacket packet) {
-		synchronized (syncroot) {
-			for (Map.Entry<UUID, WorldSession> session : sessions.entrySet()) {
-				SendCommand(session.getKey(), packet);
-			}
-		}
-	}
-	
-	public void BroadWorldPacket(WorldPacket packet) {
-		synchronized (syncroot) {
-			for (Map.Entry<UUID, WorldSession> session : sessions.entrySet()) {
-				SendWorldPacket(session.getKey(), packet);
-			}
-		}
-	}
-
-	public void setsessionpedhandle(UUID sessionid, int pedhandle)
-	{
-			sessions.get(sessionid).setpedhandle(pedhandle);
-	}
 
 }

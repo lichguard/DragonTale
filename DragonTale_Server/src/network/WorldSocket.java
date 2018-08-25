@@ -2,49 +2,43 @@ package network;
 
 import java.io.IOException;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.UUID;
-import java.util.logging.Level;
-
-import PACKET.CommandPacket;
+import PACKET.AuthorizationPacket;
 import PACKET.WorldPacket;
+import database.MySQLDB;
+import game.World;
 import main.LOGGER;
 
 public class WorldSocket {
-	public WorldSession m_session = null;
+
 	public UUID id = null;
 	public Socket clientSocket = null;
-
 	protected int packet_size = 500;
-	public String accountName = null;
-	public boolean connected = true;
-	public int AccountID = -1;
-	public int pedhandle = -1;
+
+	public WorldSession m_session = null;
 
 	public TCPSocket tcp = null;
 	public UDPSocket udp = null;
+
 	public int udp_port = -1;
 	public static int udp_port_inc = 1;
 
-	public WorldSocket(Socket clientSocket) throws Exception {
-		this.clientSocket = clientSocket;
+	public WorldSocket(Socket clientSocket) {
 		id = UUID.randomUUID();
-		this.udp_port = udp_port_inc++;
+		this.clientSocket = clientSocket;
+		udp_port = udp_port_inc++;
 	}
 
-	public void setpedhandle(int pedhandle) {
-		this.pedhandle = pedhandle;
-	}
-
-	public void establishConnection() throws Exception {
+	public void start() throws Exception {
 		tcp = new TCPSocket(this);
 		tcp.start();
-		// udp = new UDPSocket(this);
-		// udp.start();
 	}
 
 	public void disconnect() {
-		LOGGER.log(Level.INFO, "Client " + id + " has disconnected...", this);
-		Listener.getInstance().commandsPackets.add(new CommandPacket(CommandPacket.DESPAWN, this.pedhandle));
+		// LOGGER.log(Level.INFO, "Client " + id + " has disconnected...", this);
+		// Listener.getInstance().commandsPackets.add(new
+		// CommandPacket(CommandPacket.DESPAWN, this.pedhandle));
 
 		try {
 			if (clientSocket != null && !clientSocket.isClosed()) {
@@ -63,47 +57,48 @@ public class WorldSocket {
 
 	}
 
-	public void SendWorldPacket(WorldPacket packet) {
-		if (udp != null && packet != null && connected)
-			udp.sendWorldPacket(packet);
+	public boolean SendWorldPacket(WorldPacket packet) {
+		if (packet.packet_code == WorldPacket.MOVEMENT_DATA) {
+			if (udp != null && packet != null)
+				return udp.sendWorldPacket(packet);
+		} else {
+			LOGGER.info("SENDING DATA: " + packet.getCommandName(), this);
+			if (tcp != null && packet != null)
+				return tcp.sendPacket(packet);
+		}
+		return false;
 	}
 
-	public void SendCommand(CommandPacket packet) {
-		if (tcp != null && packet != null && connected)
-			tcp.sendCommand(packet);
-	}
-
-	public boolean ProcessIncomingData(CommandPacket pct) {
+	public boolean ProcessIncomingData(WorldPacket pct) {
 		try {
+			LOGGER.info("INC DATA: " + pct.getCommandName(), this);
+			
 			switch (pct.packet_code) {
-			case CommandPacket.HAND_SHAKE:
+			case WorldPacket.HAND_SHAKE:
 				if (m_session != null) {
-					// LOG.outError("WorldSocket::ProcessIncomingData: Player send CMSG_AUTH_SESSION
-					// again");
+					LOGGER.error("WorldSocket::ProcessIncomingData: Player send CommandPacket.HAND_SHAKE again", this);
 					return false;
 				}
+				if (!HandleAuthSession(pct)) {
+					SendWorldPacket(new WorldPacket(WorldPacket.HAND_SHAKE, "refused"));
+					return false;
+				}
+				return true;
 
-				return HandleAuthSession(pct);
-
-			case CommandPacket.PING_REQUEST:
+			case WorldPacket.PING_REQUEST:
 				return HandlePing(pct);
 
-			// case CMSG_KEEP_ALIVE:
-			// DEBUG_LOG("CMSG_KEEP_ALIVE ,size: " SIZEFMTD " ", pct->size());
+			case WorldPacket.REQUEST_UDP_PORT:
+				return HandleUDP(pct);
 
-			// return true;
-
-			default: {
+			default:
 				if (m_session == null) {
-					// sLog.outError("WorldSocket::ProcessIncomingData: Client not authed opcode =
-					// %u", uint32(opcode));
+					LOGGER.error("WorldSocket::ProcessIncomingData: Client not authed opcode: " + pct.getCommandName(),
+							this);
 					return false;
 				}
-
 				m_session.QueuePacket(pct);
-
 				return true;
-			}
 			}
 		} catch (Exception e) {
 			System.out.println("NOT IMPLMENETED ERROR MSG");
@@ -122,13 +117,41 @@ public class WorldSocket {
 
 	}
 
-	boolean HandleAuthSession(CommandPacket recvPacket) {
-		System.out.println("NOT IMPLMENETED");
+
+	boolean HandleAuthSession(WorldPacket recvPacket) {
+
+		AuthorizationPacket pct = (AuthorizationPacket) recvPacket.data;
+		int Accountid = MySQLDB.getInstance().GetUserfromDB(pct.username, pct.password);
+		tcp.sendPacket(new WorldPacket(WorldPacket.HAND_SHAKE, "accepted"));
+
+		m_session = new WorldSession(this);
+		m_session.AccountID = Accountid;
+		m_session.id = id;
+		LOGGER.error("NOT IMPLMENETED YET!", this);
+		World.getInstance().AddSession(m_session);
 		return false;
 	}
 
-	boolean HandlePing(CommandPacket recvPacket) {
+	boolean HandlePing(WorldPacket recvPacket) {
 		System.out.println("NOT IMPLMENETED");
+		return true;
+	}
+
+	boolean HandleUDP(WorldPacket recvPacket) {
+
+		if (udp != null) {
+			return false;
+		}
+
+		udp = new UDPSocket(this, udp_port);
+		try {
+			udp.start();
+			SendWorldPacket(new WorldPacket(WorldPacket.UDP_PORT, udp_port));
+			return true;
+		} catch (SocketException e) {
+			e.printStackTrace();
+		}
+
 		return false;
 	}
 

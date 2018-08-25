@@ -3,11 +3,10 @@ package Entity;
 import java.util.ArrayList;
 import java.util.Random;
 
-import Entity.Enemies.PlayerPED;
 import TileMap.TileMap;
 import game.World;
 
-public class Coin extends MAPOBJECT {
+public class Coin extends WorldObject {
 
 	// private BufferedImage[] sprites;
 
@@ -33,11 +32,11 @@ public class Coin extends MAPOBJECT {
 	public void update(World world) {
 
 		if (!isNetowrkEntity) {
-			ArrayList<ENTITY> entities = world.getCollisions(this);
-			for (ENTITY entity : entities) {
-				if (entity instanceof PlayerPED) {
+			ArrayList<GameObject> entities = world.getCollisions(this);
+			for (GameObject entity : entities) {
+				if (entity instanceof Player) {
 					world.despawn_entity(handle);
-					((PlayerPED) entity).addCoins(1);
+					((Player) entity).addCoins(1);
 				}
 			}
 		}

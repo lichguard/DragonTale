@@ -12,14 +12,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 
-import PACKET.CommandPacket;
+import PACKET.MovementData;
 import PACKET.NetworkSpawner;
 import PACKET.SpeechPacket;
 import PACKET.WorldPacket;
 
 public class OnlineState extends GameState {
 
-	private World world;
 	private AudioPlayer bgmusic;
 	private TileMap tileMap;
 	private Background bg;
@@ -59,12 +58,12 @@ public class OnlineState extends GameState {
 		tileMap.loadMap("/Maps/level1-1.map");
 		//tileMap.setPosition(0, 0);
 		tileMap.setTween(0.07f);
-		world = new World(tileMap);
+		World.getInstance().start(tileMap);
 		populateMap();
 		bgmusic = new AudioPlayer("/Music/level1-1.mp3");
 		bgmusic.play();
 
-		gsm.session.SendCommand(new CommandPacket(CommandPacket.REQUEST_HANDLE,
+		gsm.session.SendCommand(new WorldPacket(WorldPacket.REQUEST_HANDLE,
 				new NetworkSpawner(0, Spawner.PLAYERPED, 200, 200, true, true)));
 	}
 
@@ -73,7 +72,7 @@ public class OnlineState extends GameState {
 		super.update();
 		dispatchCommands();
 		dispatchWorldPackets();
-		world.update();
+		World.getInstance().update();
 		handleInput();
 		bg.setPosition(tileMap.getx(), tileMap.gety());
 	}
@@ -81,12 +80,12 @@ public class OnlineState extends GameState {
 	public void dispatchCommands() {
 		synchronized (gsm.session.commandsPackets) {
 			while (!gsm.session.commandsPackets.isEmpty()) {
-				CommandPacket packet = gsm.session.commandsPackets.poll();
+				WorldPacket packet = gsm.session.commandsPackets.poll();
 				switch (packet.packet_code) {
-				case CommandPacket.HANDLE:
+				case WorldPacket.HANDLE:
 					playerhandle = (int) packet.data;
 					break;
-				case CommandPacket.SPAWN:
+				case WorldPacket.SPAWN:
 				
 					NetworkSpawner sp = (NetworkSpawner) packet.data;
 					if (requested_spawns_from_server.containsKey(sp.handle))
@@ -95,20 +94,20 @@ public class OnlineState extends GameState {
 					}
 					if (playerhandle == sp.handle)
 					{
-						world.request_spawn(gsm.session, true, sp.handle, sp.type, sp.x, sp.y, sp.facing, false);
+						World.getInstance().request_spawn(gsm.session, true, sp.handle, sp.type, sp.x, sp.y, sp.facing, false);
 					}
 						else
-						world.request_spawn(gsm.session, false, sp.handle, sp.type, sp.x, sp.y, sp.facing, sp.network);
+							World.getInstance().request_spawn(gsm.session, false, sp.handle, sp.type, sp.x, sp.y, sp.facing, sp.network);
 
 					break;
-				case CommandPacket.SPEECH:
+				case WorldPacket.SPEECH:
 					SpeechPacket data = (SpeechPacket) packet.data;
-					world.entities.get(data.handle).say(data.text);
+					World.getInstance().entities.get(data.handle).say(data.text);
 					break;
-				case CommandPacket.DESPAWN:
-					world.request_despawn((int) packet.data);
+				case WorldPacket.DESPAWN:
+					World.getInstance().request_despawn((int) packet.data);
 					break;
-				case CommandPacket.UDP_PORT:
+				case WorldPacket.UDP_PORT:
 					gsm.session.startUDP((int) packet.data);
 					break;
 				default:
@@ -123,14 +122,14 @@ public class OnlineState extends GameState {
 		// dispatch worldpackets
 		synchronized (gsm.session.worldPackets) {
 			while (!gsm.session.worldPackets.isEmpty()) {
-				WorldPacket packet = gsm.session.worldPackets.pop();
-				if (world.entities.containsKey(packet.handle)) {
+				MovementData packet = gsm.session.worldPackets.pop();
+				if (World.getInstance().entities.containsKey(packet.handle)) {
 					if (packet.handle != playerhandle)
-						world.entities.get(packet.handle).updatePacket(packet, world);
+						World.getInstance().entities.get(packet.handle).updatePacket(packet, World.getInstance());
 					
 				} else {
 					if (!requested_spawns_from_server.containsKey(packet.handle)) {
-						gsm.session.SendCommand(new CommandPacket(CommandPacket.REQUEST_SPAWN, packet.handle));
+						gsm.session.SendCommand(new WorldPacket(WorldPacket.REQUEST_SPAWN, packet.handle));
 						requested_spawns_from_server.put(packet.handle,packet.handle);
 						LOGGER.log(Level.INFO,"requesting handle: " + packet.handle, this);
 					}
@@ -143,7 +142,7 @@ public class OnlineState extends GameState {
 	public void draw(Graphics2D g) {
 		bg.draw(g);
 		tileMap.draw(g);
-		world.draw(g);
+		World.getInstance().draw(g);
 
 		// if (player.getPlayerPed().isDead()) {
 		// g.setColor(Color.yellow);

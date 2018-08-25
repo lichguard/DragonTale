@@ -4,12 +4,13 @@ import java.awt.Rectangle;
 import java.util.ArrayList;
 
 import game.World;
+import network.PlayerBroadcaster;
+import PACKET.MovementData;
 import PACKET.NetworkSpawner;
-import PACKET.WorldPacket;
 import TileMap.Tile;
 import TileMap.TileMap;
 
-public abstract class ENTITY {
+public abstract class GameObject {
 	
 		protected World world;
 		protected TileMap tileMap;
@@ -69,10 +70,10 @@ public abstract class ENTITY {
 		protected double maxFallSpeed;
 		protected boolean removeEntity;
 		protected int affiliation;
-		protected WorldPacket entity_packet = new WorldPacket();
+		protected MovementData entity_packet = new MovementData();
 		protected long ping = 200;
-		protected WorldPacket last_packet = new WorldPacket();
-		protected WorldPacket new_packet = new WorldPacket();
+		protected MovementData last_packet = new MovementData();
+		protected MovementData new_packet = new MovementData();
 		protected long interpolation_start = 0;
 		public String name = "dragon";
 		protected int health;
@@ -83,7 +84,7 @@ public abstract class ENTITY {
 		public static final int GLIDING = 4;
 		public static final int ATTACK1 = 5;
 		public static final int ATTACK2 = 6;
-		
+		public PlayerBroadcaster broadcaster =null;
 		public void setMaxSpeed(double value)
 		{
 			this.maxSpeed = value;
@@ -107,7 +108,9 @@ public abstract class ENTITY {
 		}
 		
 		// constructor
-		public ENTITY(TileMap tm) {
+		public GameObject(TileMap tm) {
+			
+			broadcaster = new PlayerBroadcaster(this);
 			
 			tileMap = tm;
 			tileSize = tm.getTileSize();
@@ -133,7 +136,7 @@ public abstract class ENTITY {
 			this.handle = handle;
 		}
 		
-		public boolean intersects(ENTITY e) {
+		public boolean intersects(GameObject e) {
 			return this.getRecangle().intersects(e.getRecangle());
 		}
 
@@ -284,6 +287,7 @@ public abstract class ENTITY {
 				world.despawn_entity(this.handle);
 			}
 			setMapPosition();
+			
 		}
 		
 		public int gethandle()
@@ -291,7 +295,7 @@ public abstract class ENTITY {
 			return handle;
 		}
 		
-		public void updatePacket(WorldPacket p,World world)
+		public void updatePacket(MovementData p)
 		{
 
 			if (new_packet.timeframe < p.timeframe) {
@@ -307,9 +311,9 @@ public abstract class ENTITY {
 
 					if (last_packet.currentAction == 5) {
 						//setattack();
-						world.spawn_entity(Spawner.FIREBALL, x, y, facingRight, false);
+						World.getInstance().spawn_entity(Spawner.FIREBALL, x, y, facingRight, false,null);
 					} else if (last_packet.currentAction == 6) {
-						setmeleeattack(world);
+						setmeleeattack(World.getInstance());
 						//scratchAttack(world);
 
 					}
@@ -326,8 +330,8 @@ public abstract class ENTITY {
 				direction_start= 180;
 				direction_end = 360;
 			}
-		 ArrayList<ENTITY> entities =	world.getNearEntities(handle, 40, direction_start, direction_end);
-		 for (ENTITY entity : entities)
+		 ArrayList<GameObject> entities =	world.getNearEntities(handle, 40, direction_start, direction_end);
+		 for (Object entity : entities)
 			{
 				if (entity instanceof Enemy)
 				{
@@ -341,7 +345,7 @@ public abstract class ENTITY {
 		
 		}
 
-		public WorldPacket getEntityPacket()
+		public MovementData getEntityPacket()
 		{
 			//if (isNetowrkEntity)
 			//	return new_packet;

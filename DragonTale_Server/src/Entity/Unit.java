@@ -3,7 +3,7 @@ import TileMap.TileMap;
 import game.World;
 
 
-public class PED extends ENTITY {
+public class Unit extends WorldObject {
 
 	protected boolean flinching;
 	protected long filinchTimer;
@@ -27,7 +27,7 @@ public class PED extends ENTITY {
 	public double ping = 200;
 	public long interpolation_tick_start = 0;
 
-	public PED(TileMap tm) {
+	public Unit(TileMap tm) {
 		super(tm);
 
 		speech_bubble = "";
@@ -98,7 +98,7 @@ public class PED extends ENTITY {
 		return jumping;
 	}
 
-	public void gethit(int damage, PED enemy) {
+	public void gethit(int damage, Unit enemy) {
 		if (flinching)
 			return;
 		health -= damage;
@@ -219,6 +219,7 @@ public class PED extends ENTITY {
 */
 	}
 
+	@Override
 	public void update(World world) {
 		super.update(world);
 
@@ -253,7 +254,7 @@ public class PED extends ENTITY {
 				}
 			} else if (firing) {
 				if (currentAction != ATTACK1) {
-					world.spawn_entity(Spawner.FIREBALL, x, y, facingRight, false);
+					world.spawn_entity(Spawner.FIREBALL, x, y, facingRight, false,null);
 					currentAction = ATTACK1;
 
 				}

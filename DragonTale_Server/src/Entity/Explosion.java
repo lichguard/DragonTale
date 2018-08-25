@@ -6,7 +6,7 @@ package Entity;
 import TileMap.TileMap;
 import game.World;
 
-public class Explosion extends MAPOBJECT {
+public class Explosion extends WorldObject {
 
 
 	//private int width;

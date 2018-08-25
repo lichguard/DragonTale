@@ -3,7 +3,7 @@ package Entity;
 import TileMap.TileMap;
 import game.World;
 
-public class Enemy extends PED {
+public class Enemy extends Unit {
 
 	protected int static_damage;
 
@@ -44,7 +44,7 @@ public class Enemy extends PED {
 			//world.spawn_entity(Spawner.EXPLOSION, getx(), gety(), facingRight, false);
 			int x = (int) (Math.random() * 6.0);
 			for (int i = 0; i < 1 + x; i++)
-				world.spawn_entity(Spawner.COIN, getx(), gety(), facingRight, false);
+				world.spawn_entity(Spawner.COIN, getx(), gety(), facingRight, false,null);
 
 			world.despawn_entity(this.handle);
 		}

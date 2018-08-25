@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 import TileMap.TileMap;
 import  game.World;
-public class FireBall extends MAPOBJECT{
+public class FireBall extends WorldObject{
 
 	//private boolean hit;
 	private int damage;
@@ -39,9 +39,9 @@ public class FireBall extends MAPOBJECT{
 
 	public void update(World world) {
 		
-		ArrayList<ENTITY> entities = world.getCollisions(this);
+		ArrayList<GameObject> entities = world.getCollisions(this);
 		//check for collision with an enemy
-		for (ENTITY entity : entities)
+		for (GameObject entity : entities)
 		{
 			if (entity instanceof Enemy)
 			{

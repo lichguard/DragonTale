@@ -1,5 +1,6 @@
 package dt.network;
 
+import PACKET.MovementData;
 import PACKET.WorldPacket;
 import main.LOGGER;
 
@@ -69,9 +70,10 @@ public class WorkerRunnableUDP implements Runnable {
 			is = new ObjectInputStream(in);
 			WorldPacket packet = (WorldPacket) is.readObject();
 			//if (packet.timeframe > last_packet_received_time) {
-				synchronized (session.worldPackets) {
-					session.worldPackets.add(packet);
-				}
+				//synchronized (session.worldPackets) {
+				//	session.worldPackets.add((MovementData)packet.data);
+				//}
+			session.ProcessIncomingData(packet);
 				//last_packet_received_time = packet.timeframe;
 			//}
 		} catch (ClassNotFoundException | IOException e) {
@@ -84,11 +86,12 @@ public class WorkerRunnableUDP implements Runnable {
 
 	}
 
-	public void sendWorldPacket(WorldPacket packet) {
+	public void sendWorldPacket(MovementData data) {
+		
 		ByteArrayOutputStream bStream = new ByteArrayOutputStream();
 		try {
 			ObjectOutput oo = new ObjectOutputStream(bStream);
-			oo.writeObject(packet);
+			oo.writeObject(new WorldPacket(WorldPacket.MOVEMENT_DATA,data));
 			outpacket.setData(bStream.toByteArray());
 			socket.send(outpacket);
 		} catch (IOException e) {

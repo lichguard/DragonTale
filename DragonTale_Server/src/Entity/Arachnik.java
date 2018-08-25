@@ -1,5 +1,4 @@
-package Entity.Enemies;
-import Entity.Enemy;
+package Entity;
 import TileMap.TileMap;
 
 public class Arachnik extends Enemy {

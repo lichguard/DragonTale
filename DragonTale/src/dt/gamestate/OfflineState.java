@@ -16,7 +16,6 @@ public class OfflineState extends GameState {
 	private Background bg;
 	private AudioPlayer bgmusic;
 	// private Quadtree qt;
-	public World world;
 
 
 	public OfflineState(GameStateManager gsm) {
@@ -50,18 +49,18 @@ public class OfflineState extends GameState {
 		tileMap.loadMap("/Maps/level1-1.map");
 		tileMap.setPosition(0, 0);
 		tileMap.setTween(0.07f);
-		world = new World(tileMap);
+		World.getInstance().start(tileMap);
 		populateMap();
 		bgmusic = new AudioPlayer("/Music/level1-1.mp3");
 		bgmusic.play();
-		world.request_spawn(null, true, 0, Spawner.PLAYERPED, 200, 200, true, false);
+		World.getInstance().request_spawn(null, true, 0, Spawner.PLAYERPED, 200, 200, true, false);
 
 	}
 
 	@Override
 	public void update() {
 		handleInput();
-		world.update();
+		World.getInstance().update();
 		bg.setPosition(tileMap.getx(), tileMap.gety());
 	}
 
@@ -70,7 +69,7 @@ public class OfflineState extends GameState {
 
 		bg.draw(g);
 		tileMap.draw(g);
-		world.draw(g);
+		World.getInstance().draw(g);
 	}
 
 	protected void finalize() {

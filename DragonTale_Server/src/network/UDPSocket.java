@@ -17,8 +17,8 @@ import main.LOGGER;
 
 public class UDPSocket implements Runnable {
 
+
 	protected WorldSocket worldsocket = null;
-	protected WorldSession session = null;
 	protected Thread runningThread = null;
 	protected InputStream inputStream = null;
 	protected ObjectInputStream objectInput = null;
@@ -30,18 +30,19 @@ public class UDPSocket implements Runnable {
 	protected long last_packet_received_time = 0;
 	protected int port = 0;
 
-	public UDPSocket(WorldSession session) {
-		this.session = session;
+	public UDPSocket(WorldSocket session,int port) {
+		this.worldsocket = session;
+		this.port = port;
 	}
 
 	public void start() throws SocketException {
-		outbuf = new byte[session.packet_size];
-		inbuf = new byte[session.packet_size];
-		outpacket = new DatagramPacket(outbuf, outbuf.length, session.clientSocket.getInetAddress(),
-				session.clientSocket.getLocalPort() + session.udp_port);
+		outbuf = new byte[worldsocket.packet_size];
+		inbuf = new byte[worldsocket.packet_size];
+		outpacket = new DatagramPacket(outbuf, outbuf.length, worldsocket.clientSocket.getInetAddress(),
+				worldsocket.clientSocket.getLocalPort() + port);
 		inpacket = new DatagramPacket(inbuf, inbuf.length);
 		try {
-			socket = new DatagramSocket(session.clientSocket.getPort() + session.udp_port);
+			socket = new DatagramSocket(worldsocket.clientSocket.getPort() + port);
 		} catch (SocketException e) {
 			throw e;
 		}
@@ -51,7 +52,7 @@ public class UDPSocket implements Runnable {
 
 	public void run() {
 		try {
-			while (session.clientSocket != null && !session.clientSocket.isClosed()) {
+			while (worldsocket.clientSocket != null && !worldsocket.clientSocket.isClosed()) {
 				socket.receive(inpacket);
 				ByteArrayInputStream in = new ByteArrayInputStream(inpacket.getData());
 				ObjectInputStream is = new ObjectInputStream(in);
@@ -61,16 +62,16 @@ public class UDPSocket implements Runnable {
 				worldsocket.ProcessIncomingData(packet);
 			}
 		} catch (Exception e) {
-			if (session.clientSocket != null && !session.clientSocket.isClosed()) {
+			if (worldsocket.clientSocket != null && !worldsocket.clientSocket.isClosed()) {
 				LOGGER.log(Level.SEVERE, "An error has occured with client---- PRINTING STACK TRACE:", this);
 				e.printStackTrace();
 			}
 		}
-		Listener.getInstance().removeSession(session.id);
+		disconnect();
 	}
 
 
-	public void sendWorldPacket(WorldPacket packet) {
+	public boolean sendWorldPacket(WorldPacket packet) {
 		try {
 			ByteArrayOutputStream bStream = new ByteArrayOutputStream();
 			ObjectOutput oo = new ObjectOutputStream(bStream);
@@ -83,10 +84,11 @@ public class UDPSocket implements Runnable {
 			socket.send(outpacket);
 		} catch (IOException e) {
 			e.printStackTrace();
-			Listener.getInstance().removeSession(session.id);
+			disconnect();
+			return false;
 		}
 		
-		
+		return true;
 
 	}
 

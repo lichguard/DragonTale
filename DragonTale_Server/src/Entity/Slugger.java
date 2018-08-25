@@ -1,6 +1,5 @@
-package Entity.Enemies;
+package Entity;
 
-import Entity.Enemy;
 import TileMap.TileMap;
 
 public class Slugger extends Enemy {

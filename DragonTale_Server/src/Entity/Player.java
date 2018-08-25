@@ -1,17 +1,9 @@
-package Entity.Enemies;
-
-
-
-
-
-
-
-import Entity.PED;
+package Entity;
 import TileMap.TileMap;
 
-public class PlayerPED extends PED{
+public class Player extends Unit{
 	public boolean is_player;
-	public PlayerPED(TileMap tm) {
+	public Player(TileMap tm) {
 		super(tm);
 		// TODO Auto-generated constructor stub
 		cwidth = 30;

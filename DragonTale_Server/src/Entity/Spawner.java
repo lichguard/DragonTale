@@ -3,12 +3,10 @@ package Entity;
 
 import java.util.logging.Level;
 
-import Entity.Enemies.Arachnik;
-import Entity.Enemies.PlayerPED;
-import Entity.Enemies.Slugger;
 import PACKET.NetworkSpawner;
 import game.World;
 import main.LOGGER;
+import network.WorldSocket;
 
 
 public class Spawner {
@@ -29,7 +27,8 @@ public class Spawner {
 	public boolean facing;
 	public boolean network;
 	public int handle;
-	public Spawner(int handle, int type,double x,double y,boolean facing,boolean network)
+	public WorldSocket socketCallback;
+	public Spawner(int handle, int type,double x,double y,boolean facing,boolean network,WorldSocket socketCallback)
 	{
 		this.type = type;
 		this.x = (float)x;
@@ -37,6 +36,7 @@ public class Spawner {
 		this.facing = facing;
 		this.network = network;
 		this.handle = handle;
+		this.socketCallback = socketCallback;
 	}
 	
 	public NetworkSpawner castNetworkSpawner()
@@ -47,10 +47,12 @@ public class Spawner {
 	public void create_entity(World world)
 	{
 
-		ENTITY entity = null;
+		GameObject entity = null;
 		switch (type) {
 		case PLAYERPED :
-			entity = new PlayerPED(world.tm);
+			entity = new Player(world.tm);
+			if (socketCallback != null)
+				socketCallback.m_session._player = (Player)entity;
 			break;
 		case ARACHNIK :
 			entity = new Arachnik(world.tm);

@@ -4,9 +4,9 @@ import java.util.LinkedList;
 import java.util.ListIterator;
 import java.util.logging.Level;
 
-import PACKET.CommandPacket;
 import PACKET.NetworkSpawner;
 import PACKET.SpeechPacket;
+import PACKET.WorldPacket;
 import UI.Textbox;
 import drawcomponenets.DrawChatBoxComponenet;
 import drawcomponenets.IRender;
@@ -129,7 +129,7 @@ public class ControlsComponent implements IComponent {
 			if (session == null)
 				LOGGER.log(Level.WARNING, "spawning offline is not supported yet", this);
 				else
-					session.SendCommand(new CommandPacket(CommandPacket.SPAWN, new NetworkSpawner(-1, Integer.parseInt(args[1]),
+					session.SendCommand(new WorldPacket(WorldPacket.SPAWN, new NetworkSpawner(-1, Integer.parseInt(args[1]),
 					entity.getx() + (30 * (entity.facingRight ? 1 : -1)), entity.gety(), entity.facingRight, false)));
 			break;
 		case "setspeed":
@@ -145,7 +145,7 @@ public class ControlsComponent implements IComponent {
 		if (session == null)
 			entity.say(command);
 		else
-			session.SendCommand(new CommandPacket(CommandPacket.SPEECH, new SpeechPacket(entity.handle, command)));
+			session.SendCommand(new WorldPacket(WorldPacket.SPEECH, new SpeechPacket(entity.handle, command)));
 	}
 
 	public void execute_user_command(String command) {

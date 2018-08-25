@@ -9,7 +9,7 @@ import java.util.Iterator;
 import java.util.Random;
 import javax.imageio.ImageIO;
 
-import PACKET.WorldPacket;
+import PACKET.MovementData;
 import UI.Textbox;
 import component.AnimationComponent;
 import component.BroadCastEntityComponent;
@@ -88,9 +88,9 @@ public class Entity {
 	public boolean removeEntity;
 	public int affiliation;
 
-	public WorldPacket entity_packet = new WorldPacket();
-	public WorldPacket last_packet;
-	public WorldPacket new_packet;
+	public MovementData entity_packet = new MovementData();
+	public MovementData last_packet;
+	public MovementData new_packet;
 	public long ping = 200;
 	public long interpolation_start;
 
@@ -142,8 +142,8 @@ public class Entity {
 		sprites = new BufferedImage[10][10];
 		animation = new Animation();
 
-		WorldPacket packet1 = new WorldPacket(handle, x, y, facing);
-		WorldPacket packet2 = new WorldPacket(handle, x, y, facing);
+		MovementData packet1 = new MovementData(handle, x, y, facing);
+		MovementData packet2 = new MovementData(handle, x, y, facing);
 		packet1.timeframe += ping;
 		this.last_packet = packet1;
 		this.type = type;
@@ -564,7 +564,7 @@ public class Entity {
 		}
 	}
 
-	public void updatePacket(WorldPacket p, World world) {
+	public void updatePacket(MovementData p, World world) {
 
 		if (new_packet.timeframe < p.timeframe) {
 			last_packet.clone(new_packet);
@@ -609,7 +609,7 @@ public class Entity {
 		//		new NetworkSpawner(0, Spawner.PLAYERPED, 200, 200, true, true)));
 	}
 
-	public WorldPacket getEntityPacket() {
+	public MovementData getEntityPacket() {
 
 		entity_packet.handle = handle;
 		entity_packet.timeframe = System.currentTimeMillis();

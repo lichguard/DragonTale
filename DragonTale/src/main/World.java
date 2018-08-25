@@ -17,11 +17,22 @@ public class World {
 	public Stack<Integer> despawn_requests = new Stack<Integer>();
 	public Stack<Spawner> spawn_requests = new Stack<Spawner>();
 	public TileMap tm;
-
-	public World(TileMap tm) {
-		this.tm = tm;
+	private static World instance = null;
+	
+	public static World getInstance() {
+		if (instance == null) {
+			instance = new World();
+		}
+		return instance;
 	}
 
+	private World() {
+	}
+
+	public void start(TileMap tm) {
+		this.tm = tm;
+	}
+	
 	public int getEntitityCount() {
 		return entities.size();
 	}
