@@ -37,7 +37,7 @@ public class Gameplay extends JPanel implements Runnable, KeyListener,MouseListe
 	}
 
 	private void init() {
-		gsm = new GameStateManager();
+		gsm = GameStateManager.getInstance();
 		image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_BGR);
 		g = (Graphics2D) image.getGraphics();
 		running = true;

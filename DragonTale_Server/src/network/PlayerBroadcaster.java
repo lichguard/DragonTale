@@ -3,6 +3,7 @@ package network;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import Entity.GameObject;
@@ -81,8 +82,11 @@ public class PlayerBroadcaster {
 				if (data.sendToSelf && data.objectHandle != getselfHandle())
 					SendPacket(data.packet);
 
-				for (Player p : listeners.values()) {
-					p.broadcaster.SendPacket(data.packet);
+				for (Iterator<Player> iterator = listeners.values().iterator(); iterator.hasNext();) {
+					Player p = (Player) iterator.next();
+					if(!p.broadcaster.SendPacket(data.packet))
+						iterator.remove();
+					
 				}
 
 			}

@@ -41,8 +41,11 @@ public class WorldSocket {
 	public void disconnect() {
 		// LOGGER.log(Level.INFO, "Client " + id + " has disconnected...", this);
 		// Listener.getInstance().commandsPackets.add(new
-		// CommandPacket(CommandPacket.DESPAWN, this.pedhandle));
-
+		
+		if (m_session != null && m_session._player != null)
+		 World.getInstance().requestObjectDespawn(m_session._player.gethandle());
+		
+		
 		try {
 			if (clientSocket != null && !clientSocket.isClosed()) {
 				clientSocket.close();
@@ -74,7 +77,8 @@ public class WorldSocket {
 
 	public boolean ProcessIncomingData(WorldPacket pct) {
 		try {
-			LOGGER.info("INC DATA: " + pct.getCommandName(), this);
+			if (pct.packet_code != WorldPacket.MOVEMENT_DATA) 
+			LOGGER.info("INC:: " + pct.toString(), this);
 			
 			switch (pct.packet_code) {
 			case WorldPacket.HAND_SHAKE:
@@ -103,6 +107,7 @@ public class WorldSocket {
 			}
 		} catch (Exception e) {
 			System.out.println("NOT IMPLMENETED ERROR MSG");
+			e.printStackTrace();
 			// sLog.outError("WorldSocket::ProcessIncomingData ByteBufferException occured
 			// while parsing an instant handled packet (opcode: %u) from client %s,
 			// accountid=%i.",

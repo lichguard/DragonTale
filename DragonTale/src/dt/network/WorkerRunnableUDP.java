@@ -34,7 +34,7 @@ public class WorkerRunnableUDP implements Runnable {
 	}
 
 	public boolean init() {
-		LOGGER.error("PORT: " + session.udp_port, this);
+		//LOGGER.error("PORT: " + session.udp_port, this);
 		outbuf = new byte[session.packet_size];
 		inbuf = new byte[session.packet_size];
 		outpacket = new DatagramPacket(outbuf, outbuf.length, session.clientSocket.getInetAddress(),
@@ -50,7 +50,7 @@ public class WorkerRunnableUDP implements Runnable {
 	}
 
 	public void run() {
-		LOGGER.log(Level.INFO, "UDP is running...", this);
+		//LOGGER.log(Level.INFO, "UDP is running...", this);
 		try {
 			while (session.connected) {
 				socket.receive(inpacket);
@@ -75,7 +75,7 @@ public class WorkerRunnableUDP implements Runnable {
 				//synchronized (session.worldPackets) {
 				//	session.worldPackets.add((MovementData)packet.data);
 				//}
-			LOGGER.debug( ((MovementData)packet.data).handle + " x: " + ((MovementData)packet.data).x , this);
+			//LOGGER.debug( ((MovementData)packet.data).handle + " x: " + ((MovementData)packet.data).x , this);
 			session.ProcessIncomingData(packet);
 				//last_packet_received_time = packet.timeframe;
 			//}

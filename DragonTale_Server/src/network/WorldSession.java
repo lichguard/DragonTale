@@ -1,6 +1,5 @@
 package network;
 
-import java.net.Socket;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.UUID;
@@ -65,16 +64,14 @@ public class WorldSession {
 	public WorldSocket worldsocket = null;
 
 	public UUID id = null;
-	public Socket clientSocket = null;
-
 	protected int packet_size = 500;
 	public String accountName = null;
-	public boolean connected = true;
+
 	public int AccountID = -1;
 
 	public void handleLogin(WorldPacket packet) {
 		LOGGER.info("handleLogin", this);
-		int handle = World.getInstance().spawn_entity(0, 100, 0, false, true, worldsocket); //0 - playerped
+		int handle = World.getInstance().requestObjectSpawn(0, 100, 0, false, true, worldsocket); //0 - playerped
 		SendWorldPacket(new WorldPacket(WorldPacket.LOGIN, 
 					new MovementData(handle, 100, 0, false)
 				));
@@ -87,7 +84,7 @@ public class WorldSession {
 	}
 	
 	public void handlespawncommand(WorldPacket packet) {
-		World.getInstance().spawn_entity((NetworkSpawner) packet.data); //0 - playerped
+		World.getInstance().requestObjectSpawn((NetworkSpawner) packet.data); //0 - playerped
 	}
 	
 	
@@ -109,7 +106,9 @@ public class WorldSession {
 
 	public boolean Update() {
 		
-
+		if (worldsocket.clientSocket == null || worldsocket.clientSocket.isClosed())
+			return false;
+		
 		synchronized (m_recvQueue){
 			while (!m_recvQueue.isEmpty()) {
 				WorldPacket packet = m_recvQueue.pop();
@@ -117,10 +116,13 @@ public class WorldSession {
 				case WorldPacket.LOGIN:
 					handleLogin(packet);
 					break;
-				case WorldPacket.CHAT:
+				case WorldPacket.SPEECH:
 					handlechat(packet);
 					break;
 				case WorldPacket.SPAWN_COMMAND:
+					handlespawncommand(packet);
+					break;
+				case WorldPacket.SPAWN:
 					handlespawncommand(packet);
 					break;
 

@@ -35,7 +35,7 @@ public class Coin extends WorldObject {
 			ArrayList<GameObject> entities = world.getCollisions(this);
 			for (GameObject entity : entities) {
 				if (entity instanceof Player) {
-					world.despawn_entity(handle);
+					world.requestObjectDespawn(handle);
 					((Player) entity).addCoins(1);
 				}
 			}

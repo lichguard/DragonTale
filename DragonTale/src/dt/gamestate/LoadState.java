@@ -8,9 +8,8 @@ import main.Gameplay;
 
 public class LoadState extends GameState{
 
-	public LoadState(GameStateManager gsm)
+	public LoadState()
 	{
-		super(gsm);
 	}
 	@Override
 	public void init() {

@@ -284,7 +284,9 @@ public abstract class GameObject {
 			}
 			
 			if (gety() > tileMap.getHeight()) {
-				world.despawn_entity(this.handle);
+				world.requestObjectDespawn(this.handle);
+				
+				
 			}
 			setMapPosition();
 			broadcaster.ProcessQueue(0);
@@ -312,7 +314,7 @@ public abstract class GameObject {
 
 					if (last_packet.currentAction == 5) {
 						//setattack();
-						World.getInstance().spawn_entity(Spawner.FIREBALL, x, y, facingRight, false,null);
+						World.getInstance().requestObjectSpawn(Spawner.FIREBALL, x, y, facingRight, false,null);
 					} else if (last_packet.currentAction == 6) {
 						setmeleeattack(World.getInstance());
 						//scratchAttack(world);

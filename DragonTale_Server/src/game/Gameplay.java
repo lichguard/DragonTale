@@ -32,13 +32,13 @@ public class Gameplay implements Runnable {
 		tileMap.loadMap("/Maps/level1-1.map");
 		tileMap.setPosition(0, 0);
 		tileMap.setTween(0.07);
-		World.getInstance().start(tileMap);
+		World.getInstance().startWorld(tileMap);
 		Listener.getInstance().start();
 
 		Point[] points = new Point[] { new Point(100, 20) };
 
 		for (Point p : points) {
-			World.getInstance().spawn_entity(Spawner.SLUGGER, p.x, p.y, true, false, null);
+			World.getInstance().requestObjectSpawn(Spawner.SLUGGER, p.x, p.y, true, false, null);
 		}
 
 	}

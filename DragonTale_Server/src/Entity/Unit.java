@@ -254,7 +254,7 @@ public class Unit extends WorldObject {
 				}
 			} else if (firing) {
 				if (currentAction != ATTACK1) {
-					world.spawn_entity(Spawner.FIREBALL, x, y, facingRight, false,null);
+					world.requestObjectSpawn(Spawner.FIREBALL, x, y, facingRight, false,null);
 					currentAction = ATTACK1;
 
 				}

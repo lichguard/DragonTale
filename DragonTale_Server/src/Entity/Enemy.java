@@ -44,13 +44,13 @@ public class Enemy extends Unit {
 			//world.spawn_entity(Spawner.EXPLOSION, getx(), gety(), facingRight, false);
 			int x = (int) (Math.random() * 6.0);
 			for (int i = 0; i < 1 + x; i++)
-				world.spawn_entity(Spawner.COIN, getx(), gety(), facingRight, false,null);
+				world.requestObjectSpawn(Spawner.COIN, getx(), gety(), facingRight, false,null);
 
-			world.despawn_entity(this.handle);
+			world.requestObjectDespawn(this.handle);
 		}
 
 		if (gety() > tileMap.getHeight()) {
-			world.despawn_entity(this.handle);
+			world.requestObjectDespawn(this.handle);
 		}
 
 		// if hits a wall go pother direciton

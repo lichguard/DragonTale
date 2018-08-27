@@ -5,11 +5,9 @@ import UI.UIManager;
 
 public abstract class GameState {
 
-	protected GameStateManager gsm;
 	protected UIManager uimanager;
 	
-	public GameState(GameStateManager gsm) {
-		this.gsm = gsm;
+	public GameState() {
 		uimanager = new UIManager();
 	}
 

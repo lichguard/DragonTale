@@ -24,9 +24,6 @@ public class OnlineState extends GameState {
 	private int playerhandle = -1;
 	public Map<Integer, Integer> requested_spawns_from_server = new HashMap<Integer,Integer>();
 
-	public OnlineState(GameStateManager gsm) {
-		super(gsm);
-	}
 
 	private void populateMap() {
 
@@ -62,13 +59,13 @@ public class OnlineState extends GameState {
 		bgmusic = new AudioPlayer("/Music/level1-1.mp3");
 		bgmusic.play();
 
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		gsm.session.SendCommand(new WorldPacket(WorldPacket.LOGIN,null));
+		//try {
+		//	Thread.sleep(1000);
+		//} catch (InterruptedException e) {
+		//	// TODO Auto-generated catch block
+		//	e.printStackTrace();
+		//}
+		GameStateManager.getInstance().session.SendCommand(new WorldPacket(WorldPacket.LOGIN,null));
 				
 		//gsm.session.SendCommand(new WorldPacket(WorldPacket.REQUEST_HANDLE,
 		//		new NetworkSpawner(0, Spawner.PLAYERPED, 200, 200, true, true)));
@@ -85,9 +82,9 @@ public class OnlineState extends GameState {
 	}
 
 	public void dispatchCommands() {
-		synchronized (gsm.session.commandsPackets) {
-			while (!gsm.session.commandsPackets.isEmpty()) {
-				WorldPacket packet = gsm.session.commandsPackets.poll();
+		synchronized (GameStateManager.getInstance().session.commandsPackets) {
+			while (!GameStateManager.getInstance().session.commandsPackets.isEmpty()) {
+				WorldPacket packet = GameStateManager.getInstance().session.commandsPackets.poll();
 				switch (packet.packet_code) {
 				case WorldPacket.HANDLE:
 					playerhandle = (int) packet.data;
@@ -101,10 +98,10 @@ public class OnlineState extends GameState {
 					}
 					if (playerhandle == sp.handle)
 					{
-						World.getInstance().request_spawn(gsm.session, true, sp.handle, sp.type, sp.x, sp.y, sp.facing, false);
+						World.getInstance().request_spawn(GameStateManager.getInstance().session, true, sp.handle, sp.type, sp.x, sp.y, sp.facing, false);
 					}
 						else
-							World.getInstance().request_spawn(gsm.session, false, sp.handle, sp.type, sp.x, sp.y, sp.facing, sp.network);
+							World.getInstance().request_spawn(GameStateManager.getInstance().session, false, sp.handle, sp.type, sp.x, sp.y, sp.facing, sp.network);
 
 					break;
 				case WorldPacket.SPEECH:
@@ -115,7 +112,7 @@ public class OnlineState extends GameState {
 					World.getInstance().request_despawn((int) packet.data);
 					break;
 				case WorldPacket.UDP_PORT:
-					gsm.session.startUDP((int) packet.data);
+					GameStateManager.getInstance().session.startUDP((int) packet.data);
 					break;
 				default:
 					LOGGER.log(Level.WARNING,"Unknown CommandPacket code: " + packet.packet_code, this);
@@ -127,20 +124,13 @@ public class OnlineState extends GameState {
 
 	public void dispatchWorldPackets() {
 		// dispatch worldpackets
-		synchronized (gsm.session.worldPackets) {
-			while (!gsm.session.worldPackets.isEmpty()) {
-				MovementData packet = gsm.session.worldPackets.pop();
+		synchronized (GameStateManager.getInstance().session.worldPackets) {
+			while (!GameStateManager.getInstance().session.worldPackets.isEmpty()) {
+				MovementData packet = GameStateManager.getInstance().session.worldPackets.pop();
 				if (World.getInstance().entities.containsKey(packet.handle)) {
-					LOGGER.debug( packet.handle + " x: " + packet.x, this);
 						World.getInstance().entities.get(packet.handle).updatePacket(packet, World.getInstance());
 					
-				} else {
-					if (!requested_spawns_from_server.containsKey(packet.handle)) {
-						//gsm.session.SendCommand(new WorldPacket(WorldPacket.REQUEST_SPAWN, packet.handle));
-						//requested_spawns_from_server.put(packet.handle,packet.handle);
-						//LOGGER.log(Level.INFO,"requesting handle: " + packet.handle, this);
-					}
-				}
+				} 
 			}
 		}
 	}
@@ -163,15 +153,15 @@ public class OnlineState extends GameState {
 	protected void finalize() {
 		bgmusic.close();
 		LOGGER.log(Level.INFO,"closing onlinestate", this);
-		gsm.session.disconnect();
+		GameStateManager.getInstance().session.disconnect();
 	}
 
 	@Override
 	public void handleInput() {
 		super.handleInput();
 		if (CONTROLS.isPressed(CONTROLS.ESCAPE)) {
-			gsm.requestState(GameStateManager.LOGINSTATE);
-			gsm.session.disconnect();
+			GameStateManager.getInstance().requestState(GameStateManager.LOGINSTATE);
+			GameStateManager.getInstance().session.disconnect();
 
 		}
 	}

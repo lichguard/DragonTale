@@ -11,9 +11,11 @@ import java.util.logging.Level;
 import PACKET.AuthorizationPacket;
 import PACKET.MovementData;
 import PACKET.NetworkSpawner;
+import PACKET.SpeechPacket;
 import PACKET.WorldPacket;
 import UI.Control;
 import dt.entity.Spawner;
+import dt.gamestate.GameStateManager;
 import main.LOGGER;
 import main.World;
 
@@ -35,10 +37,6 @@ public class Session {
 	public Stack<MovementData> worldPackets = new Stack<MovementData>();
 	public String username = "";
 	public String password = "";
-	public boolean isConnected()
-	{
-		return connected;
-	}
 	public void broadcastPosition(WorldPacket packet) {
 	//	if (System.currentTimeMillis() - lastbroadcast > 100) {
 	//		SendWorldPacket(packet);
@@ -46,11 +44,6 @@ public class Session {
 	//	}
 	}
 
-	public boolean authenticate()
-	{
-		
-		return true;
-	}
 	public void Connect(Control status,String IP, int port,String username,String password) {
 		if (connected) {
 			status.setText("Connection failed, you are connected!");
@@ -103,13 +96,13 @@ public class Session {
 		tcp.init(status);
 		new Thread(tcp).start();
 		
-		try {
-			LOGGER.log(Level.INFO, "Sleeping for 1 seconds...", this);
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	//	try {
+	//		LOGGER.log(Level.INFO, "Sleeping for 1 seconds...", this);
+//			Thread.sleep(1000);
+//		} catch (InterruptedException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 		
 		status.setText("Authenticating...");
 		LOGGER.log(Level.INFO, "Sending Autherizaing request...", this);
@@ -167,10 +160,12 @@ public class Session {
 				LOGGER.debug("HAND_SHAKE REUSLT: " + res,this);
 				
 				if (res.equals("accepted")) {
+					GameStateManager.getInstance().requestState(GameStateManager.ONLINESTATE);
 					SendCommand(new WorldPacket(WorldPacket.REQUEST_UDP_PORT, null));
 					return true;
 				}
 				else {
+					GameStateManager.getInstance().requestState(GameStateManager.MAINMENUSTATE);
 					return false;
 				}
 				
@@ -191,6 +186,10 @@ public class Session {
 			case WorldPacket.DESPAWN:
 
 				World.getInstance().request_despawn((int)pct.data);
+				return true;
+			case WorldPacket.SPEECH:
+				SpeechPacket data = (SpeechPacket) pct.data;
+				World.getInstance().entities.get(data.handle).say(data.text);
 				return true;
 			case WorldPacket.MOVEMENT_DATA:
 				synchronized (worldPackets) {

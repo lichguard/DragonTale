@@ -48,6 +48,6 @@ public class WorldPacket implements Serializable{
 	@Override
 	public String toString()
 	{
-		return getCommandName() + " data: " + data.toString();
+		return getCommandName() + " data: " + (data == null ? "null" : data.toString());
 	}
 }

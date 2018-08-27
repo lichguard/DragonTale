@@ -18,9 +18,6 @@ public class OfflineState extends GameState {
 	// private Quadtree qt;
 
 
-	public OfflineState(GameStateManager gsm) {
-		super(gsm);
-	}
 
 	private void populateMap() {
 		/*
@@ -82,7 +79,7 @@ public class OfflineState extends GameState {
 	public void handleInput() {
 
 		if (CONTROLS.isPressed(CONTROLS.ESCAPE)) {
-			gsm.requestState(GameStateManager.MAINMENUSTATE);
+			GameStateManager.getInstance().requestState(GameStateManager.MAINMENUSTATE);
 
 		}
 	}

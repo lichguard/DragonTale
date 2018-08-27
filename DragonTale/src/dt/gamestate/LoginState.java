@@ -24,8 +24,7 @@ public class LoginState extends GameState {
 	protected Thread connecting_thread;
 	protected boolean cancel_login = false;
 
-	public LoginState(GameStateManager gsm) {
-		super(gsm);
+	public LoginState() {
 	}
 
 	@Override
@@ -83,19 +82,16 @@ public class LoginState extends GameState {
 		connecting_thread = new Thread(new Runnable() {
 			public void run() {
 				Messagebox msgbox = uimanager.ShowMessageBox("Initiating...");
-				gsm.ConnectToServer(msgbox, "localhost", 9000, username_txtbox.text, password_txtbox.text);
+				GameStateManager.getInstance().ConnectToServer(msgbox, "localhost", 9000, username_txtbox.text, password_txtbox.text);
 				password_txtbox.setText("");
 
 				if (cancel_login) {
-					gsm.session.disconnect();
+					GameStateManager.getInstance().session.disconnect();
 					cancel_login = false;
 					return;
 				}
-				
-				if (gsm.session.isConnected())
-					if (gsm.session.authenticate())
-						gsm.requestState(GameStateManager.ONLINESTATE);
 
+				//TODO: GET msgbox text
 			}
 		});
 		connecting_thread.start();

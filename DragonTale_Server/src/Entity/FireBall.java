@@ -52,7 +52,7 @@ public class FireBall extends WorldObject{
 
 		//check for collision with tile
 		if (dx == 0)
-			world.despawn_entity(this.handle); //setHit();
+			world.requestObjectDespawn(this.handle); //setHit();
 		
 		checkTileMapCollision();
 		setPosition(xtemp, ytemp);

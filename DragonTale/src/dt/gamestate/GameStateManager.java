@@ -20,7 +20,15 @@ public class GameStateManager {
 	public static final int CONNECTINGSTATE = 5;
 	public static final int LOGINSTATE = 6;
 	
-	public GameStateManager() {
+	private static GameStateManager instance = null;
+	
+	public static GameStateManager getInstance() {
+		if (instance == null)
+			instance = new GameStateManager();
+		return instance;
+	}
+	
+	private GameStateManager() {
 		gameStates = new GameState[NUMGAMESTATES];
 		currentState = requestedState = LOADSTATE;
 		loadState(currentState);
@@ -35,13 +43,13 @@ public class GameStateManager {
 
 	private void loadState(int state) {
 		if (currentState == ONLINESTATE)
-			gameStates[currentState] = new OnlineState(this);
+			gameStates[currentState] = new OnlineState();
 		else if (currentState == LOADSTATE)
-			gameStates[currentState] = new LoadState(this);
+			gameStates[currentState] = new LoadState();
 		else if (currentState == OFFLINESTATE)
-			gameStates[currentState] = new OfflineState(this);
+			gameStates[currentState] = new OfflineState();
 		else if (currentState == LOGINSTATE)
-			gameStates[currentState] = new LoginState(this);
+			gameStates[currentState] = new LoginState();
 		
 		gameStates[currentState].init();
 	}
