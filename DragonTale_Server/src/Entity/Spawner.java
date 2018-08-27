@@ -51,8 +51,11 @@ public class Spawner {
 		switch (type) {
 		case PLAYERPED :
 			entity = new Player(world.tm);
-			if (socketCallback != null)
+			if (socketCallback != null) {
+				LOGGER.info("socketCallback worked for entity", this);
+				entity.broadcaster.setSocket(socketCallback);
 				socketCallback.m_session._player = (Player)entity;
+			}
 			break;
 		case ARACHNIK :
 			entity = new Arachnik(world.tm);

@@ -73,9 +73,10 @@ public class WorldSession {
 	public int AccountID = -1;
 
 	public void handleLogin(WorldPacket packet) {
-		int handle = World.getInstance().spawn_entity(0, 10, 20, false, true,worldsocket); //0 - playerped
+		LOGGER.info("handleLogin", this);
+		int handle = World.getInstance().spawn_entity(0, 100, 0, false, true, worldsocket); //0 - playerped
 		SendWorldPacket(new WorldPacket(WorldPacket.LOGIN, 
-					new MovementData(handle, 10, 20, false)
+					new MovementData(handle, 100, 0, false)
 				));
 		
 	}
@@ -108,10 +109,7 @@ public class WorldSession {
 
 	public boolean Update() {
 		
-		if (_player == null)
-			return true;
-		
-		_player.updatePacket((MovementData)m_location.data);
+
 		synchronized (m_recvQueue){
 			while (!m_recvQueue.isEmpty()) {
 				WorldPacket packet = m_recvQueue.pop();
@@ -133,7 +131,12 @@ public class WorldSession {
 			}
 			
 		}
-		_player.broadcaster.ProcessQueue(0);
+		if (_player != null) {
+			
+			if (m_location != null)
+				_player.updatePacket((MovementData)m_location.data);
+			_player.broadcaster.ProcessQueue(0);
+		}
 		return true;
 	}
 

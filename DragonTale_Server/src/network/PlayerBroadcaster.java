@@ -8,6 +8,7 @@ import java.util.Map;
 import Entity.GameObject;
 import Entity.Player;
 import PACKET.WorldPacket;
+import main.LOGGER;
 
 public class PlayerBroadcaster {
 
@@ -23,7 +24,7 @@ public class PlayerBroadcaster {
 		}
 	};
 
-	WorldSocket m_socket;
+	public WorldSocket m_socket;
 	GameObject object;
 	Map<Integer, Player> listeners = new HashMap<Integer, Player>();
 	Deque<BroadcastData> m_queue = new ArrayDeque<BroadcastData>();
@@ -50,6 +51,7 @@ public class PlayerBroadcaster {
 		synchronized (listeners) {
 			if (!listeners.containsKey(p.gethandle())) {
 			listeners.put(p.gethandle(), p);
+			LOGGER.debug("NEW spawn sent!", this);
 			p.broadcaster.SendPacket(new WorldPacket(WorldPacket.SPAWN, object.getNetowrkSpawner()));
 			}
 		}

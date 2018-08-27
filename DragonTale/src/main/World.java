@@ -50,6 +50,7 @@ public class World {
 	}
 
 	public void update() {
+		
 		while (!despawn_requests.isEmpty())
 			entities.remove(despawn_requests.pop());
 

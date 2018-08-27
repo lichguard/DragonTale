@@ -33,6 +33,9 @@ public class WorldSocket {
 	public void start() throws Exception {
 		tcp = new TCPSocket(this);
 		tcp.start();
+		
+		//udp = new UDPSocket(this,udp_port);
+		//udp.start();
 	}
 
 	public void disconnect() {
@@ -79,11 +82,9 @@ public class WorldSocket {
 					LOGGER.error("WorldSocket::ProcessIncomingData: Player send CommandPacket.HAND_SHAKE again", this);
 					return false;
 				}
-				if (!HandleAuthSession(pct)) {
-					SendWorldPacket(new WorldPacket(WorldPacket.HAND_SHAKE, "refused"));
-					return false;
-				}
-				return true;
+				
+				return HandleAuthSession(pct);
+			
 
 			case WorldPacket.PING_REQUEST:
 				return HandlePing(pct);
@@ -122,14 +123,18 @@ public class WorldSocket {
 
 		AuthorizationPacket pct = (AuthorizationPacket) recvPacket.data;
 		int Accountid = MySQLDB.getInstance().GetUserfromDB(pct.username, pct.password);
-		tcp.sendPacket(new WorldPacket(WorldPacket.HAND_SHAKE, "accepted"));
+		
 
 		m_session = new WorldSession(this);
 		m_session.AccountID = Accountid;
 		m_session.id = id;
-		LOGGER.error("NOT IMPLMENETED YET!", this);
+		//LOGGER.error("NOT IMPLMENETED YET!", this);
 		World.getInstance().AddSession(m_session);
-		return false;
+		SendWorldPacket(new WorldPacket(WorldPacket.HAND_SHAKE, "accepted"));
+		//TODO: Implement refusal
+		//SendWorldPacket(new WorldPacket(WorldPacket.HAND_SHAKE, "refused"));
+
+		return true;
 	}
 
 	boolean HandlePing(WorldPacket recvPacket) {

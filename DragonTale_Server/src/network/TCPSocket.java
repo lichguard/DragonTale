@@ -34,6 +34,7 @@ public class TCPSocket implements Runnable {
 	}
 
 	public void run() {
+
 		try {
 			while (worldsocket.clientSocket != null && !worldsocket.clientSocket.isClosed()
 					&& !Thread.currentThread().isInterrupted()) {
@@ -41,26 +42,28 @@ public class TCPSocket implements Runnable {
 					break;
 			}
 		} catch (ClassNotFoundException e) {
-			LOGGER.error("----FATAL ERROR ClassNotFoundException--- socket.id: " + worldsocket.id,this);
-			 e.printStackTrace();
-		}
-		catch (IOException e) {
+			LOGGER.error("----FATAL ERROR ClassNotFoundException--- socket.id: " + worldsocket.id, this);
+			e.printStackTrace();
+		} catch (IOException e) {
 			if (worldsocket.clientSocket != null && !worldsocket.clientSocket.isClosed()) {
-				 LOGGER.info("TCP thread stopped listening... socket.id: " + worldsocket.id,this);
+				LOGGER.info("TCP thread stopped listening... socket.id: " + worldsocket.id, this);
 			}
 		}
-		
-	 worldsocket.disconnect();
+
+		worldsocket.disconnect();
 	}
 
 	public boolean sendPacket(WorldPacket packet) {
-		try {
-			objectOutput.writeObject(packet);
-		} catch (IOException e) {
-			e.printStackTrace();
-			LOGGER.error("----FATAL ERROR IOException WHILE sendPacket socket.id: " + worldsocket.id,this);
-			disconnect();
-			return false;
+		synchronized (objectOutput) {
+
+			try {
+				objectOutput.writeObject(packet);
+			} catch (IOException e) {
+				e.printStackTrace();
+				LOGGER.error("----FATAL ERROR IOException WHILE sendPacket socket.id: " + worldsocket.id, this);
+				disconnect();
+				return false;
+			}
 		}
 		return true;
 	}
@@ -71,26 +74,26 @@ public class TCPSocket implements Runnable {
 			if (objectInput != null)
 				objectInput.close();
 		} catch (IOException e) {
-			//e.printStackTrace();
+			// e.printStackTrace();
 		}
 		try {
 			if (objectOutput != null)
 				objectOutput.close();
 		} catch (IOException e) {
-			//e.printStackTrace();
+			// e.printStackTrace();
 		}
 		try {
 			if (inputStream != null)
 				inputStream.close();
 		} catch (IOException e) {
-			//e.printStackTrace();
+			// e.printStackTrace();
 		}
 		try {
 			if (outStream != null)
 				outStream.close();
 
 		} catch (IOException e) {
-			//e.printStackTrace();
+			// e.printStackTrace();
 		}
 	}
 

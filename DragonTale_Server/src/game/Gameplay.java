@@ -35,7 +35,7 @@ public class Gameplay implements Runnable {
 		World.getInstance().start(tileMap);
 		Listener.getInstance().start();
 
-		Point[] points = new Point[] { new Point(353, 140) };
+		Point[] points = new Point[] { new Point(100, 20) };
 
 		for (Point p : points) {
 			World.getInstance().spawn_entity(Spawner.SLUGGER, p.x, p.y, true, false, null);

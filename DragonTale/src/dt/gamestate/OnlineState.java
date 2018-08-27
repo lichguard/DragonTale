@@ -2,7 +2,6 @@ package dt.gamestate;
 
 import TileMap.*;
 import dt.audio.AudioPlayer;
-import dt.entity.Spawner;
 import main.CONTROLS;
 import main.LOGGER;
 import main.World;
@@ -63,14 +62,22 @@ public class OnlineState extends GameState {
 		bgmusic = new AudioPlayer("/Music/level1-1.mp3");
 		bgmusic.play();
 
-		gsm.session.SendCommand(new WorldPacket(WorldPacket.REQUEST_HANDLE,
-				new NetworkSpawner(0, Spawner.PLAYERPED, 200, 200, true, true)));
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		gsm.session.SendCommand(new WorldPacket(WorldPacket.LOGIN,null));
+				
+		//gsm.session.SendCommand(new WorldPacket(WorldPacket.REQUEST_HANDLE,
+		//		new NetworkSpawner(0, Spawner.PLAYERPED, 200, 200, true, true)));
 	}
 
 	@Override
 	public void update() {
 		super.update();
-		dispatchCommands();
+		//dispatchCommands();
 		dispatchWorldPackets();
 		World.getInstance().update();
 		handleInput();
@@ -124,14 +131,14 @@ public class OnlineState extends GameState {
 			while (!gsm.session.worldPackets.isEmpty()) {
 				MovementData packet = gsm.session.worldPackets.pop();
 				if (World.getInstance().entities.containsKey(packet.handle)) {
-					if (packet.handle != playerhandle)
+					LOGGER.debug( packet.handle + " x: " + packet.x, this);
 						World.getInstance().entities.get(packet.handle).updatePacket(packet, World.getInstance());
 					
 				} else {
 					if (!requested_spawns_from_server.containsKey(packet.handle)) {
-						gsm.session.SendCommand(new WorldPacket(WorldPacket.REQUEST_SPAWN, packet.handle));
-						requested_spawns_from_server.put(packet.handle,packet.handle);
-						LOGGER.log(Level.INFO,"requesting handle: " + packet.handle, this);
+						//gsm.session.SendCommand(new WorldPacket(WorldPacket.REQUEST_SPAWN, packet.handle));
+						//requested_spawns_from_server.put(packet.handle,packet.handle);
+						//LOGGER.log(Level.INFO,"requesting handle: " + packet.handle, this);
 					}
 				}
 			}

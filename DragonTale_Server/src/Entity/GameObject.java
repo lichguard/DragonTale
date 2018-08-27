@@ -287,6 +287,7 @@ public abstract class GameObject {
 				world.despawn_entity(this.handle);
 			}
 			setMapPosition();
+			broadcaster.ProcessQueue(0);
 			
 		}
 		

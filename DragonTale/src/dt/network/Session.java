@@ -10,6 +10,7 @@ import java.util.logging.Level;
 
 import PACKET.AuthorizationPacket;
 import PACKET.MovementData;
+import PACKET.NetworkSpawner;
 import PACKET.WorldPacket;
 import UI.Control;
 import dt.entity.Spawner;
@@ -66,7 +67,6 @@ public class Session {
 		try {
 			clientSocket = new Socket(IP, port);
 			connected = true;
-			status.setText("Connecting...");
 			if (!startTCP(status))
 			{
 				disconnect();
@@ -103,10 +103,18 @@ public class Session {
 		tcp.init(status);
 		new Thread(tcp).start();
 		
-		status.setText("sending Authenticating...");
+		try {
+			LOGGER.log(Level.INFO, "Sleeping for 1 seconds...", this);
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		status.setText("Authenticating...");
+		LOGGER.log(Level.INFO, "Sending Autherizaing request...", this);
 		SendCommand(new WorldPacket(WorldPacket.HAND_SHAKE, new AuthorizationPacket(username,password)));
-
-		LOGGER.log(Level.INFO, "TCP running", this);
+	
 		return true;
 	}
 
@@ -145,24 +153,21 @@ public class Session {
 	}
 
 	public void SendCommand(WorldPacket packet) {
-		LOGGER.log(Level.INFO, "Sending DATA: " + packet.getCommandName(), this);
 		if (tcp != null && packet != null && connected)
 			tcp.sendCommand(packet);
 	}
 
 	public boolean ProcessIncomingData(WorldPacket pct) {
 		try {
-			LOGGER.info("INC DATA: " + pct.getCommandName(), this);
 			switch (pct.packet_code) {
 			case WorldPacket.HAND_SHAKE:
 				
 				String res = (String) pct.data;
 				
-				System.out.println("HAND_SHAKE REUSLT: " + res);
+				LOGGER.debug("HAND_SHAKE REUSLT: " + res,this);
 				
 				if (res.equals("accepted")) {
-					SendCommand(new WorldPacket(WorldPacket.REQUEST_UDP_PORT,0));
-					Thread.sleep(1000);
+					SendCommand(new WorldPacket(WorldPacket.REQUEST_UDP_PORT, null));
 					return true;
 				}
 				else {
@@ -171,18 +176,26 @@ public class Session {
 				
 			case WorldPacket.UDP_PORT:
 				startUDP((int)pct.data);
-				SendCommand(new WorldPacket(WorldPacket.LOGIN,0));
-				Thread.sleep(1000);
 				return true;
 				
 			case WorldPacket.LOGIN:
 				MovementData mv = (MovementData) pct.data;
 				World.getInstance().spawn_requests.add(new Spawner(World.getInstance(), this, true, mv.handle, 0, mv.x, mv.y, mv.facingRight, false));
-				Thread.sleep(1000);
 				return true;
 				
+			case WorldPacket.SPAWN:
+				NetworkSpawner spawner = (NetworkSpawner) pct.data;
+				
+				World.getInstance().request_spawn(null, false, spawner.handle, spawner.type, spawner.x, spawner.y, spawner.facing, spawner.network);
+				return true;
+			case WorldPacket.DESPAWN:
+
+				World.getInstance().request_despawn((int)pct.data);
+				return true;
 			case WorldPacket.MOVEMENT_DATA:
+				synchronized (worldPackets) {
 				worldPackets.add((MovementData) pct.data);
+				}
 				return true;
 
 

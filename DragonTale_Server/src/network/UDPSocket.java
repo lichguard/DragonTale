@@ -36,6 +36,7 @@ public class UDPSocket implements Runnable {
 	}
 
 	public void start() throws SocketException {
+		LOGGER.error("PORT: " + port, this);
 		outbuf = new byte[worldsocket.packet_size];
 		inbuf = new byte[worldsocket.packet_size];
 		outpacket = new DatagramPacket(outbuf, outbuf.length, worldsocket.clientSocket.getInetAddress(),
@@ -72,6 +73,7 @@ public class UDPSocket implements Runnable {
 
 
 	public boolean sendWorldPacket(WorldPacket packet) {
+		//LOGGER.debug("x: " + ((MovementData)packet.data).handle, this);
 		try {
 			ByteArrayOutputStream bStream = new ByteArrayOutputStream();
 			ObjectOutput oo = new ObjectOutputStream(bStream);

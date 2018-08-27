@@ -41,6 +41,7 @@ public class WorkerRunnableTCP implements Runnable {
 	}
 
 	public void run() {
+		LOGGER.log(Level.INFO, "TCP running", this);
 		try {
 			while (session.connected) {
 				WorldPacket packet;
@@ -64,12 +65,14 @@ public class WorkerRunnableTCP implements Runnable {
 
 	public void sendCommand(WorldPacket packet) {
 		LOGGER.log(Level.INFO, "Sending command: " + packet.getCommandName(), this);
+		synchronized (objectOutput) {
 		try {
 			objectOutput.writeObject(packet);
 		} catch (IOException e) {
 			e.printStackTrace();
 			session.disconnect();
 		}
+	}
 	}
 
 	public void disconnect() {

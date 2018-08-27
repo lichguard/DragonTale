@@ -13,6 +13,7 @@ import Entity.Spawner;
 import PACKET.NetworkSpawner;
 import PACKET.WorldPacket;
 import TileMap.TileMap;
+import main.LOGGER;
 import network.WorldSession;
 import network.WorldSocket;
 
@@ -85,6 +86,7 @@ public class World {
 	}
 
 	public void despawn_entity(int handle) {
+		entities.get(handle).broadcaster.ClearListeners();
 		entities_to_remove.push(handle);
 	}
 
@@ -92,8 +94,8 @@ public class World {
 		/// - Add new sessions
 		synchronized (m_sessionAddQueue) {
 			for (WorldSession s : m_sessionAddQueue) {
+				LOGGER.info("Adding session from m_sessionAddQueue",this);
 				SessionMap.put(s.id, s);
-				s.worldsocket.SendWorldPacket(new WorldPacket(WorldPacket.HAND_SHAKE, "accepted"));
 			}
 			m_sessionAddQueue.clear();
 		}
@@ -167,13 +169,12 @@ public class World {
 			entities.remove(entities_to_remove.pop());
 		}
 
-		// update all entities in world
-		for (GameObject entity : entities.values()) {
-			entity.update(this);
-			entity.broadcaster.ProcessQueue(0);
-		}
-
-		if (System.currentTimeMillis() - lastbroadcast > 100) {
+		if (System.currentTimeMillis() - lastbroadcast > 100l) {
+			// update all entities in world
+			for (GameObject entity : entities.values()) {
+				entity.broadcaster.QueuePacket(new WorldPacket(WorldPacket.MOVEMENT_DATA, entity.getEntityPacket()), false, entity.gethandle());
+			}
+			
 			for (WorldSession s : SessionMap.values()) {
 				if (s._player == null) {
 					continue;
@@ -184,13 +185,16 @@ public class World {
 				for (GameObject near : entities_close) {
 					near.broadcaster.AddListener(s._player);
 				}
-				s._player.broadcaster.QueuePacket(new WorldPacket(WorldPacket.MOVEMENT_DATA, s._player.getEntityPacket()), false, s._player.gethandle());
 				
 			}
 			
 			lastbroadcast = System.currentTimeMillis();
 		}
 
+		// update all entities in world
+		for (GameObject entity : entities.values()) {
+			entity.update(this);
+		}
 	}
 
 }
