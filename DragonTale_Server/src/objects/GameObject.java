@@ -5,15 +5,16 @@ import java.util.ArrayList;
 
 import game.World;
 import network.PlayerBroadcaster;
+import vmaps.Cell;
 import vmaps.Tile;
-import vmaps.TileMap;
+import vmaps.GameMap;
 import PACKET.MovementData;
 import PACKET.NetworkSpawner;
 
 public abstract class GameObject {
 	
 		protected World world;
-		protected TileMap tileMap;
+		protected GameMap gameMap;
 		protected int tileSize;
 		protected double xmap;
 		protected double ymap;
@@ -85,6 +86,7 @@ public abstract class GameObject {
 		public static final int ATTACK1 = 5;
 		public static final int ATTACK2 = 6;
 		public PlayerBroadcaster broadcaster =null;
+		public Cell cell = null;
 		public void setMaxSpeed(double value)
 		{
 			this.maxSpeed = value;
@@ -108,11 +110,11 @@ public abstract class GameObject {
 		}
 		
 		// constructor
-		public GameObject(TileMap tm) {
+		public GameObject(GameMap tm) {
 			
 			broadcaster = new PlayerBroadcaster(this);
 			
-			tileMap = tm;
+			gameMap = tm;
 			tileSize = tm.getTileSize();
 			removeEntity = false;
 			width = 30;
@@ -150,15 +152,15 @@ public abstract class GameObject {
 			int topTile = (int) (y - cheight / 2) / tileSize;
 			int bottomTile = (int) (y + cheight / 2 - 1) / tileSize;
 
-			if (topTile < 0 || bottomTile >= tileMap.getNumRows() || leftTile < 0 || rightTile >= tileMap.getNumCols()) {
+			if (topTile < 0 || bottomTile >= gameMap.getNumRows() || leftTile < 0 || rightTile >= gameMap.getNumCols()) {
 				topLeft = topRight = bottomLeft = bottomRight = false;
 				return;
 			}
 
-			int tl = tileMap.getType(topTile, leftTile);
-			int tr = tileMap.getType(topTile, rightTile);
-			int bl = tileMap.getType(bottomTile, leftTile);
-			int br = tileMap.getType(bottomTile, rightTile);
+			int tl = gameMap.getType(topTile, leftTile);
+			int tr = gameMap.getType(topTile, rightTile);
+			int bl = gameMap.getType(bottomTile, leftTile);
+			int br = gameMap.getType(bottomTile, rightTile);
 			topLeft = tl == Tile.BLOCKED;
 			topRight = tr == Tile.BLOCKED;
 			bottomLeft = bl == Tile.BLOCKED;
@@ -254,8 +256,8 @@ public abstract class GameObject {
 
 
 		public void setMapPosition() {
-			xmap = tileMap.getx();
-			ymap = tileMap.gety();
+		//	xmap = gameMap.getx();
+			//ymap = gameMap.gety();
 		}
 
 		public void setLeft(boolean b) {
@@ -283,7 +285,7 @@ public abstract class GameObject {
 						last_packet.y * (1 - t) + new_packet.y * t);
 			}
 			
-			if (gety() > tileMap.getHeight()) {
+			if (gety() > gameMap.getHeight()) {
 				world.requestObjectDespawn(this.handle);
 				
 				

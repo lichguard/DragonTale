@@ -1,13 +1,13 @@
 package objects;
 
 import game.World;
-import vmaps.TileMap;
+import vmaps.GameMap;
 
 public class Enemy extends Unit {
 
 	protected int static_damage;
 
-	public Enemy(TileMap tm) {
+	public Enemy(GameMap tm) {
 		super(tm);
 		width = 30;
 		height = 30;
@@ -49,7 +49,7 @@ public class Enemy extends Unit {
 			world.requestObjectDespawn(this.handle);
 		}
 
-		if (gety() > tileMap.getHeight()) {
+		if (gety() > gameMap.getHeight()) {
 			world.requestObjectDespawn(this.handle);
 		}
 

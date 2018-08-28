@@ -4,7 +4,7 @@ import java.awt.Point;
 
 import network.Listener;
 import objects.Spawner;
-import vmaps.TileMap;
+import vmaps.GameMap;
 
 public class Gameplay implements Runnable {
 
@@ -19,7 +19,7 @@ public class Gameplay implements Runnable {
 	private int target_FPS = 60;
 	public static long FPS = 0;
 	private long targetTime = 1000 / target_FPS;
-	public TileMap tileMap;
+	public GameMap tileMap;
 	public long lastbroadcast = 0;
 
 	public Gameplay() {
@@ -28,10 +28,10 @@ public class Gameplay implements Runnable {
 	private void init() {
 		running = true;
 		thread = Thread.currentThread();
-		tileMap = new TileMap(30);
+		tileMap = new GameMap(30);
 		tileMap.loadTiles("/TileSets/grasstileset.gif");
 		tileMap.loadMap("/Maps/level1-1.map");
-		tileMap.setPosition(0, 0);
+		//tileMap.setPosition(0, 0);
 		tileMap.setTween(0.07);
 		World.getInstance().startWorld(tileMap);
 		Listener.getInstance().start();

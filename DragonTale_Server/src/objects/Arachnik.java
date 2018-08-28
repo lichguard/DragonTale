@@ -1,9 +1,9 @@
 package objects;
-import vmaps.TileMap;
+import vmaps.GameMap;
 
 public class Arachnik extends Enemy {
 
-	public Arachnik(TileMap tm) {
+	public Arachnik(GameMap tm) {
 		
 		super(tm);
 		width = 30;

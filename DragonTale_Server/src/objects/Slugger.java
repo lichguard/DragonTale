@@ -1,10 +1,10 @@
 package objects;
 
-import vmaps.TileMap;
+import vmaps.GameMap;
 
 public class Slugger extends Enemy {
 
-	public Slugger(TileMap tm) {
+	public Slugger(GameMap tm) {
 		super(tm);
 		width = 30;
 		height = 30;

@@ -15,13 +15,13 @@ import network.WorldSession;
 import network.WorldSocket;
 import objects.GameObject;
 import objects.Spawner;
-import vmaps.TileMap;
+import vmaps.GameMap;
 
 public class World {
 	public static final int MAX_ENTITIES = 100;
 
 	// session in world
-	Map<UUID, WorldSession> SessionMap = new HashMap<UUID, WorldSession>();
+	public Map<UUID, WorldSession> SessionMap = new HashMap<UUID, WorldSession>();
 	// session waiting to be added to world
 	ConcurrentLinkedDeque<WorldSession> m_sessionAddQueue = new ConcurrentLinkedDeque<WorldSession>();
 	public int handle_generator = 1;
@@ -29,7 +29,7 @@ public class World {
 	public Stack<Spawner> m_objectSpawnQueue = new Stack<Spawner>();
 	public Stack<Integer> m_objectRemoveQueue = new Stack<Integer>();
 	private static World instance = null;
-	public TileMap tm = null;
+	public GameMap tm = null;
 	public long lastbroadcast = 0;
 	
 	//find session in world
@@ -44,25 +44,6 @@ public class World {
 		}
 	}
 
-
-	public void UpdateSessions() {
-		/// - Add new sessions
-		synchronized (m_sessionAddQueue) {
-			for (WorldSession s : m_sessionAddQueue) {
-				LOGGER.info("Adding session from m_sessionAddQueue",this);
-				SessionMap.put(s.id, s);
-			}
-			m_sessionAddQueue.clear();
-		}
-
-		// update world session packets
-		for (Iterator<WorldSession> iterator = SessionMap.values().iterator(); iterator.hasNext();) {
-			WorldSession s = (WorldSession) iterator.next();
-			if (!s.Update())
-				iterator.remove();
-		}
-
-	}
 
 	public static World getInstance() {
 		if (instance == null) {
@@ -83,7 +64,7 @@ public class World {
 	private World() {}
 
 	//start the world
-	public void startWorld(TileMap tm) {
+	public void startWorld(GameMap tm) {
 		this.tm = tm;
 	}
 
@@ -160,7 +141,21 @@ public class World {
 	public void update() {
 		
 		//add sessions in queue and process / remove closed sessions
-		UpdateSessions();
+		/// - Add new sessions
+		synchronized (m_sessionAddQueue) {
+			for (WorldSession s : m_sessionAddQueue) {
+				LOGGER.info("Adding session from m_sessionAddQueue",this);
+				SessionMap.put(s.id, s);
+			}
+			m_sessionAddQueue.clear();
+		}
+
+		// update world session packets
+		for (Iterator<WorldSession> iterator = SessionMap.values().iterator(); iterator.hasNext();) {
+			WorldSession s = (WorldSession) iterator.next();
+			if (!s.Update())
+				iterator.remove();
+		}
 
 		//add objects
 		while (!m_objectSpawnQueue.isEmpty()) 
@@ -174,7 +169,7 @@ public class World {
 		}
 
 		//update all locations
-		if (System.currentTimeMillis() - lastbroadcast > game.Constants.POSITION_UPDATE_SEND_FREQUENCY) {
+		if (System.currentTimeMillis() - lastbroadcast > game.GameConstants.POSITION_UPDATE_SEND_FREQUENCY) {
 			for (GameObject entity : m_gameObjectsMap.values()) {
 					entity.broadcaster.QueuePacket(new WorldPacket(WorldPacket.MOVEMENT_DATA, entity.getEntityPacket()), false, entity.gethandle());
 			}
@@ -194,9 +189,9 @@ public class World {
 		}
 
 		// update all entities in world
-		for (GameObject entity : m_gameObjectsMap.values()) {
-			entity.update(this);
-		}
+		//for (GameObject entity : m_gameObjectsMap.values()) {
+		//	entity.update(this);
+		//}
 	}
 
 }

@@ -4,13 +4,13 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import game.World;
-import vmaps.TileMap;
+import vmaps.GameMap;
 
 public class Coin extends WorldObject {
 
 	// private BufferedImage[] sprites;
 
-	public Coin(TileMap tm) {
+	public Coin(GameMap tm) {
 		super(tm);
 
 		width = 20;

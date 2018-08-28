@@ -9,24 +9,18 @@ import java.io.InputStreamReader;
 
 import javax.imageio.ImageIO;
 
+import game.GameConstants;
+
 import java.io.InputStream;
 
 
-public class TileMap {
+public class GameMap {
 
 	// position
-	private double x;
-	private double y;
 
-	// bounds
-	private int xmin;
-	private int ymin;
-	private int xmax;
-	private int ymax;
-
-	private double tween; // smoothly scrolling camera
 
 	// map
+	private Cell[][] grid;
 	private int[][] map;
 	private int tileSize;
 	private int numRows;
@@ -40,10 +34,8 @@ public class TileMap {
 	private Tile[][] tiles;
 
 
-	public TileMap(int tileSize) {
+	public GameMap(int tileSize) {
 		this.tileSize = tileSize;
-
-		tween = 0.07;
 	}
 
 	public void loadTiles(String s) {
@@ -74,7 +66,7 @@ public class TileMap {
 			map = new int[numRows][numCols];
 			width = numCols * tileSize;
 			height = numRows * tileSize;
-
+			grid = new Cell[width/GameConstants.WIDTH][height/GameConstants.HEIGHT];
 							
 			String delims = "\\s+";
 			for (int row = 0; row < numRows; row++) {
@@ -94,25 +86,12 @@ public class TileMap {
 		return tileSize;
 	}
 
-	public double getx() {
-		return x;
-	}
-
-	public double gety() {
-		return y;
-	}
-
 	public int getWidth() {
 		return width;
 	}
 
 	public int getHeight() {
 		return height;
-	}
-	
-	public void setTween(double t)
-	{
-		tween = t;
 	}
 	
 	public int getNumRows() { return numRows; }
@@ -126,23 +105,8 @@ public class TileMap {
 		return tiles[r][c].getType();
 	}
 
-	public void setPosition(double x, double y) {
-		this.x += (x - this.x) * tween;
-		this.y += (y - this.y) * tween;
-
-		fixBounds();
-	}
-
-	private void fixBounds() {
-		if (x < xmin)
-			x = xmin;
-		if (y < ymin)
-			y = ymin;
-		if (x > xmax)
-			x = xmax;
-		if (y > ymax)
-			y = ymax;
+	public void update() {
+		
 		
 	}
-
 }

@@ -1,12 +1,12 @@
 package objects;
 
 import game.World;
-import vmaps.TileMap;
+import vmaps.GameMap;
 
 public abstract class WorldObject extends GameObject {
 
 	// constructor
-	public WorldObject(TileMap tm) {
+	public WorldObject(GameMap tm) {
 		super(tm);
 	}
 

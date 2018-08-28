@@ -1,9 +1,9 @@
 package objects;
-import vmaps.TileMap;
+import vmaps.GameMap;
 
 public class Player extends Unit{
 	public boolean is_player;
-	public Player(TileMap tm) {
+	public Player(GameMap tm) {
 		super(tm);
 		// TODO Auto-generated constructor stub
 		cwidth = 30;

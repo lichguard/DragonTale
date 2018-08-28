@@ -4,7 +4,7 @@ package objects;
 
 
 import game.World;
-import vmaps.TileMap;
+import vmaps.GameMap;
 
 public class Explosion extends WorldObject {
 
@@ -15,7 +15,7 @@ public class Explosion extends WorldObject {
 	//private Animation animation;
 	//private BufferedImage[] sprites;
 
-	public Explosion(TileMap tm)
+	public Explosion(GameMap tm)
 	{
 		super(tm);
 		width = 30;

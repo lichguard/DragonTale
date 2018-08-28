@@ -4,7 +4,7 @@ package objects;
 import java.util.ArrayList;
 
 import  game.World;
-import vmaps.TileMap;
+import vmaps.GameMap;
 public class FireBall extends WorldObject{
 
 	//private boolean hit;
@@ -12,7 +12,7 @@ public class FireBall extends WorldObject{
 	//private BufferedImage[] sprites;
 	//private BufferedImage[] hitSprites;
 
-	public FireBall(TileMap tm, boolean right,double x, double y,int damage) {
+	public FireBall(GameMap tm, boolean right,double x, double y,int damage) {
 		super(tm);
 		
 		this.x = x;

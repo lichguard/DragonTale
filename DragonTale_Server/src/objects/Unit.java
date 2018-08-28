@@ -1,6 +1,6 @@
 package objects;
 import game.World;
-import vmaps.TileMap;
+import vmaps.GameMap;
 
 
 public class Unit extends WorldObject {
@@ -27,7 +27,7 @@ public class Unit extends WorldObject {
 	public double ping = 200;
 	public long interpolation_tick_start = 0;
 
-	public Unit(TileMap tm) {
+	public Unit(GameMap tm) {
 		super(tm);
 
 		speech_bubble = "";
