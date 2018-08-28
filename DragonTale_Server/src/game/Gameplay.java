@@ -1,9 +1,10 @@
 package game;
 
 import java.awt.Point;
-import Entity.Spawner;
-import TileMap.TileMap;
+
 import network.Listener;
+import objects.Spawner;
+import vmaps.TileMap;
 
 public class Gameplay implements Runnable {
 
@@ -70,7 +71,9 @@ public class Gameplay implements Runnable {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		Listener.getInstance().requestShutDown();
+		
+		Listener.getInstance().shutdown();
+		World.getInstance().shutdown();
 
 	}
 

@@ -1,8 +1,8 @@
 package component;
 
-import dt.entity.Entity;
-import dt.network.Session;
+import entity.Entity;
 import main.World;
+import network.Session;
 
 public class BroadCastEntityComponent implements IComponent {
 

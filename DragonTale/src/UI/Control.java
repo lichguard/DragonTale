@@ -5,7 +5,8 @@ import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import main.CONTROLS;
-import main.Gameplay;
+import main.GameConstants;
+
 
 public abstract class Control {
 
@@ -55,16 +56,16 @@ public abstract class Control {
 		if (x > 1 || y > 1 || x < 0 || y < 0)
 			throw new Error("Invalid Position");
 			
-		this.x = (int) ((float) Gameplay.WIDTH * x);
-		this.y = (int) ((float) Gameplay.HEIGHT * y);
+		this.x = (int) ((float) GameConstants.WIDTH * x);
+		this.y = (int) ((float) GameConstants.HEIGHT * y);
 	}
 
 	public void setsize(float width, float height) {
 		if (width > 1 || height > 1 || width < 0 || height < 0)
 			throw new Error("Invalid size");
 		
-		this.width = (int) ((float) Gameplay.WIDTH * width);
-		this.height = (int) ((float) Gameplay.HEIGHT * height);
+		this.width = (int) ((float) GameConstants.WIDTH * width);
+		this.height = (int) ((float) GameConstants.HEIGHT * height);
 
 	}
 

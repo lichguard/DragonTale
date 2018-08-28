@@ -39,15 +39,14 @@ public class WorldSocket {
 	}
 
 	public void disconnect() {
-		// LOGGER.log(Level.INFO, "Client " + id + " has disconnected...", this);
-		// Listener.getInstance().commandsPackets.add(new
-		
+		 LOGGER.info("Disconnecting client " + id + "...", this);
+
 		if (m_session != null && m_session._player != null)
 		 World.getInstance().requestObjectDespawn(m_session._player.gethandle());
 		
 		
 		try {
-			if (clientSocket != null && !clientSocket.isClosed()) {
+			if (clientSocket != null) {
 				clientSocket.close();
 				clientSocket = null;
 			}

@@ -5,7 +5,7 @@ import java.awt.Font;
 import java.awt.Graphics2D;
 import java.util.Iterator;
 
-import dt.entity.Entity;
+import entity.Entity;
 
 
 public class DrawSpeechComponent implements IRender {

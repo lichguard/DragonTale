@@ -6,7 +6,7 @@ public class Main {
 	public static void main(String[] args) {
 			JFrame obj = new JFrame();
 			Gameplay gameplay = new Gameplay();
-			obj.setBounds(10, 10, Gameplay.WIDTH, Gameplay.HEIGHT);
+			obj.setBounds(10, 10, GameConstants.WIDTH, GameConstants.HEIGHT);
 			obj.setTitle("Dragon Tale");
 			obj.setResizable(false);
 			obj.setVisible(true);

@@ -3,12 +3,13 @@ package network;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.UUID;
-import Entity.Player;
+
 import PACKET.MovementData;
 import PACKET.NetworkSpawner;
 import PACKET.WorldPacket;
 import game.World;
 import main.LOGGER;
+import objects.Player;
 
 public class WorldSession {
 

@@ -1,7 +1,6 @@
-package TileMap;
+package vmaps;
 
 
-import java.awt.Graphics2D;
 
 import java.awt.image.BufferedImage;
 
@@ -10,16 +9,14 @@ import java.io.InputStreamReader;
 
 import javax.imageio.ImageIO;
 
-import main.GameConstants;
-
-
 import java.io.InputStream;
+
 
 public class TileMap {
 
 	// position
-	private float x;
-	private float y;
+	private double x;
+	private double y;
 
 	// bounds
 	private int xmin;
@@ -27,7 +24,7 @@ public class TileMap {
 	private int xmax;
 	private int ymax;
 
-	private float tween; // smoothly scrolling camera
+	private double tween; // smoothly scrolling camera
 
 	// map
 	private int[][] map;
@@ -42,17 +39,11 @@ public class TileMap {
 	private int numTilesAcross;
 	private Tile[][] tiles;
 
-	// drawing
-	private int rowOffset;
-	private int colOffset;
-	private int numRowsToDraw;
-	private int numColsToDraw;
 
 	public TileMap(int tileSize) {
 		this.tileSize = tileSize;
-		numRowsToDraw = GameConstants.HEIGHT / tileSize + 2;
-		numColsToDraw = GameConstants.WIDTH / tileSize + 2;
-		tween = 0.07f;
+
+		tween = 0.07;
 	}
 
 	public void loadTiles(String s) {
@@ -84,11 +75,6 @@ public class TileMap {
 			width = numCols * tileSize;
 			height = numRows * tileSize;
 
-			xmin = GameConstants.WIDTH - width;
-			xmax = 0;
-			
-			ymin = GameConstants.HEIGHT - height;
-			ymax = 0;
 							
 			String delims = "\\s+";
 			for (int row = 0; row < numRows; row++) {
@@ -108,11 +94,11 @@ public class TileMap {
 		return tileSize;
 	}
 
-	public float getx() {
+	public double getx() {
 		return x;
 	}
 
-	public float gety() {
+	public double gety() {
 		return y;
 	}
 
@@ -124,7 +110,7 @@ public class TileMap {
 		return height;
 	}
 	
-	public void setTween(float t)
+	public void setTween(double t)
 	{
 		tween = t;
 	}
@@ -140,21 +126,11 @@ public class TileMap {
 		return tiles[r][c].getType();
 	}
 
-	public void initPosition(float x, float y)
-	{
-		this.x = x;
-		this.y = y;
-	}
-	
-	public void setPosition(float x, float y) {
+	public void setPosition(double x, double y) {
 		this.x += (x - this.x) * tween;
 		this.y += (y - this.y) * tween;
 
 		fixBounds();
-
-		colOffset = (int) -this.x / tileSize;
-		rowOffset = (int) -this.y / tileSize;
-		
 	}
 
 	private void fixBounds() {
@@ -167,29 +143,6 @@ public class TileMap {
 		if (y > ymax)
 			y = ymax;
 		
-	}
-
-	public void draw(Graphics2D g) {
-		
-		for (int row = rowOffset; row < rowOffset + numRowsToDraw; row++) 
-		{
-			if (row >= numRows)
-				break;
-			for (int col = colOffset; col < colOffset + numColsToDraw; col++) 
-			{
-				if (col >= numCols)
-					break;
-
-				if (map[row][col] == 0)
-					continue;
-				
-				int rc = map[row][col];
-				int r = rc / numTilesAcross;
-				int c = rc % numTilesAcross;
-	
-				g.drawImage(tiles[r][c].getImage(), (int) x + col * tileSize, (int) y + row * tileSize, null);
-			}
-		}
 	}
 
 }

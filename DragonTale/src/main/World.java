@@ -8,9 +8,9 @@ import java.util.Stack;
 import java.util.logging.Level;
 
 import TileMap.TileMap;
-import dt.entity.Entity;
-import dt.entity.Spawner;
-import dt.network.Session;
+import entity.Entity;
+import entity.Spawner;
+import network.Session;
 
 public class World {
 	public Map<Integer, Entity> entities = new HashMap<Integer, Entity>();

@@ -6,10 +6,10 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import Entity.GameObject;
-import Entity.Player;
 import PACKET.WorldPacket;
 import main.LOGGER;
+import objects.GameObject;
+import objects.Player;
 
 public class PlayerBroadcaster {
 

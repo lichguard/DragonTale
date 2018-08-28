@@ -7,15 +7,15 @@ import java.util.Map;
 import java.util.Stack;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentLinkedDeque;
-import Entity.GameObject;
-import Entity.Spawner;
 
 import PACKET.NetworkSpawner;
 import PACKET.WorldPacket;
-import TileMap.TileMap;
 import main.LOGGER;
 import network.WorldSession;
 import network.WorldSocket;
+import objects.GameObject;
+import objects.Spawner;
+import vmaps.TileMap;
 
 public class World {
 	public static final int MAX_ENTITIES = 100;
@@ -71,6 +71,15 @@ public class World {
 		return instance;
 	}
 
+	public void shutdown() {
+		LOGGER.info("Shuting down world...", this);
+		for (WorldSession s : m_sessionAddQueue) {
+			s.worldsocket.disconnect();
+		}
+		for (WorldSession s : SessionMap.values()) {
+			s.worldsocket.disconnect();
+		}
+	}
 	private World() {}
 
 	//start the world
@@ -87,7 +96,7 @@ public class World {
 	}
 
 	public int requestObjectSpawn(int type, double x, double y, boolean facing, boolean network,WorldSocket socketcallback) {
-		if (Entity.Spawner.entities_count <= type || type < 0)
+		if (objects.Spawner.entities_count <= type || type < 0)
 			return -1;
 
 		int handle = handle_generator++;

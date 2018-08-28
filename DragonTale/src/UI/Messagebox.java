@@ -3,7 +3,8 @@ import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 
-import main.Gameplay;
+import main.GameConstants;
+
 
 
 public class Messagebox extends Control {
@@ -35,7 +36,7 @@ public class Messagebox extends Control {
 		super.draw(g);
 		g.setFont(font);
 		g.setColor(bgcolor);
-		g.fillRect(0, y, Gameplay.WIDTH, height + font.getSize());
+		g.fillRect(0, y, GameConstants.WIDTH, height + font.getSize());
 		g.setColor(forecolor);
 		g.drawString(text, x+2, y + font.getSize());
 		

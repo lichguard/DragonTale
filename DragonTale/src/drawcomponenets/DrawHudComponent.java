@@ -5,10 +5,11 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.util.Iterator;
 
-import dt.entity.Entity;
-import dt.network.Session;
+import entity.Entity;
+import main.GameConstants;
 import main.Gameplay;
 import main.World;
+import network.Session;
 
 public class DrawHudComponent implements IRender {
 
@@ -35,16 +36,16 @@ public class DrawHudComponent implements IRender {
 		g.drawString("Coins: " + entity.coins, 30, 65);
 
 		
-		if (!Gameplay.DEBUG)
+		if (!GameConstants.DEBUG)
 			return;
-		g.drawString("SpeedX: " + entity.getdx(), Gameplay.WIDTH - 100, 25);
-		g.drawString("SpeedY: " + entity.getdy(), Gameplay.WIDTH - 100, 45);
+		g.drawString("SpeedX: " + entity.getdx(), GameConstants.WIDTH - 100, 25);
+		g.drawString("SpeedY: " + entity.getdy(), GameConstants.WIDTH - 100, 45);
 
-		g.drawString("PosX: " + entity.getx(), Gameplay.WIDTH - 100, 70);
-		g.drawString("PosY: " + entity .gety(), Gameplay.WIDTH - 100, 95);
-		g.drawString("Entities: " + world.getEntitityCount(), Gameplay.WIDTH - 100, 115);
+		g.drawString("PosX: " + entity.getx(), GameConstants.WIDTH - 100, 70);
+		g.drawString("PosY: " + entity .gety(), GameConstants.WIDTH - 100, 95);
+		g.drawString("Entities: " + world.getEntitityCount(), GameConstants.WIDTH - 100, 115);
 
-		g.drawString("frame: " + Gameplay.FPS + " ms", Gameplay.WIDTH - 100, 135);
+		g.drawString("frame: " + Gameplay.FPS + " ms", GameConstants.WIDTH - 100, 135);
 
 	}
 

@@ -1,9 +1,9 @@
 package component;
 
-import dt.entity.Animation;
-import dt.entity.Entity;
-import dt.network.Session;
+import entity.Animation;
+import entity.Entity;
 import main.World;
+import network.Session;
 
 public class AnimationComponent implements  IComponent {
 

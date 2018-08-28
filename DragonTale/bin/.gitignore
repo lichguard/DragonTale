@@ -8,8 +8,11 @@
 /TileMap/
 /Tilesets/
 /UI/
+/audio/
 /component/
 /component_temp/
 /drawcomponenets/
-/dt/
+/entity/
+/gamestate/
 /main/
+/network/

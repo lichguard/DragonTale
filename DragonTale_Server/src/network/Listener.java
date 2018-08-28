@@ -51,13 +51,11 @@ public class Listener implements Runnable {
 		runningThread.start();
 	}
 	
-	public void requestShutDown() {
+	public void shutdown() {
+		LOGGER.info("Shuting down listener...", this);
 		if (runningThread != null && runningThread.isAlive() && !runningThread.isInterrupted())
 			runningThread.interrupt();
-	}
-	
-	public void shutdown() {
-
+		
 		//closed the server socket
 		if (this.serverSocket != null && !this.serverSocket.isClosed()) {
 			try {
@@ -72,12 +70,6 @@ public class Listener implements Runnable {
 			this.WorkerRunnable.shutdown();
 		}
 		
-		//closes the server thread
-		if (this.runningThread != null && this.runningThread != Thread.currentThread()) {
-			if (this.runningThread.isAlive()) {
-				this.runningThread.interrupt();
-			}
-		}
 		
 
 		LOGGER.log(Level.INFO, "Server Stopped", this);
@@ -119,7 +111,7 @@ public class Listener implements Runnable {
 			}
 		}
 		
-		this.shutdown();
+		
 	}
 
 

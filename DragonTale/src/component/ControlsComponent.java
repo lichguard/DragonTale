@@ -10,12 +10,12 @@ import PACKET.WorldPacket;
 import UI.Textbox;
 import drawcomponenets.DrawChatBoxComponenet;
 import drawcomponenets.IRender;
-import dt.entity.Entity;
-import dt.network.Session;
+import entity.Entity;
 import main.CONTROLS;
-import main.Gameplay;
+import main.GameConstants;
 import main.LOGGER;
 import main.World;
+import network.Session;
 
 public class ControlsComponent implements IComponent {
 
@@ -38,7 +38,7 @@ public class ControlsComponent implements IComponent {
 	@Override
 	public void update() {
 		handleInput();
-		world.tm.setPosition(Gameplay.WIDTH / 2 - entity.getx(), Gameplay.HEIGHT / 2 - entity.gety());
+		world.tm.setPosition(GameConstants.WIDTH / 2 - entity.getx(), GameConstants.HEIGHT / 2 - entity.gety());
 
 		/*
 		 * if (!entity.flinching) { ArrayList<ENTITY> entities =

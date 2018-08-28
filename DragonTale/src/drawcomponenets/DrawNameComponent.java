@@ -5,9 +5,9 @@ import java.awt.Font;
 import java.awt.Graphics2D;
 import java.util.Iterator;
 
-import dt.entity.Entity;
-import dt.network.Session;
+import entity.Entity;
 import main.World;
+import network.Session;
 
 public class DrawNameComponent implements IRender {
 

@@ -2,7 +2,7 @@ package component_temp;
 
 import java.awt.Graphics2D;
 
-import dt.entity.Animation;
+import entity.Animation;
 
 public class ComponenetSystem {
 
