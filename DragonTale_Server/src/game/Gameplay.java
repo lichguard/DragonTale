@@ -5,6 +5,7 @@ import java.awt.Point;
 import network.Listener;
 import objects.Spawner;
 import vmaps.GameMap;
+import vmaps.MapManager;
 
 public class Gameplay implements Runnable {
 
@@ -28,20 +29,19 @@ public class Gameplay implements Runnable {
 	private void init() {
 		running = true;
 		thread = Thread.currentThread();
-		tileMap = new GameMap(30);
+		tileMap = MapManager.getInstance().createMap(30);
 		tileMap.loadTiles("/TileSets/grasstileset.gif");
 		tileMap.loadMap("/Maps/level1-1.map");
 		//tileMap.setPosition(0, 0);
-		tileMap.setTween(0.07);
 		World.getInstance().startWorld(tileMap);
 		Listener.getInstance().start();
-
+/*
 		Point[] points = new Point[] { new Point(100, 20) };
 
 		for (Point p : points) {
 			World.getInstance().requestObjectSpawn(Spawner.SLUGGER, p.x, p.y, true, false, null);
 		}
-
+*/
 	}
 
 	public void addNotify() {

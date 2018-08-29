@@ -26,7 +26,7 @@ public class Explosion extends WorldObject {
 	
 	public void update(World world)
 	{
-		setMapPosition();
+		//setMapPosition();
 		
 		//if (animation.hasPlayedOnce())
 		//	world.despawn_entity(this.handle);

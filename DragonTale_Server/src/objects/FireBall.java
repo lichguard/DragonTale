@@ -54,7 +54,7 @@ public class FireBall extends WorldObject{
 		checkTileMapCollision();
 		setPosition(xtemp, ytemp);
 
-		setMapPosition();
+		//setMapPosition();
 		
 	}
 

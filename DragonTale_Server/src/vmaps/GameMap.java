@@ -10,6 +10,7 @@ import java.io.InputStreamReader;
 import javax.imageio.ImageIO;
 
 import game.GameConstants;
+import objects.GameObject;
 
 import java.io.InputStream;
 
@@ -20,7 +21,7 @@ public class GameMap {
 
 
 	// map
-	private Cell[][] grid;
+	
 	private int[][] map;
 	private int tileSize;
 	private int numRows;
@@ -32,8 +33,10 @@ public class GameMap {
 	private BufferedImage tileset;
 	private int numTilesAcross;
 	private Tile[][] tiles;
+	public Cell[][] grid;
 
 
+	
 	public GameMap(int tileSize) {
 		this.tileSize = tileSize;
 	}
@@ -66,8 +69,8 @@ public class GameMap {
 			map = new int[numRows][numCols];
 			width = numCols * tileSize;
 			height = numRows * tileSize;
-			grid = new Cell[width/GameConstants.WIDTH][height/GameConstants.HEIGHT];
-							
+			grid = new Cell[(width/GameConstants.WIDTH)+1][(height/GameConstants.HEIGHT)+1];
+			
 			String delims = "\\s+";
 			for (int row = 0; row < numRows; row++) {
 				String line = br.readLine();
@@ -105,8 +108,7 @@ public class GameMap {
 		return tiles[r][c].getType();
 	}
 
-	public void update() {
-		
-		
-	}
+
+	
+
 }

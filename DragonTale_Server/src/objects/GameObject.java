@@ -3,18 +3,21 @@ package objects;
 import java.awt.Rectangle;
 import java.util.ArrayList;
 
+import game.GameConstants;
 import game.World;
+import main.LOGGER;
 import network.PlayerBroadcaster;
 import vmaps.Cell;
 import vmaps.Tile;
 import vmaps.GameMap;
 import PACKET.MovementData;
 import PACKET.NetworkSpawner;
+import PACKET.WorldPacket;
 
 public abstract class GameObject {
 	
 		protected World world;
-		protected GameMap gameMap;
+		public GameMap gameMap;
 		protected int tileSize;
 		protected double xmap;
 		protected double ymap;
@@ -255,9 +258,31 @@ public abstract class GameObject {
 		}
 
 
-		public void setMapPosition() {
+		public boolean setMapPosition() {
 		//	xmap = gameMap.getx();
 			//ymap = gameMap.gety();
+			boolean keep_in_map = true;
+				int cell_x  = getx()/GameConstants.WIDTH;
+				int cell_y =  gety()/GameConstants.HEIGHT;
+				//System.out.println("x:" + cell_x + " y: " +cell_y);
+				//if need to reposition
+				
+				if (cell == null || cell != gameMap.grid[cell_x][cell_y]) {
+					//if regisitered to an old cell
+					if (cell != null) {
+						keep_in_map = false;
+						
+					}
+					//create the cell if needed
+					if(gameMap.grid[cell_x][cell_y] == null) {
+						gameMap.grid[cell_x][cell_y] = new Cell(cell_x,cell_y);
+					}
+					//finally register object
+					gameMap.grid[cell_x][cell_y].registerObject(this);
+					LOGGER.info("MOVED TO CELL: " + cell_x + ", " + cell_y + " HANDLE: " + gethandle() , this);
+		
+			}
+				return keep_in_map;
 		}
 
 		public void setLeft(boolean b) {
@@ -276,6 +301,7 @@ public abstract class GameObject {
 			down = b;
 		}
 
+		long lastbroadcast = 0;
 		public void update(World world)
 		{	
 			if (isNetowrkEntity)
@@ -290,8 +316,13 @@ public abstract class GameObject {
 				
 				
 			}
-			setMapPosition();
+			
 			broadcaster.ProcessQueue(0);
+			
+			if (System.currentTimeMillis() - lastbroadcast > game.GameConstants.POSITION_UPDATE_SEND_FREQUENCY) {
+				broadcaster.QueuePacket(new WorldPacket(WorldPacket.MOVEMENT_DATA, getEntityPacket()), false, gethandle());
+				lastbroadcast = System.currentTimeMillis();
+			}
 			
 		}
 		

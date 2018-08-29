@@ -75,12 +75,13 @@ public class Spawner {
 		}
 		entity.type =type;
 		entity.isNetowrkEntity = network;
+		entity.setHandle(handle);
 		entity.setPosition(x, y);
 		entity.setMapPosition();
 		entity.setRight(facing);
 		entity.setLeft(!facing);
 		entity.facingRight = facing;
-		entity.setHandle(handle);
+		
 		LOGGER.log(Level.INFO, "new handle: " + handle, this);
 		World.getInstance().m_gameObjectsMap.put(handle, entity);
 	}

@@ -49,11 +49,18 @@ public class PlayerBroadcaster {
 	}
 
 	public void AddListener(Player p) {
+		//if (m_socket == null)
+		//	return;
+		if (m_socket != null && m_socket.m_session._player == p) {
+			return;
+		}
+		
 		synchronized (listeners ) {
-			if (!listeners.containsKey(p.gethandle())  && m_socket.m_session._player != p) {
+			if (!listeners.containsKey(p.gethandle())) {
 			listeners.put(p.gethandle(), p);
 			LOGGER.debug("NEW spawn sent!", this);
 			p.broadcaster.SendPacket(new WorldPacket(WorldPacket.SPAWN, object.getNetowrkSpawner()));
+			if (m_socket != null)
 			p.broadcaster.startListening(m_socket.m_session._player);
 			}
 		}
@@ -61,14 +68,19 @@ public class PlayerBroadcaster {
 	}
 
 	public void RemoveListener(Player p) {
+		
+		if (m_socket != null && m_socket.m_session._player == p) {
+			return;
+		}
 		synchronized (listeners) {
-			if (listeners.containsKey(p.gethandle()) && m_socket.m_session._player != p) {
+			if (listeners.containsKey(p.gethandle())) {
 				
 				//stop that player from listening to my broadcaster
 				listeners.remove(p.gethandle());
 				p.broadcaster.SendPacket(new WorldPacket(WorldPacket.DESPAWN, object.gethandle()));
 				
 				//tells the listener to stop listening to me if he is
+				if (m_socket != null)
 				p.broadcaster.stoplistening(m_socket.m_session._player);
 			}
 		}

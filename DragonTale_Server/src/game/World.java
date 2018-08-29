@@ -155,6 +155,7 @@ public class World {
 			WorldSession s = (WorldSession) iterator.next();
 			if (!s.Update())
 				iterator.remove();
+			
 		}
 
 		//add objects
@@ -168,8 +169,10 @@ public class World {
 			m_gameObjectsMap.remove(handle);
 		}
 
-		//update all locations
+	/*
 		if (System.currentTimeMillis() - lastbroadcast > game.GameConstants.POSITION_UPDATE_SEND_FREQUENCY) {
+			
+			//update all locations
 			for (GameObject entity : m_gameObjectsMap.values()) {
 					entity.broadcaster.QueuePacket(new WorldPacket(WorldPacket.MOVEMENT_DATA, entity.getEntityPacket()), false, entity.gethandle());
 			}
@@ -186,6 +189,14 @@ public class World {
 			}
 			
 			lastbroadcast = System.currentTimeMillis();
+		}
+		*/
+		// update world session packets
+		for (Iterator<WorldSession> iterator = SessionMap.values().iterator(); iterator.hasNext();) {
+			WorldSession s = (WorldSession) iterator.next();
+			if (s._player != null) {
+				s._player.cell.update();
+			}
 		}
 
 		// update all entities in world
