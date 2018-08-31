@@ -3,9 +3,9 @@ import vmaps.GameMap;
 
 public class Arachnik extends Enemy {
 
-	public Arachnik(GameMap tm) {
+	public Arachnik() {
 		
-		super(tm);
+		super();
 		width = 30;
 		height = 30;
 		cwidth = 20;

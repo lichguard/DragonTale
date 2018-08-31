@@ -27,8 +27,8 @@ public class Unit extends WorldObject {
 	public double ping = 200;
 	public long interpolation_tick_start = 0;
 
-	public Unit(GameMap tm) {
-		super(tm);
+	public Unit() {
+		super();
 
 		speech_bubble = "";
 		right = true;
@@ -200,7 +200,7 @@ public class Unit extends WorldObject {
 
 	}
 
-	private void scratchAttack(World world) {
+	private void scratchAttack() {
 /*
 		ArrayList<ENTITY> entities;
 		if (facingRight)
@@ -220,8 +220,8 @@ public class Unit extends WorldObject {
 	}
 
 	@Override
-	public void update(World world) {
-		super.update(world);
+	public void update() {
+		super.update();
 
 		if (isNetowrkEntity)
 			return;
@@ -249,12 +249,12 @@ public class Unit extends WorldObject {
 		// set animation
 			if (scratching) {
 				if (currentAction != ATTACK2) {
-					scratchAttack(world);
+					scratchAttack();
 					currentAction = ATTACK2;
 				}
 			} else if (firing) {
 				if (currentAction != ATTACK1) {
-					world.requestObjectSpawn(Spawner.FIREBALL, x, y, facingRight, false,null);
+					World.getInstance().requestObjectSpawn(Spawner.FIREBALL, x, y, facingRight, false,null);
 					currentAction = ATTACK1;
 
 				}

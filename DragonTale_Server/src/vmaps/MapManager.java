@@ -1,12 +1,6 @@
 package vmaps;
 
-import java.util.Iterator;
 import java.util.Vector;
-
-import game.GameConstants;
-import game.World;
-import network.WorldSession;
-import objects.GameObject;
 
 public class MapManager {
 
@@ -21,7 +15,7 @@ public class MapManager {
 		}
 		
 		public GameMap createMap(int tileSize) {
-			GameMap gm = new GameMap(tileSize); 
+			GameMap gm = new GameMap(); 
 			maps.add(gm);
 			return gm;
 		}

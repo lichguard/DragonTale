@@ -6,8 +6,8 @@ import vmaps.GameMap;
 public abstract class WorldObject extends GameObject {
 
 	// constructor
-	public WorldObject(GameMap tm) {
-		super(tm);
+	public WorldObject() {
+		super();
 	}
 
 	private void getNextPosition() {
@@ -34,8 +34,8 @@ public abstract class WorldObject extends GameObject {
 
 	}
 
-	public void update(World world) {
-		super.update(world);
+	public void update() {
+		super.update();
 		
 		getNextPosition();
 		checkTileMapCollision();

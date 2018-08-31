@@ -7,8 +7,8 @@ public class Enemy extends Unit {
 
 	protected int static_damage;
 
-	public Enemy(GameMap tm) {
-		super(tm);
+	public Enemy() {
+		super();
 		width = 30;
 		height = 30;
 		cwidth = 30;
@@ -38,19 +38,20 @@ public class Enemy extends Unit {
 			health = 0;
 	}
 
-	public void update(World world) {
-		super.update(world);
+	public void update() {
+		super.update();
 		if (health <= 0) {
-			//world.spawn_entity(Spawner.EXPLOSION, getx(), gety(), facingRight, false);
+			//world.requestObjectSpawn(Spawner.EXPLOSION, getx(), gety(), facingRight, false);
 			int x = (int) (Math.random() * 6.0);
 			for (int i = 0; i < 1 + x; i++)
-				world.requestObjectSpawn(Spawner.COIN, getx(), gety(), facingRight, false,null);
+				World.getInstance().requestObjectSpawn(Spawner.COIN, getx(), gety(), facingRight, false,null);
 
-			world.requestObjectDespawn(this.handle);
+			Despawn();
+			//World.getInstance().requestObjectDespawn(this.handle);
 		}
 
 		if (gety() > gameMap.getHeight()) {
-			world.requestObjectDespawn(this.handle);
+			World.getInstance().requestObjectDespawn(this.handle);
 		}
 
 		// if hits a wall go pother direciton

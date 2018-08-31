@@ -4,11 +4,6 @@ import java.awt.Point;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Vector;
-
-import javax.swing.text.html.HTMLDocument.HTMLReader.IsindexAction;
-
-import game.GameConstants;
 import game.World;
 import main.LOGGER;
 import objects.GameObject;
@@ -17,11 +12,11 @@ import objects.Spawner;
 
 public class Cell {
 
-	private boolean visited = false;
-	private boolean loaded = false;
-	private Map<Integer, GameObject> map = new HashMap<Integer, GameObject>();
+	private boolean visited = true;
+	public Map<Integer, GameObject> map = new HashMap<Integer, GameObject>();
 	private int cell_x;
 	private int cell_y;
+	
 	public Cell(int x, int y) {
 		cell_x = x;
 		cell_y = y;
@@ -69,24 +64,28 @@ public class Cell {
 					obj.broadcaster.RemoveListener((Player) current_obj);
 			}
 		}
-		//map.remove(handle);
 		
 	}
 	
-	public void update() {
-		//if (visited)
-		//	return;
+	public void update(boolean visited) {
+		//makes sure we update only once per update
+		if (this.visited == visited)
+			return;
+		
+		this.visited = !this.visited;
 		
 		//visited = true;
 		for (Iterator<GameObject> iterator = map.values().iterator(); iterator.hasNext();) {
 			GameObject obj = (GameObject) iterator.next();
-			obj.update(World.getInstance());
+			
 			if (!obj.setMapPosition()) {
 				unregisterObject(obj.gethandle());
 				LOGGER.debug("UNREGISTERING: " +  cell_x +  "," + cell_y + " HANDLE:" + obj.gethandle() , this);
 			
 				iterator.remove();
+				continue;
 			}
+			obj.update();
 			
 		}
 

@@ -31,6 +31,7 @@ public class World {
 	private static World instance = null;
 	public GameMap tm = null;
 	public long lastbroadcast = 0;
+	public boolean visited_update = true;
 	
 	//find session in world
 	public WorldSession FindSession(UUID id) {
@@ -87,6 +88,7 @@ public class World {
 	}
 
 	public void requestObjectDespawn(int handle) {
+		LOGGER.info("REQUESTING DESPAWNING HANDLE: " + handle , this);
 		m_objectRemoveQueue.push(handle);
 	}
 
@@ -140,8 +142,7 @@ public class World {
 
 	public void update() {
 		
-		//add sessions in queue and process / remove closed sessions
-		/// - Add new sessions
+		//add sessions in queue
 		synchronized (m_sessionAddQueue) {
 			for (WorldSession s : m_sessionAddQueue) {
 				LOGGER.info("Adding session from m_sessionAddQueue",this);
@@ -150,7 +151,7 @@ public class World {
 			m_sessionAddQueue.clear();
 		}
 
-		// update world session packets
+		// process world session packets and do handlers
 		for (Iterator<WorldSession> iterator = SessionMap.values().iterator(); iterator.hasNext();) {
 			WorldSession s = (WorldSession) iterator.next();
 			if (!s.Update())
@@ -158,51 +159,33 @@ public class World {
 			
 		}
 
-		//add objects
+		//add requested objects
 		while (!m_objectSpawnQueue.isEmpty()) 
 			m_objectSpawnQueue.pop().create_entity();
+			
 
 		//remove objects
 		while (!m_objectRemoveQueue.isEmpty()) {
 			int handle = m_objectRemoveQueue.pop();
-			m_gameObjectsMap.get(handle).broadcaster.ClearListeners();
+
+			LOGGER.info("DESPAWNING HANDLE: " + handle , this);
+			
+			m_gameObjectsMap.get(handle).cell.unregisterObject(handle);
+			m_gameObjectsMap.get(handle).cell.map.remove(handle);
+			//m_gameObjectsMap.get(handle).broadcaster.ClearListeners();
 			m_gameObjectsMap.remove(handle);
+	
 		}
 
-	/*
-		if (System.currentTimeMillis() - lastbroadcast > game.GameConstants.POSITION_UPDATE_SEND_FREQUENCY) {
-			
-			//update all locations
-			for (GameObject entity : m_gameObjectsMap.values()) {
-					entity.broadcaster.QueuePacket(new WorldPacket(WorldPacket.MOVEMENT_DATA, entity.getEntityPacket()), false, entity.gethandle());
-			}
-			
-			//check who to spawn
-			for (WorldSession s : SessionMap.values()) {
-				if (s._player == null) {continue;}
-				ArrayList<GameObject> entities_close = getNearEntities(s._player.gethandle(),Gameplay.WIDTH / 2 + Gameplay.HEIGHT / 2, 0, 360);
-
-				for (GameObject near : entities_close) {
-					near.broadcaster.AddListener(s._player);
-				}
-				
-			}
-			
-			lastbroadcast = System.currentTimeMillis();
-		}
-		*/
+		//to make sure we dont visit the same cell twice
+		this.visited_update = !visited_update;
 		// update world session packets
 		for (Iterator<WorldSession> iterator = SessionMap.values().iterator(); iterator.hasNext();) {
 			WorldSession s = (WorldSession) iterator.next();
 			if (s._player != null) {
-				s._player.cell.update();
+				s._player.cell.update(visited_update);
 			}
 		}
-
-		// update all entities in world
-		//for (GameObject entity : m_gameObjectsMap.values()) {
-		//	entity.update(this);
-		//}
 	}
 
 }

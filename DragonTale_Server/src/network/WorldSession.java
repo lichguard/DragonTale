@@ -7,9 +7,11 @@ import java.util.UUID;
 import PACKET.MovementData;
 import PACKET.NetworkSpawner;
 import PACKET.WorldPacket;
+import database.Account;
 import game.World;
 import main.LOGGER;
 import objects.Player;
+import objects.Spawner;
 
 public class WorldSession {
 
@@ -56,7 +58,7 @@ public class WorldSession {
 
 	// AccountTypes _security;
 	public Player _player;
-
+	public Account account = null;
 	public void ExecuteOpcode() {
 	}
 
@@ -72,9 +74,9 @@ public class WorldSession {
 
 	public void handleLogin(WorldPacket packet) {
 		LOGGER.info("handleLogin", this);
-		int handle = World.getInstance().requestObjectSpawn(0, 100, 0, false, true, worldsocket); //0 - playerped
+		int handle = World.getInstance().requestObjectSpawn(Spawner.PLAYERPED, account.x, account.y, false, true, worldsocket); //0 - playerped
 		SendWorldPacket(new WorldPacket(WorldPacket.LOGIN, 
-					new MovementData(handle, 100, 0, false)
+					new MovementData(handle, account.x, account.y, false)
 				));
 		
 	}

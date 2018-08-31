@@ -10,7 +10,6 @@ import PACKET.WorldPacket;
 
 import java.io.EOFException;
 import java.io.IOException;
-import UI.Control;
 import main.LOGGER;
 
 public class WorkerRunnableTCP implements Runnable {

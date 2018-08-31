@@ -1,9 +1,8 @@
 package game;
 
-import java.awt.Point;
 
 import network.Listener;
-import objects.Spawner;
+
 import vmaps.GameMap;
 import vmaps.MapManager;
 
@@ -32,7 +31,6 @@ public class Gameplay implements Runnable {
 		tileMap = MapManager.getInstance().createMap(30);
 		tileMap.loadTiles("/TileSets/grasstileset.gif");
 		tileMap.loadMap("/Maps/level1-1.map");
-		//tileMap.setPosition(0, 0);
 		World.getInstance().startWorld(tileMap);
 		Listener.getInstance().start();
 /*

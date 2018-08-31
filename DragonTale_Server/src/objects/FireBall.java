@@ -12,8 +12,8 @@ public class FireBall extends WorldObject{
 	//private BufferedImage[] sprites;
 	//private BufferedImage[] hitSprites;
 
-	public FireBall(GameMap tm, boolean right,double x, double y,int damage) {
-		super(tm);
+	public FireBall(boolean right,double x, double y,int damage) {
+		super();
 		
 		this.x = x;
 		this.y = y;
@@ -34,9 +34,9 @@ public class FireBall extends WorldObject{
 
 
 
-	public void update(World world) {
+	public void update() {
 		
-		ArrayList<GameObject> entities = world.getCollisions(this);
+		ArrayList<GameObject> entities = World.getInstance().getCollisions(this);
 		//check for collision with an enemy
 		for (GameObject entity : entities)
 		{
@@ -48,8 +48,10 @@ public class FireBall extends WorldObject{
 		}
 
 		//check for collision with tile
-		if (dx == 0)
-			world.requestObjectDespawn(this.handle); //setHit();
+		if (dx == 0) {
+			Despawn();
+			//World.getInstance().requestObjectDespawn(this.handle); //setHit();
+		}
 		
 		checkTileMapCollision();
 		setPosition(xtemp, ytemp);

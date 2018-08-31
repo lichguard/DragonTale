@@ -10,7 +10,6 @@ import java.io.InputStreamReader;
 import javax.imageio.ImageIO;
 
 import game.GameConstants;
-import objects.GameObject;
 
 import java.io.InputStream;
 
@@ -23,7 +22,6 @@ public class GameMap {
 	// map
 	
 	private int[][] map;
-	private int tileSize;
 	private int numRows;
 	private int numCols;
 	private int width;
@@ -37,22 +35,21 @@ public class GameMap {
 
 
 	
-	public GameMap(int tileSize) {
-		this.tileSize = tileSize;
+	public GameMap() {
 	}
 
 	public void loadTiles(String s) {
 		try {
 			tileset = ImageIO.read(getClass().getResourceAsStream(s));
-			numTilesAcross = tileset.getWidth() / tileSize;
+			numTilesAcross = tileset.getWidth() / GameConstants.TILESIZE;
 			tiles = new Tile[2][numTilesAcross];
 
 			BufferedImage subimage;
 			for (int i = 0; i < numTilesAcross; i++) {
-				subimage = tileset.getSubimage(i * tileSize, 0, tileSize, tileSize);
+				subimage = tileset.getSubimage(i * GameConstants.TILESIZE, 0, GameConstants.TILESIZE, GameConstants.TILESIZE);
 				tiles[0][i] = new Tile(subimage, Tile.NORMAL);
 
-				subimage = tileset.getSubimage(i * tileSize, tileSize, tileSize, tileSize);
+				subimage = tileset.getSubimage(i * GameConstants.TILESIZE, GameConstants.TILESIZE, GameConstants.TILESIZE, GameConstants.TILESIZE);
 				tiles[1][i] = new Tile(subimage, Tile.BLOCKED);
 			}
 		} catch (Exception e) {
@@ -67,8 +64,8 @@ public class GameMap {
 			numCols = Integer.parseInt(br.readLine());
 			numRows = Integer.parseInt(br.readLine());
 			map = new int[numRows][numCols];
-			width = numCols * tileSize;
-			height = numRows * tileSize;
+			width = numCols * GameConstants.TILESIZE;
+			height = numRows * GameConstants.TILESIZE;
 			grid = new Cell[(width/GameConstants.WIDTH)+1][(height/GameConstants.HEIGHT)+1];
 			
 			String delims = "\\s+";
@@ -85,9 +82,6 @@ public class GameMap {
 		}
 	}
 
-	public int getTileSize() {
-		return tileSize;
-	}
 
 	public int getWidth() {
 		return width;

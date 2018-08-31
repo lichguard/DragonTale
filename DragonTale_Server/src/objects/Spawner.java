@@ -50,7 +50,7 @@ public class Spawner {
 		GameObject entity = null;
 		switch (type) {
 		case PLAYERPED :
-			entity = new Player(World.getInstance().tm);
+			entity = new Player(socketCallback);
 			if (socketCallback != null) {
 				LOGGER.info("socketCallback worked for entity", this);
 				entity.broadcaster.setSocket(socketCallback);
@@ -58,22 +58,23 @@ public class Spawner {
 			}
 			break;
 		case ARACHNIK :
-			entity = new Arachnik(World.getInstance().tm);
+			entity = new Arachnik();
 			break;
 		case SLUGGER :
-			entity = new Slugger(World.getInstance().tm);
+			entity = new Slugger();
 			break;
 		case FIREBALL :
-			entity = new FireBall(World.getInstance().tm,facing,x,y,3);
+			entity = new FireBall(facing,x,y,3);
 			break;
 		case COIN :
-			entity = new Coin(World.getInstance().tm);
+			entity = new Coin();
 			break;
 		case EXPLOSION :
-			entity = new Explosion(World.getInstance().tm);
+			entity = new Explosion();
 			break;
 		}
-		entity.type =type;
+		entity.SetMap(World.getInstance().tm);
+		entity.type = type;
 		entity.isNetowrkEntity = network;
 		entity.setHandle(handle);
 		entity.setPosition(x, y);

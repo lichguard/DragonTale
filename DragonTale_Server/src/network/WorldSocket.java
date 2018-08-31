@@ -6,6 +6,7 @@ import java.net.SocketException;
 import java.util.UUID;
 import PACKET.AuthorizationPacket;
 import PACKET.WorldPacket;
+import database.Account;
 import database.MySQLDB;
 import game.World;
 import main.LOGGER;
@@ -17,7 +18,6 @@ public class WorldSocket {
 	protected int packet_size = 500;
 
 	public WorldSession m_session = null;
-
 	public TCPSocket tcp = null;
 	public UDPSocket udp = null;
 
@@ -42,8 +42,8 @@ public class WorldSocket {
 		 LOGGER.info("Disconnecting client " + id + "...", this);
 
 		if (m_session != null && m_session._player != null)
-		 World.getInstance().requestObjectDespawn(m_session._player.gethandle());
-		
+			m_session._player.Despawn();
+	
 		
 		try {
 			if (clientSocket != null) {
@@ -125,13 +125,25 @@ public class WorldSocket {
 
 	boolean HandleAuthSession(WorldPacket recvPacket) {
 
-		AuthorizationPacket pct = (AuthorizationPacket) recvPacket.data;
-		int Accountid = MySQLDB.getInstance().GetUserfromDB(pct.username, pct.password);
 		
-
+		AuthorizationPacket pct = (AuthorizationPacket) recvPacket.data;
+		//int Accountid = MySQLDB.getInstance().GetUserfromDB(pct.username, pct.password);
+		Account acc = Account.accounts_map.get(pct.username+pct.password);
+		if (acc == null) {
+			return false;
+		}
+		
 		m_session = new WorldSession(this);
-		m_session.AccountID = Accountid;
+		m_session.account = acc;
+
+		
+		//m_session.AccountID = Accountid;
 		m_session.id = id;
+		
+		
+		
+		
+		
 		//LOGGER.error("NOT IMPLMENETED YET!", this);
 		World.getInstance().AddSession(m_session);
 		SendWorldPacket(new WorldPacket(WorldPacket.HAND_SHAKE, "accepted"));

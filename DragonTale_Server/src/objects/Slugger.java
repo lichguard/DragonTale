@@ -4,8 +4,8 @@ import vmaps.GameMap;
 
 public class Slugger extends Enemy {
 
-	public Slugger(GameMap tm) {
-		super(tm);
+	public Slugger() {
+		super();
 		width = 30;
 		height = 30;
 		cwidth = 30;

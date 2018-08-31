@@ -4,14 +4,14 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import game.World;
-import vmaps.GameMap;
+
 
 public class Coin extends WorldObject {
 
 	// private BufferedImage[] sprites;
 
-	public Coin(GameMap tm) {
-		super(tm);
+	public Coin() {
+		super();
 
 		width = 20;
 		height = 30;
@@ -29,18 +29,19 @@ public class Coin extends WorldObject {
 		falling = true;
 	}
 
-	public void update(World world) {
+	public void update() {
 
 		if (!isNetowrkEntity) {
-			ArrayList<GameObject> entities = world.getCollisions(this);
+			ArrayList<GameObject> entities = World.getInstance().getCollisions(this);
 			for (GameObject entity : entities) {
 				if (entity instanceof Player) {
-					world.requestObjectDespawn(handle);
+					Despawn();
+					//World.getInstance().requestObjectDespawn(handle);
 					((Player) entity).addCoins(1);
 				}
 			}
 		}
-		super.update(world);
+		super.update();
 	}
 
 }

@@ -16,9 +16,7 @@ import PACKET.WorldPacket;
 
 public abstract class GameObject {
 	
-		protected World world;
 		public GameMap gameMap;
-		protected int tileSize;
 		protected double xmap;
 		protected double ymap;
 		protected int handle;
@@ -113,12 +111,10 @@ public abstract class GameObject {
 		}
 		
 		// constructor
-		public GameObject(GameMap tm) {
+		public GameObject() {
 			
 			broadcaster = new PlayerBroadcaster(this);
 			
-			gameMap = tm;
-			tileSize = tm.getTileSize();
 			removeEntity = false;
 			width = 30;
 			height = 30;
@@ -135,7 +131,10 @@ public abstract class GameObject {
 			right = true;
 		}
 
-
+		public void SetMap(GameMap gameMap) {
+			this.gameMap = gameMap;
+		}
+		
 		public void setHandle(int handle)
 		{
 			this.handle = handle;
@@ -150,10 +149,10 @@ public abstract class GameObject {
 		}
 
 		public void calculateCorners(double x, double y) {
-			int leftTile = (int) (x - cwidth / 2) / tileSize;
-			int rightTile = (int) (x + cwidth / 2 - 1) / tileSize;
-			int topTile = (int) (y - cheight / 2) / tileSize;
-			int bottomTile = (int) (y + cheight / 2 - 1) / tileSize;
+			int leftTile = (int) (x - cwidth / 2) / GameConstants.TILESIZE;
+			int rightTile = (int) (x + cwidth / 2 - 1) / GameConstants.TILESIZE;
+			int topTile = (int) (y - cheight / 2) / GameConstants.TILESIZE;
+			int bottomTile = (int) (y + cheight / 2 - 1) / GameConstants.TILESIZE;
 
 			if (topTile < 0 || bottomTile >= gameMap.getNumRows() || leftTile < 0 || rightTile >= gameMap.getNumCols()) {
 				topLeft = topRight = bottomLeft = bottomRight = false;
@@ -172,8 +171,8 @@ public abstract class GameObject {
 		}
 
 		public void checkTileMapCollision() {
-			currCol = (int) x / tileSize;
-			currRow = (int) y / tileSize;
+			currCol = (int) x / GameConstants.TILESIZE;
+			currRow = (int) y / GameConstants.TILESIZE;
 
 			xdest = x + dx;
 			ydest = y + dy;
@@ -184,26 +183,26 @@ public abstract class GameObject {
 
 			if (dy < 0 && (topLeft || topRight)) {
 				dy = 0;
-				ytemp = currRow * tileSize + cheight / 2;
+				ytemp = currRow * GameConstants.TILESIZE + cheight / 2;
 			}
 
 			if (dy > 0 && (bottomLeft || bottomRight)) {
 				dy = 0;
 				falling = false;
-				ytemp = (currRow + 1) * tileSize - cheight / 2;
+				ytemp = (currRow + 1) * GameConstants.TILESIZE - cheight / 2;
 			}
 
 			calculateCorners(xdest, y);
 
 			if (dx < 0 && (topLeft || bottomLeft)) {
 				dx = 0;
-				xtemp = currCol * tileSize + cwidth / 2;
+				xtemp = currCol * GameConstants.TILESIZE + cwidth / 2;
 				
 			}
 
 			if (dx > 0 && (topRight || bottomRight)) {
 				dx = 0;
-				xtemp = currCol * tileSize + cwidth/2;
+				xtemp = currCol * GameConstants.TILESIZE + cwidth/2;
 				// xtemp = currCol * tileSize - cwidth / 2;
 			}
 
@@ -259,14 +258,10 @@ public abstract class GameObject {
 
 
 		public boolean setMapPosition() {
-		//	xmap = gameMap.getx();
-			//ymap = gameMap.gety();
 			boolean keep_in_map = true;
 				int cell_x  = getx()/GameConstants.WIDTH;
 				int cell_y =  gety()/GameConstants.HEIGHT;
-				//System.out.println("x:" + cell_x + " y: " +cell_y);
-				//if need to reposition
-				
+
 				if (cell == null || cell != gameMap.grid[cell_x][cell_y]) {
 					//if regisitered to an old cell
 					if (cell != null) {
@@ -279,7 +274,7 @@ public abstract class GameObject {
 					}
 					//finally register object
 					gameMap.grid[cell_x][cell_y].registerObject(this);
-					LOGGER.info("MOVED TO CELL: " + cell_x + ", " + cell_y + " HANDLE: " + gethandle() , this);
+					LOGGER.info(gethandle() + " MOVED TO CELL: " + cell_x + "," + cell_y  , this);
 		
 			}
 				return keep_in_map;
@@ -301,9 +296,16 @@ public abstract class GameObject {
 			down = b;
 		}
 
+		public boolean IsInWorld() {
+			return gameMap != null;
+		}
+		
 		long lastbroadcast = 0;
-		public void update(World world)
+		public void update()
 		{	
+			if (!IsInWorld())
+				return;
+			
 			if (isNetowrkEntity)
 			{
 				double t = (System.currentTimeMillis() - interpolation_start) / ping;
@@ -312,7 +314,8 @@ public abstract class GameObject {
 			}
 			
 			if (gety() > gameMap.getHeight()) {
-				world.requestObjectDespawn(this.handle);
+				Despawn();
+				//World.getInstance().requestObjectDespawn(this.handle);
 				
 				
 			}
@@ -347,9 +350,9 @@ public abstract class GameObject {
 
 					if (last_packet.currentAction == 5) {
 						//setattack();
-						World.getInstance().requestObjectSpawn(Spawner.FIREBALL, x, y, facingRight, false,null);
+						//World.getInstance().requestObjectSpawn(Spawner.FIREBALL, x, y, facingRight, false,null);
 					} else if (last_packet.currentAction == 6) {
-						setmeleeattack(World.getInstance());
+						setmeleeattack();
 						//scratchAttack(world);
 
 					}
@@ -357,7 +360,7 @@ public abstract class GameObject {
 			}
 		}
 
-		public void setmeleeattack(World world)
+		public void setmeleeattack()
 		{
 			int direction_start= 0;
 			int direction_end = 180;
@@ -366,7 +369,7 @@ public abstract class GameObject {
 				direction_start= 180;
 				direction_end = 360;
 			}
-		 ArrayList<GameObject> entities =	world.getNearEntities(handle, 40, direction_start, direction_end);
+		 ArrayList<GameObject> entities =	World.getInstance().getNearEntities(handle, 40, direction_start, direction_end);
 		 for (Object entity : entities)
 			{
 				if (entity instanceof Enemy)
@@ -402,6 +405,14 @@ public abstract class GameObject {
 			return new NetworkSpawner(handle, type, (float)x, (float)y, facingRight, true);
 		}
 		
+		public void Despawn() {
+			if (removeEntity)
+				return;
+			
+			removeEntity = true;
+			World.getInstance().requestObjectDespawn(this.gethandle());
+			
+		}
 		
 }
 

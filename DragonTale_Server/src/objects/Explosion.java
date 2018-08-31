@@ -15,16 +15,16 @@ public class Explosion extends WorldObject {
 	//private Animation animation;
 	//private BufferedImage[] sprites;
 
-	public Explosion(GameMap tm)
+	public Explosion()
 	{
-		super(tm);
+		super();
 		width = 30;
 		height = 30;
 		
 	}
 
 	
-	public void update(World world)
+	public void update()
 	{
 		//setMapPosition();
 		
