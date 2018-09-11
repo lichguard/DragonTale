@@ -8,7 +8,7 @@ public class WorldPacket implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
 	private static final String[] COMMANDS_STRING = {"SPAWN","DESPAWN","SPEECH","REQUEST_HANDLE","HANDLE","REQUEST_UDP_PORT","UDP_PORT","ADD_SESSION","REMOVE_SESSION","REQUEST_SPAWN","HAND_SHAKE","REQUEST_HAND_SHAKE","MELEE_ATTACK","PING_REQUEST","PING_RESPONSE"
-			,"MOVEMENT_DATA","LOGIN","CHAT","SPAWN_COMMAND"};
+			,"MOVEMENT_DATA","LOGIN","CHAT","SPAWN_COMMAND","SETNAME"};
 
 	public static final int SPAWN =0;
 	public static final int DESPAWN =1;
@@ -29,7 +29,8 @@ public class WorldPacket implements Serializable{
 	public static final int MOVEMENT_DATA = 15;
 	public static final int LOGIN = 16;
 	public static final int CHAT = 17;
-	public static final int SPAWN_COMMAND = 15;
+	public static final int SPAWN_COMMAND = 18;
+	public static final int SETNAME = 19;
 	public UUID session_id = null;
 	public int packet_code = 0;
 	public Object data = null;

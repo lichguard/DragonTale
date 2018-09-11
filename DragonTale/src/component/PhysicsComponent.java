@@ -21,7 +21,7 @@ public class PhysicsComponent implements IComponent {
 	}
 
 	@Override
-	public void update() {
+	public boolean update() {
 
 		// if (entity.facingRight && entity.left)
 		// entity.facingRight = false;
@@ -94,6 +94,7 @@ public class PhysicsComponent implements IComponent {
 		checkTileMapCollision();
 		entity.setPosition(entity.xtemp, entity.ytemp);
 		entity.setMapPosition();
+		return true;
 	}
 
 	public void checkTileMapCollision() {

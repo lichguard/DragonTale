@@ -4,5 +4,5 @@ package component;
 
 public interface IComponent {
 	
-	public void update();
+	public boolean update();
 }

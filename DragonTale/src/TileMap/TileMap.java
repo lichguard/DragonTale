@@ -11,7 +11,7 @@ import java.io.InputStreamReader;
 import javax.imageio.ImageIO;
 
 import main.GameConstants;
-
+import main.LOGGER;
 
 import java.io.InputStream;
 
@@ -147,6 +147,7 @@ public class TileMap {
 	}
 	
 	public void setPosition(float x, float y) {
+		
 		this.x += (x - this.x) * tween;
 		this.y += (y - this.y) * tween;
 

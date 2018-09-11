@@ -50,7 +50,7 @@ public class OfflineState extends GameState {
 		populateMap();
 		bgmusic = new AudioPlayer("/Music/level1-1.mp3");
 		bgmusic.play();
-		World.getInstance().request_spawn(null, true, 0, Spawner.PLAYERPED, 200, 200, true, false);
+		World.getInstance().request_spawn("0", true, 0, Spawner.PLAYERPED, 200, 200, true, false);
 
 	}
 

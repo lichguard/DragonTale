@@ -3,6 +3,7 @@ package main;
 import java.awt.Graphics2D;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Stack;
 import java.util.logging.Level;
@@ -25,6 +26,13 @@ public class World {
 		}
 		return instance;
 	}
+	
+	public void restart() {
+		 entities = new HashMap<Integer, Entity>();
+		despawn_requests = new Stack<Integer>();
+		 spawn_requests = new Stack<Spawner>();
+		 tm = null;
+	}
 
 	private World() {
 	}
@@ -37,10 +45,10 @@ public class World {
 		return entities.size();
 	}
 
-	public int request_spawn(Session session, boolean local_player, int handle, int type, float x, float y,
+	public int request_spawn(String name, boolean local_player, int handle, int type, float x, float y,
 			boolean facing, boolean network) {
 		LOGGER.log(Level.INFO, "Requesting Entity type: " + type + " , handle: " + handle, this);
-		spawn_requests.push(new Spawner(this, session, local_player, handle, type, x, y, facing, network));
+		spawn_requests.push(new Spawner(name, local_player, handle, type, x, y, facing, network));
 		return handle;
 	}
 
@@ -51,14 +59,17 @@ public class World {
 
 	public void update() {
 		
-		while (!despawn_requests.isEmpty())
-			entities.remove(despawn_requests.pop());
-
+		//spawns new entities
 		while (!spawn_requests.isEmpty())
 			spawn_requests.pop().spawn();
 
-		for (Entity entity : entities.values())
-			entity.update();
+		//update and remove dead entities
+		for (Iterator<Entity> it = entities.values().iterator(); it.hasNext();) {
+			if (!((Entity) it.next()).update())
+				it.remove();	
+		}
+		
+
 	}
 
 	public void draw(Graphics2D g) {

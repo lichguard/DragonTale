@@ -18,7 +18,7 @@ public class AnimationComponent implements  IComponent {
 		this.session = session;
 	}
 	@Override
-	public void update() {
+	public boolean update() {
 		
 		if (entity.currentAction == Animation.ATTACK1) {
 			if (entity.animation.hasPlayedOnce())
@@ -77,7 +77,7 @@ public class AnimationComponent implements  IComponent {
 			}
 		
 		entity.animation.update();
-		
+		return true;
 	}
 
 }

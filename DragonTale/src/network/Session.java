@@ -14,6 +14,7 @@ import PACKET.NetworkSpawner;
 import PACKET.SpeechPacket;
 import PACKET.WorldPacket;
 import UI.Control;
+import entity.Entity;
 import entity.Spawner;
 import gamestate.GameStateManager;
 import main.LOGGER;
@@ -36,7 +37,8 @@ public class Session {
 	public Stack<MovementData> worldPackets = new Stack<MovementData>();
 	protected Control callbackstatusControl = null;
 	private static Session instance = null;
-
+	public Entity _player = null;
+	
 	public static Session getInstance() {
 		if (instance == null)
 			instance = new Session();
@@ -94,6 +96,9 @@ public class Session {
 
 	public void disconnect() {
 		LOGGER.log(Level.INFO, "Disconnected from server...", this);
+		
+		World.getInstance().restart();
+		
 		try {
 			if (clientSocket != null && !clientSocket.isClosed())
 				clientSocket.close();
@@ -135,7 +140,6 @@ public class Session {
 					return true;
 				} else {
 					callbackstatusControl.setText("The information you have entered is not valid.!");
-					GameStateManager.getInstance().requestState(GameStateManager.MAINMENUSTATE);
 					return false;
 				}
 
@@ -144,20 +148,25 @@ public class Session {
 				return true;
 
 			case WorldPacket.LOGIN:
-				MovementData mv = (MovementData) pct.data;
-				World.getInstance().spawn_requests.add(
-						new Spawner(World.getInstance(), this, true, mv.handle, 0, mv.x, mv.y, mv.facingRight, false));
+				NetworkSpawner spwaner = (NetworkSpawner) pct.data;
+				World.getInstance().request_spawn(spwaner.name, true, spwaner.handle, spwaner.type, spwaner.x, spwaner.y, spwaner.facing, spwaner.network);
+				//World.getInstance().request_spawn(Integer.toString(mv.handle),true, mv.handle, Spawner.PLAYERPED, mv.x, mv.y, mv.facingRight, false);
+				
+				return true;
+				
+			case WorldPacket.SETNAME:
+				_player.name = (String) pct.data;
 				return true;
 
 			case WorldPacket.SPAWN:
 				NetworkSpawner spawner = (NetworkSpawner) pct.data;
 
-				World.getInstance().request_spawn(null, false, spawner.handle, spawner.type, spawner.x, spawner.y,
+				World.getInstance().request_spawn(spawner.name, false, spawner.handle, spawner.type, spawner.x, spawner.y,
 						spawner.facing, spawner.network);
 				return true;
 			case WorldPacket.DESPAWN:
-
-				World.getInstance().request_despawn((int) pct.data);
+				World.getInstance().entities.get((int)pct.data).fadeOut();
+				//World.getInstance().request_despawn((int) pct.data);
 				return true;
 			case WorldPacket.SPEECH:
 				SpeechPacket data = (SpeechPacket) pct.data;

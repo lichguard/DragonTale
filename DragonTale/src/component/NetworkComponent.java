@@ -18,7 +18,7 @@ public class NetworkComponent implements IComponent {
 	}
 
 	@Override
-	public void update() {
+	public boolean update() {
 
 	//	if (entity.new_packet.timeframe - entity.last_packet.timeframe > entity.ping) {
 	//		entity.setPosition(entity.new_packet.x, entity.new_packet.y);
@@ -30,6 +30,7 @@ public class NetworkComponent implements IComponent {
 	//	}
 		entity.setMapPosition();
 		entity.animation.update();
+		return true;
 	}
 
 }

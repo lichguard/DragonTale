@@ -1,10 +1,6 @@
-/TileMap/
-/UI/
-/audio/
-/component/
-/component_temp/
 /drawcomponenets/
 /entity/
-/gamestate/
 /main/
+/component/
+/gamestate/
 /network/

@@ -44,7 +44,7 @@ public class Enemy extends Unit {
 			//world.requestObjectSpawn(Spawner.EXPLOSION, getx(), gety(), facingRight, false);
 			int x = (int) (Math.random() * 6.0);
 			for (int i = 0; i < 1 + x; i++)
-				World.getInstance().requestObjectSpawn(Spawner.COIN, getx(), gety(), facingRight, false,null);
+				World.getInstance().requestObjectSpawn("",Spawner.COIN, getx(), gety(), facingRight, false,null);
 
 			Despawn();
 			//World.getInstance().requestObjectDespawn(this.handle);

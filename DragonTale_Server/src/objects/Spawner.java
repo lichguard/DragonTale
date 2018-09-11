@@ -28,7 +28,8 @@ public class Spawner {
 	public boolean network;
 	public int handle;
 	public WorldSocket socketCallback;
-	public Spawner(int handle, int type,double x,double y,boolean facing,boolean network,WorldSocket socketCallback)
+	public String name;
+	public Spawner(String name, int handle, int type,double x,double y,boolean facing,boolean network,WorldSocket socketCallback)
 	{
 		this.type = type;
 		this.x = (float)x;
@@ -37,11 +38,12 @@ public class Spawner {
 		this.network = network;
 		this.handle = handle;
 		this.socketCallback = socketCallback;
+		this.name = name;
 	}
 	
 	public NetworkSpawner castNetworkSpawner()
 	{
-		return new NetworkSpawner(handle, type, x, y, facing, true);
+		return new NetworkSpawner(name, handle, type, x, y, facing, true);
 	}
 	
 	public void create_entity()
@@ -82,7 +84,7 @@ public class Spawner {
 		entity.setRight(facing);
 		entity.setLeft(!facing);
 		entity.facingRight = facing;
-		
+		entity.name = this.name;
 		LOGGER.log(Level.INFO, "new handle: " + handle, this);
 		World.getInstance().m_gameObjectsMap.put(handle, entity);
 	}

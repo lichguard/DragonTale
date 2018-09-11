@@ -11,7 +11,8 @@ public class NetworkSpawner implements Serializable {
 	public boolean facing;
 	public boolean network;
 	public int handle;
-	public NetworkSpawner(int handle, int type,float x,float y,boolean facing,boolean network)
+	public String name = "";
+	public NetworkSpawner(String name, int handle, int type,float x,float y,boolean facing,boolean network)
 	{
 		this.type = type;
 		this.x = x;
@@ -19,6 +20,7 @@ public class NetworkSpawner implements Serializable {
 		this.facing = facing;
 		this.network = network;
 		this.handle = handle;
+		this.name = name;
 	}
 	
 	@Override

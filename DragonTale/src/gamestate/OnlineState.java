@@ -100,10 +100,10 @@ public class OnlineState extends GameState {
 					}
 					if (playerhandle == sp.handle)
 					{
-						World.getInstance().request_spawn(Session.getInstance(), true, sp.handle, sp.type, sp.x, sp.y, sp.facing, false);
+						World.getInstance().request_spawn(Integer.toString(sp.handle), true, sp.handle, sp.type, sp.x, sp.y, sp.facing, false);
 					}
 						else
-							World.getInstance().request_spawn(Session.getInstance(), false, sp.handle, sp.type, sp.x, sp.y, sp.facing, sp.network);
+							World.getInstance().request_spawn(Integer.toString(sp.handle),false, sp.handle, sp.type, sp.x, sp.y, sp.facing, sp.network);
 
 					break;
 				case WorldPacket.SPEECH:
@@ -111,7 +111,8 @@ public class OnlineState extends GameState {
 					World.getInstance().entities.get(data.handle).say(data.text);
 					break;
 				case WorldPacket.DESPAWN:
-					World.getInstance().request_despawn((int) packet.data);
+					World.getInstance().entities.get((int)packet.data).fadeOut();
+					//World.getInstance().request_despawn((int) packet.data);
 					break;
 				case WorldPacket.UDP_PORT:
 					Session.getInstance().startUDP((int) packet.data);

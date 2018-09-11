@@ -15,6 +15,8 @@ import audio.AudioPlayer;
 import component.AnimationComponent;
 import component.BroadCastEntityComponent;
 import component.ControlsComponent;
+import component.FadeIn;
+import component.FadeOut;
 import component.IComponent;
 import component.NetworkComponent;
 import component.PhysicsComponent;
@@ -115,7 +117,10 @@ public class Entity {
 	public boolean scratching;
 	public boolean sprint;
 	public int coins = 0;
+	public float alpha = 1.0f; //draw half transparent
 
+	public boolean inWorld = true;
+	
 	public void setMaxSpeed(float value) {
 		this.maxSpeed = value;
 	}
@@ -173,12 +178,13 @@ public class Entity {
 		health = maxHealth = 5;
 		maxGlideSpeed = 1.2f;
 		doublejump = 0;
-		this.name = Integer.toString(handle);
+		//this.name = Integer.toString(handle);
 		animation = new Animation();
-
+		inWorld = true;
 		
 		if (is_local_player) {
-			world.tm.initPosition(x, y);
+			Session.getInstance()._player = this;
+			world.tm.initPosition(GameConstants.WIDTH / 2 - getx(), GameConstants.HEIGHT / 2 - gety());
 			components.add(new ControlsComponent(world, this, session));
 			if (session != null)
 				components.add(new BroadCastEntityComponent(world, this, session));
@@ -189,6 +195,7 @@ public class Entity {
 		
 		if (is_network) {
 			components.add(new NetworkComponent(world, this, session));
+			components.add(new FadeIn(world, this, session));
 		} else {
 			components.add(new PhysicsComponent(world, this, session));
 			components.add(new AnimationComponent(world, this, session));
@@ -511,11 +518,27 @@ public class Entity {
 				|| Math.abs(y - (-ymap + GameConstants.HEIGHT / 2)) > GameConstants.HEIGHT / 0.75f;
 	}
 
-	public void update() {
-
-		for (IComponent component : components) {
-			component.update();
+	public boolean fadingout = false;
+	public void fadeOut() {
+		if (fadingout)
+			return;
+		
+		fadingout = true;
+		components.add(new FadeOut(this));
+	}
+	
+	public boolean update() {
+		
+		if (!inWorld)
+			return false;
+		
+		for (Iterator<IComponent> iterator = components.iterator(); iterator.hasNext();) {
+			IComponent component = (IComponent) iterator.next();
+			if (!component.update())
+				iterator.remove();
 		}
+		
+		return true;
 	}
 
 	public int gethandle() {
@@ -624,7 +647,7 @@ public class Entity {
 	public void draw(Graphics2D g) {
 
 		if (notonScreen()) {
-			world.request_despawn(handle);
+			//world.request_despawn(handle);
 			return;
 		}
 

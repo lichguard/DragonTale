@@ -59,6 +59,17 @@ public class WorldSession {
 	// AccountTypes _security;
 	public Player _player;
 	public Account account = null;
+	
+	public void savePlayer() {
+		if (account != null) {
+			if (_player != null) {
+			account.x = _player.getx(); 
+			account.y = _player.gety(); 
+			account.facingright = _player.isFacingright(); 
+			}
+		}
+	} 
+	
 	public void ExecuteOpcode() {
 	}
 
@@ -74,10 +85,11 @@ public class WorldSession {
 
 	public void handleLogin(WorldPacket packet) {
 		LOGGER.info("handleLogin", this);
-		int handle = World.getInstance().requestObjectSpawn(Spawner.PLAYERPED, account.x, account.y, false, true, worldsocket); //0 - playerped
+		int handle = World.getInstance().requestObjectSpawn(account.name, Spawner.PLAYERPED, account.x, account.y, false, true, worldsocket); //0 - playerped
 		SendWorldPacket(new WorldPacket(WorldPacket.LOGIN, 
-					new MovementData(handle, account.x, account.y, false)
+				new NetworkSpawner(account.name,handle, Spawner.PLAYERPED,  account.x,  account.y, account.facingright, false)
 				));
+		
 		
 	}
 	

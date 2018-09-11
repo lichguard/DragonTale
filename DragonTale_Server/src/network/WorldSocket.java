@@ -41,9 +41,10 @@ public class WorldSocket {
 	public void disconnect() {
 		 LOGGER.info("Disconnecting client " + id + "...", this);
 
-		if (m_session != null && m_session._player != null)
+		if (m_session != null && m_session._player != null) {
+			m_session.savePlayer();
 			m_session._player.Despawn();
-	
+		}
 		
 		try {
 			if (clientSocket != null) {
@@ -130,6 +131,7 @@ public class WorldSocket {
 		//int Accountid = MySQLDB.getInstance().GetUserfromDB(pct.username, pct.password);
 		Account acc = Account.accounts_map.get(pct.username+pct.password);
 		if (acc == null) {
+			SendWorldPacket(new WorldPacket(WorldPacket.HAND_SHAKE, "refused"));
 			return false;
 		}
 		

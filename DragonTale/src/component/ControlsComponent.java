@@ -36,7 +36,7 @@ public class ControlsComponent implements IComponent {
 	}
 
 	@Override
-	public void update() {
+	public boolean update() {
 		handleInput();
 		world.tm.setPosition(GameConstants.WIDTH / 2 - entity.getx(), GameConstants.HEIGHT / 2 - entity.gety());
 
@@ -47,7 +47,7 @@ public class ControlsComponent implements IComponent {
 		 * 
 		 * } }
 		 */
-
+		return true;
 	}
 
 	public void handleInput() {
@@ -129,7 +129,7 @@ public class ControlsComponent implements IComponent {
 			if (session == null)
 				LOGGER.log(Level.WARNING, "spawning offline is not supported yet", this);
 				else
-					session.SendCommand(new WorldPacket(WorldPacket.SPAWN, new NetworkSpawner(-1, Integer.parseInt(args[1]),
+					session.SendCommand(new WorldPacket(WorldPacket.SPAWN, new NetworkSpawner("-1", -1, Integer.parseInt(args[1]),
 					entity.getx() + (30 * (entity.facingRight ? 1 : -1)), entity.gety(), entity.facingRight, false)));
 			break;
 		case "setspeed":

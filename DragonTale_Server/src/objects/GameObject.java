@@ -402,7 +402,7 @@ public abstract class GameObject {
 		
 		public NetworkSpawner getNetowrkSpawner()
 		{
-			return new NetworkSpawner(handle, type, (float)x, (float)y, facingRight, true);
+			return new NetworkSpawner(name, handle, type, (float)x, (float)y, facingRight, true);
 		}
 		
 		public void Despawn() {

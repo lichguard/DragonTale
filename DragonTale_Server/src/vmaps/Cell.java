@@ -25,16 +25,12 @@ public class Cell {
 			Point[] points = new Point[] { new Point(100, 20) };
 	
 			for (Point p : points) {
-				World.getInstance().requestObjectSpawn(Spawner.SLUGGER, p.x, p.y, true, false, null);
+				World.getInstance().requestObjectSpawn("",Spawner.SLUGGER, p.x, p.y, true, false, null);
 			}
 		}
 	}
 	
-	public void addtoCell(GameObject obj) {
-		for (GameObject current_obj : map.values()) {
-			current_obj.broadcaster.ClearListeners();
-		}
-	}
+
 	
 	
 	public void registerObject(GameObject obj) {

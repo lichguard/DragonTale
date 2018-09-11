@@ -25,14 +25,11 @@ public class Spawner {
 	public boolean facing;
 	public boolean network;
 	public int handle;
-	public World world;
-	public Session session;
 	public boolean local_player;
+	public String name;
 
-	public Spawner(World world, Session session,boolean local_player ,int handle, int type,float x,float y,boolean facing,boolean network)
+	public Spawner(String name, boolean local_player ,int handle, int type,float x,float y,boolean facing,boolean network)
 	{
-		this.world = world;
-		this.session = session;
 		this.local_player = local_player;
 		this.type = type;
 		this.x = x;
@@ -40,28 +37,30 @@ public class Spawner {
 		this.facing = facing;
 		this.network = network;
 		this.handle = handle;
+		this.name = name;
 	}
 	
 	public NetworkSpawner castNetworkSpawner()
 	{
-		return new NetworkSpawner(handle, type, x, y, facing, true);
+		return new NetworkSpawner(name,handle, type, x, y, facing, true);
 	}
 	
 	public void spawn()
 	{
-		if (world.entities.containsKey(handle))
+		if (World.getInstance().entities.containsKey(handle))
 		{
 			LOGGER.log(Level.SEVERE,"Spawn failed because handle " + handle + " exists!", this);
 			return;
 		}
 		
-		Entity entity = new Entity(type,handle,world,session,local_player,network,x,y,facing);
+		Entity entity = new Entity(type,handle,World.getInstance(),Session.getInstance(),local_player,network,x,y,facing);
 		
 		entity.setPosition(x, y);
 		entity.setMapPosition();
 		entity.setRight(facing);
 		entity.setLeft(!facing);
 		entity.setFacingright(facing);
-		world.entities.put(handle, entity);
+		entity.name = name;
+		World.getInstance().entities.put(handle, entity);
 	}
 }

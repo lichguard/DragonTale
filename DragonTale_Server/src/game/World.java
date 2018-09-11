@@ -74,15 +74,15 @@ public class World {
 	}
 
 	public int requestObjectSpawn(NetworkSpawner sp) {
-		return requestObjectSpawn(sp.type,sp.x,sp.y,sp.facing,sp.network,null);
+		return requestObjectSpawn(sp.name ,sp.type,sp.x,sp.y,sp.facing,sp.network,null);
 	}
 
-	public int requestObjectSpawn(int type, double x, double y, boolean facing, boolean network,WorldSocket socketcallback) {
+	public int requestObjectSpawn(String name, int type, double x, double y, boolean facing, boolean network,WorldSocket socketcallback) {
 		if (objects.Spawner.entities_count <= type || type < 0)
 			return -1;
 
 		int handle = handle_generator++;
-		m_objectSpawnQueue.push(new Spawner(handle, type, x, y, facing, network,socketcallback));
+		m_objectSpawnQueue.push(new Spawner(name,handle, type, x, y, facing, network,socketcallback));
 
 		return handle;
 	}
@@ -142,7 +142,7 @@ public class World {
 
 	public void update() {
 		
-		//add sessions in queue
+		//add sessions to world from m_sessionAddQueue
 		synchronized (m_sessionAddQueue) {
 			for (WorldSession s : m_sessionAddQueue) {
 				LOGGER.info("Adding session from m_sessionAddQueue",this);
@@ -152,6 +152,7 @@ public class World {
 		}
 
 		// process world session packets and do handlers
+		// if the socket is disconnected than remove it from world
 		for (Iterator<WorldSession> iterator = SessionMap.values().iterator(); iterator.hasNext();) {
 			WorldSession s = (WorldSession) iterator.next();
 			if (!s.Update())
@@ -172,7 +173,6 @@ public class World {
 			
 			m_gameObjectsMap.get(handle).cell.unregisterObject(handle);
 			m_gameObjectsMap.get(handle).cell.map.remove(handle);
-			//m_gameObjectsMap.get(handle).broadcaster.ClearListeners();
 			m_gameObjectsMap.remove(handle);
 	
 		}

@@ -18,10 +18,11 @@ public class BroadCastEntityComponent implements IComponent {
 	}
 
 	@Override
-	public void update() {
+	public boolean update() {
 		if (System.currentTimeMillis() - lastbroadcast > 100) {
 			session.SendWorldPacket(entity.getEntityPacket());
 			lastbroadcast = System.currentTimeMillis();
 		}
+		return true;
 	}
 }
