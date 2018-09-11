@@ -16,11 +16,26 @@ public class FadeIn implements IComponent {
 		this.entity = entity;
 		this.session = session;
 		this.entity.alpha = 0;
+		entity.inWorld = true;
+		/*
+		//remove fadeout component if exists
+				IComponent fadeout = null;
+				for (IComponent component  : this.entity.components) {
+					if (component instanceof FadeOut)
+						fadeout = component;
+				}
+				if (fadeout != null)
+				this.entity.components.remove(fadeout);
+*/
 	}
 
 	@Override
 	public boolean update() {
 		
+		for (IComponent component  : this.entity.components) {
+			if (component instanceof FadeOut)
+				return false;
+		}
 		entity.alpha += 0.02;
 		
 		if (entity.alpha >= 1.0f) {

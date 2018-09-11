@@ -9,6 +9,17 @@ public class FadeOut implements IComponent {
 
 	public FadeOut(Entity entity) {
 		this.entity = entity;
+		
+		/*
+		//remove fadeout component if exists
+		IComponent fadein = null;
+		for (IComponent component  : this.entity.components) {
+			if (component instanceof FadeIn)
+				fadein = component;
+		}
+		if (fadein != null)
+		this.entity.components.remove(fadein);
+		*/
 	}
 
 	@Override

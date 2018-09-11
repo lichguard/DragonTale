@@ -19,19 +19,19 @@ public class World {
 	public Stack<Spawner> spawn_requests = new Stack<Spawner>();
 	public TileMap tm;
 	private static World instance = null;
-	
+
 	public static World getInstance() {
 		if (instance == null) {
 			instance = new World();
 		}
 		return instance;
 	}
-	
+
 	public void restart() {
-		 entities = new HashMap<Integer, Entity>();
+		entities = new HashMap<Integer, Entity>();
 		despawn_requests = new Stack<Integer>();
-		 spawn_requests = new Stack<Spawner>();
-		 tm = null;
+		spawn_requests = new Stack<Spawner>();
+		tm = null;
 	}
 
 	private World() {
@@ -40,13 +40,13 @@ public class World {
 	public void start(TileMap tm) {
 		this.tm = tm;
 	}
-	
+
 	public int getEntitityCount() {
 		return entities.size();
 	}
 
-	public int request_spawn(String name, boolean local_player, int handle, int type, float x, float y,
-			boolean facing, boolean network) {
+	public int request_spawn(String name, boolean local_player, int handle, int type, float x, float y, boolean facing,
+			boolean network) {
 		LOGGER.log(Level.INFO, "Requesting Entity type: " + type + " , handle: " + handle, this);
 		spawn_requests.push(new Spawner(name, local_player, handle, type, x, y, facing, network));
 		return handle;
@@ -58,17 +58,24 @@ public class World {
 	}
 
 	public void update() {
-		
-		//spawns new entities
-		while (!spawn_requests.isEmpty())
-			spawn_requests.pop().spawn();
 
-		//update and remove dead entities
+		Stack<Spawner> failedSpawns = new Stack<Spawner>();
+		// spawns new entities
+		while (!spawn_requests.isEmpty()) {
+			Spawner spwn = spawn_requests.pop();
+			if (!spwn.spawn()) {
+				
+				failedSpawns.push(spwn);
+			}
+		}
+		while (!failedSpawns.isEmpty())
+			spawn_requests.push(failedSpawns.pop());
+
+		// update and remove dead entities
 		for (Iterator<Entity> it = entities.values().iterator(); it.hasNext();) {
 			if (!((Entity) it.next()).update())
-				it.remove();	
+				it.remove();
 		}
-		
 
 	}
 

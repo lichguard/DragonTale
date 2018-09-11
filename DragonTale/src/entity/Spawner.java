@@ -27,7 +27,7 @@ public class Spawner {
 	public int handle;
 	public boolean local_player;
 	public String name;
-
+	
 	public Spawner(String name, boolean local_player ,int handle, int type,float x,float y,boolean facing,boolean network)
 	{
 		this.local_player = local_player;
@@ -45,12 +45,13 @@ public class Spawner {
 		return new NetworkSpawner(name,handle, type, x, y, facing, true);
 	}
 	
-	public void spawn()
+	public boolean spawn()
 	{
 		if (World.getInstance().entities.containsKey(handle))
 		{
 			LOGGER.log(Level.SEVERE,"Spawn failed because handle " + handle + " exists!", this);
-			return;
+			World.getInstance().entities.get(handle).fadeOut();
+			return false;
 		}
 		
 		Entity entity = new Entity(type,handle,World.getInstance(),Session.getInstance(),local_player,network,x,y,facing);
@@ -62,5 +63,6 @@ public class Spawner {
 		entity.setFacingright(facing);
 		entity.name = name;
 		World.getInstance().entities.put(handle, entity);
+		return true;
 	}
 }

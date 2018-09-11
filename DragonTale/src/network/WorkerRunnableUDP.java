@@ -57,8 +57,9 @@ public class WorkerRunnableUDP implements Runnable {
 				dispatchPacket();
 			}
 		} catch (IOException e) {
-				e.printStackTrace();
-				LOGGER.log(Level.SEVERE,"An error has occured with client..", this);
+				//e.printStackTrace();
+				//LOGGER.log(Level.SEVERE,"An error has occured with client..", this);
+			LOGGER.log(Level.INFO,"UDP socket closed", this);
 		}
 		session.disconnect();
 	}

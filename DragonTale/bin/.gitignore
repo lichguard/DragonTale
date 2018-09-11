@@ -1,6 +1,6 @@
 /drawcomponenets/
 /entity/
-/main/
-/component/
 /gamestate/
+/main/
 /network/
+/component/
