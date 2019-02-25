@@ -25,11 +25,11 @@ public class Spawner {
 	public float x;
 	public float y;
 	public boolean facing;
-	public boolean network;
+	public int network;
 	public int handle;
 	public WorldSocket socketCallback;
 	public String name;
-	public Spawner(String name, int handle, int type,double x,double y,boolean facing,boolean network,WorldSocket socketCallback)
+	public Spawner(String name, int handle, int type,double x,double y,boolean facing,int network,WorldSocket socketCallback)
 	{
 		this.type = type;
 		this.x = (float)x;
@@ -43,7 +43,7 @@ public class Spawner {
 	
 	public NetworkSpawner castNetworkSpawner()
 	{
-		return new NetworkSpawner(name, handle, type, x, y, facing, true);
+		return new NetworkSpawner(name, handle, type, x, y, facing, network);
 	}
 	
 	public void create_entity()

@@ -11,8 +11,11 @@ public abstract class GameState {
 		uimanager = new UIManager();
 	}
 
-	public void init() 
+	public void init(String requestedStateInitMessage) 
 	{
+		if (requestedStateInitMessage != null && requestedStateInitMessage != "") {
+			this.uimanager.ShowMessageBox(requestedStateInitMessage);
+		}
 	}
 
 	public void update()

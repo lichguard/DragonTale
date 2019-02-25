@@ -1,5 +1,4 @@
 package objects;
-import vmaps.GameMap;
 
 public class Arachnik extends Enemy {
 

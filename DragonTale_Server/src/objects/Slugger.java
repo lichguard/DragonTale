@@ -1,7 +1,5 @@
 package objects;
 
-import vmaps.GameMap;
-
 public class Slugger extends Enemy {
 
 	public Slugger() {
@@ -12,5 +10,10 @@ public class Slugger extends Enemy {
 		cheight = 20;
 		health = maxHealth = 100;
 	
+	}
+	
+	public void Die() {
+		super.Die();
+		
 	}
 }

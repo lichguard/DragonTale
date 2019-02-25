@@ -48,12 +48,12 @@ public class WorkerRunnableTCP implements Runnable {
 		} catch (EOFException e) {
 			disconnect();
 		} catch (ClassNotFoundException | IOException e) {
-				if (e.getMessage().equals("Socket closed")) {
-					LOGGER.info("TCP Socket closed", this);
-				} else {
+			if (e.getMessage().equals("Socket closed")) {
+				LOGGER.info("TCP Socket closed", this);
+			} else {
 				e.printStackTrace();
 				LOGGER.log(Level.SEVERE, "An error has occured with server..", this);
-				}
+			}
 		}
 
 		session.disconnect();

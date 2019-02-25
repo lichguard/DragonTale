@@ -4,7 +4,7 @@ package objects;
 import java.util.ArrayList;
 
 import  game.World;
-import vmaps.GameMap;
+
 public class FireBall extends WorldObject{
 
 	//private boolean hit;

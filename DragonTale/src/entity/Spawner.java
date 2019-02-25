@@ -1,11 +1,6 @@
 package entity;
-
-import java.util.logging.Level;
-
 import PACKET.NetworkSpawner;
-import main.LOGGER;
-import main.World;
-import network.Session;
+
 
 public class Spawner {
 
@@ -23,12 +18,13 @@ public class Spawner {
 	public float x;
 	public float y;
 	public boolean facing;
-	public boolean network;
+	public int network;
 	public int handle;
 	public boolean local_player;
 	public String name;
 	
-	public Spawner(String name, boolean local_player ,int handle, int type,float x,float y,boolean facing,boolean network)
+	
+	public Spawner(String name, boolean local_player ,int handle, int type,float x,float y,boolean facing,int network)
 	{
 		this.local_player = local_player;
 		this.type = type;
@@ -42,9 +38,9 @@ public class Spawner {
 	
 	public NetworkSpawner castNetworkSpawner()
 	{
-		return new NetworkSpawner(name,handle, type, x, y, facing, true);
+		return new NetworkSpawner(name,handle, type, x, y, facing, network);
 	}
-	
+	/*
 	public boolean spawn()
 	{
 		if (World.getInstance().entities.containsKey(handle))
@@ -65,4 +61,5 @@ public class Spawner {
 		World.getInstance().entities.put(handle, entity);
 		return true;
 	}
+	*/
 }

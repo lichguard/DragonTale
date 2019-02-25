@@ -6,6 +6,7 @@ public class GameStateManager {
 	private GameState[] gameStates;
 	private int currentState;
 	private int requestedState;
+	private String requestedStateInitMessage;
 	public static final int NUMGAMESTATES = 7;
 	
 	public static final int MAINMENUSTATE = 0;
@@ -41,7 +42,8 @@ public class GameStateManager {
 		else if (currentState == LOGINSTATE)
 			gameStates[currentState] = new LoginState();
 		
-		gameStates[currentState].init();
+		gameStates[currentState].init(requestedStateInitMessage);
+		requestedStateInitMessage = "";
 	}
 
 	private void unloadState(int state) {
@@ -55,8 +57,9 @@ public class GameStateManager {
 		loadState(currentState);
 	}
 
-	public void requestState(int state) {
+	public void requestState(int state,String message) {
 		requestedState = state;
+		requestedStateInitMessage = message;
 	}
 
 	public void update() {
@@ -74,5 +77,5 @@ public class GameStateManager {
 		gameStates[currentState].draw(g);
 
 	}
-	
+
 }

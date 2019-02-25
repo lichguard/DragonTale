@@ -7,8 +7,8 @@ public class Account {
 
 	public static Map<String,Account> accounts_map = new HashMap<String,Account>();
 	static {
-		accounts_map.put("aa", new Account("adam",0,130,30,true));
-		accounts_map.put("bb", new Account("eve",1,900,100,true));
+		accounts_map.put("adam", new Account("adam",0,130,30,true));
+		accounts_map.put("eve", new Account("eve",1,200,100,true));
 	}
 	public String name = "";
 	public int id = 0;
@@ -20,6 +20,6 @@ public class Account {
 		this.id = id;
 		this.x = x;
 		this.y =y ;
-		this.facingright =facingright ;
+		this.facingright =facingright;
 	}
 }

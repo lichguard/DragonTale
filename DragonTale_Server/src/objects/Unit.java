@@ -1,7 +1,5 @@
 package objects;
 import game.World;
-import vmaps.GameMap;
-
 
 public class Unit extends WorldObject {
 
@@ -223,7 +221,7 @@ public class Unit extends WorldObject {
 	public void update() {
 		super.update();
 
-		if (isNetowrkEntity)
+		if (isNetowrkEntity == 1)
 			return;
 
 		getNextPosition();
@@ -233,12 +231,13 @@ public class Unit extends WorldObject {
 		if (currentAction == ATTACK1) {
 			// if (animation.hasPlayedOnce())
 			// TODO: DELAY
-			firing = false;
+			scratching = false;
 		}
 		if (currentAction == ATTACK2) {
 			// if (animation.hasPlayedOnce())
 			// TODO:DELAY
-			scratching = false;
+			
+			firing = false;
 		}
 
 		if (flinching) {
@@ -247,14 +246,15 @@ public class Unit extends WorldObject {
 		}
 
 		// set animation
-			if (scratching) {
+			if (firing) {
 				if (currentAction != ATTACK2) {
 					scratchAttack();
+					World.getInstance().requestObjectSpawn("",Spawner.FIREBALL, x, y, facingRight, 2,null);
+					
 					currentAction = ATTACK2;
 				}
-			} else if (firing) {
+			} else if (scratching) {
 				if (currentAction != ATTACK1) {
-					World.getInstance().requestObjectSpawn("",Spawner.FIREBALL, x, y, facingRight, false,null);
 					currentAction = ATTACK1;
 
 				}

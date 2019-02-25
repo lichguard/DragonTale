@@ -4,6 +4,7 @@ import TileMap.*;
 import audio.AudioPlayer;
 import entity.Spawner;
 import main.CONTROLS;
+import main.GameConstants;
 import main.LOGGER;
 import main.World;
 
@@ -39,18 +40,19 @@ public class OfflineState extends GameState {
 	}
 
 	@Override
-	public void init() {
+	public void init(String requestedStateInitMessage) {
+		super.init(requestedStateInitMessage);
 		bg = new Background("/Backgrounds/grassbg1.gif", 0.1);
-		tileMap = new TileMap(30);
+		tileMap = new TileMap(GameConstants.TILESIZE);
 		tileMap.loadTiles("/TileSets/grasstileset.gif");
 		tileMap.loadMap("/Maps/level1-1.map");
 		tileMap.setPosition(0, 0);
-		tileMap.setTween(0.07f);
+		tileMap.setCameraFocusSpeed(0.07f);
 		World.getInstance().start(tileMap);
 		populateMap();
 		bgmusic = new AudioPlayer("/Music/level1-1.mp3");
 		bgmusic.play();
-		World.getInstance().request_spawn("0", true, 0, Spawner.PLAYERPED, 200, 200, true, false);
+		World.getInstance().request_spawn("0", true, 0, Spawner.PLAYERPED, 200, 200, true, 0);
 
 	}
 
@@ -79,7 +81,7 @@ public class OfflineState extends GameState {
 	public void handleInput() {
 
 		if (CONTROLS.isPressed(CONTROLS.ESCAPE)) {
-			GameStateManager.getInstance().requestState(GameStateManager.MAINMENUSTATE);
+			GameStateManager.getInstance().requestState(GameStateManager.MAINMENUSTATE,"");
 
 		}
 	}

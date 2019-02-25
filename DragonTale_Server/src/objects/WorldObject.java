@@ -1,7 +1,6 @@
 package objects;
 
-import game.World;
-import vmaps.GameMap;
+
 
 public abstract class WorldObject extends GameObject {
 

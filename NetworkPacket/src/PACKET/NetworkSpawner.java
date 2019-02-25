@@ -9,10 +9,10 @@ public class NetworkSpawner implements Serializable {
 	public float x;
 	public float y;
 	public boolean facing;
-	public boolean network;
+	public int network;
 	public int handle;
 	public String name = "";
-	public NetworkSpawner(String name, int handle, int type,float x,float y,boolean facing,boolean network)
+	public NetworkSpawner(String name, int handle, int type,float x,float y,boolean facing,int network)
 	{
 		this.type = type;
 		this.x = x;

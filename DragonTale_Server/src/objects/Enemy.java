@@ -1,7 +1,6 @@
 package objects;
 
 import game.World;
-import vmaps.GameMap;
 
 public class Enemy extends Unit {
 
@@ -40,13 +39,14 @@ public class Enemy extends Unit {
 
 	public void update() {
 		super.update();
-		if (health <= 0) {
+		if (!this.isDead &&  health <= 0) {
 			//world.requestObjectSpawn(Spawner.EXPLOSION, getx(), gety(), facingRight, false);
 			int x = (int) (Math.random() * 6.0);
 			for (int i = 0; i < 1 + x; i++)
-				World.getInstance().requestObjectSpawn("",Spawner.COIN, getx(), gety(), facingRight, false,null);
+				World.getInstance().requestObjectSpawn("",Spawner.COIN, getx(), gety(), facingRight, 2,null);
 
-			Despawn();
+			Die();
+			//Despawn();
 			//World.getInstance().requestObjectDespawn(this.handle);
 		}
 

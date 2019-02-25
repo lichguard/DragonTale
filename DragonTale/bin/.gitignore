@@ -1,6 +1,11 @@
-/drawcomponenets/
+/TileMap/
+/UI/
+/audio/
+/componentNew/
+/componentsSystems/
 /entity/
 /gamestate/
 /main/
 /network/
-/component/
+/Resources/
+/Tilesets/

@@ -1,22 +1,16 @@
 package main;
 
 import java.awt.Graphics2D;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Stack;
 import java.util.logging.Level;
 
 import TileMap.TileMap;
-import entity.Entity;
-import entity.Spawner;
-import network.Session;
+import componentNew.EntityManager;
+
 
 public class World {
-	public Map<Integer, Entity> entities = new HashMap<Integer, Entity>();
-	public Stack<Integer> despawn_requests = new Stack<Integer>();
-	public Stack<Spawner> spawn_requests = new Stack<Spawner>();
+	//public Map<Integer, Entity> entities = new HashMap<Integer, Entity>();
+	//public Stack<Integer> despawn_requests = new Stack<Integer>();
+	//public Stack<Spawner> spawn_requests = new Stack<Spawner>();
 	public TileMap tm;
 	private static World instance = null;
 
@@ -28,9 +22,6 @@ public class World {
 	}
 
 	public void restart() {
-		entities = new HashMap<Integer, Entity>();
-		despawn_requests = new Stack<Integer>();
-		spawn_requests = new Stack<Spawner>();
 		tm = null;
 	}
 
@@ -42,23 +33,39 @@ public class World {
 	}
 
 	public int getEntitityCount() {
-		return entities.size();
+		return EntityManager.getInstance().entityCount;
 	}
 
-	public int request_spawn(String name, boolean local_player, int handle, int type, float x, float y, boolean facing,
-			boolean network) {
+	public void request_spawn(String name, boolean local_player, int handle, int type, float x, float y, boolean facing,
+			int network) {
+		
 		LOGGER.log(Level.INFO, "Requesting Entity type: " + type + " , handle: " + handle, this);
-		spawn_requests.push(new Spawner(name, local_player, handle, type, x, y, facing, network));
-		return handle;
+		
+		try {
+			EntityManager.getInstance().addEntity(handle, name, local_player, handle, type, x, y, facing, network);
+		} catch (Exception e) {
+			LOGGER.error("Failed to spawn a new entity", this);
+			e.printStackTrace();
+		}
+		
 	}
 
 	public void request_despawn(int handle) {
+		
+		try {
+			EntityManager.getInstance().removeEntity(handle);
+		} catch (Exception e) {
+			LOGGER.error("Failed to despawn an entity", this);
+			e.printStackTrace();
+		}
+		
 		LOGGER.log(Level.INFO, "Requesting despawn of handle: " + handle, this);
-		despawn_requests.push(handle);
+		//despawn_requests.push(handle);
 	}
 
 	public void update() {
-
+		EntityManager.getInstance().update();
+/*
 		Stack<Spawner> failedSpawns = new Stack<Spawner>();
 		// spawns new entities
 		while (!spawn_requests.isEmpty()) {
@@ -76,14 +83,17 @@ public class World {
 			if (!((Entity) it.next()).update())
 				it.remove();
 		}
-
+*/
 	}
 
 	public void draw(Graphics2D g) {
+		EntityManager.getInstance().draw(g);
+		/*
 		for (Entity entity : entities.values())
 			entity.draw(g);
+			*/
 	}
-
+/*
 	public ArrayList<Entity> getCollisions(Entity entity) {
 		ArrayList<Entity> returnObjects = new ArrayList<Entity>();
 		for (Entity _entity : entities.values()) {
@@ -92,11 +102,11 @@ public class World {
 		}
 		return returnObjects;
 	}
-
+*/
 	public static int getHeading(int x, int y) {
 		return (int) ((90.0 - (180.0 / Math.PI) * Math.atan2((double) y, (double) x)) + 360.0) % 360;
 	}
-
+/*
 	public ArrayList<Entity> getNearEntities(Entity entity, int range, int direction_start, int direction_end) {
 		ArrayList<Entity> returnObjects = new ArrayList<Entity>();
 		for (Entity _entity : entities.values()) {
@@ -112,4 +122,5 @@ public class World {
 		}
 		return returnObjects;
 	}
+	*/
 }

@@ -20,7 +20,7 @@ public abstract class GameObject {
 		protected double xmap;
 		protected double ymap;
 		protected int handle;
-		public boolean isNetowrkEntity = false;
+		public int isNetowrkEntity = -1;
 		
 		// position and vector
 		protected double x;
@@ -61,6 +61,9 @@ public abstract class GameObject {
 		protected boolean right;
 		protected boolean up;
 		protected boolean down;
+		protected boolean isDead = false;
+		protected long deathTimeStart = 0;
+		protected long deathDespawnDuration = 10000;
 		
 		protected boolean falling;
 
@@ -86,6 +89,7 @@ public abstract class GameObject {
 		public static final int GLIDING = 4;
 		public static final int ATTACK1 = 5;
 		public static final int ATTACK2 = 6;
+		public static final int DEAD = 7;
 		public PlayerBroadcaster broadcaster =null;
 		public Cell cell = null;
 		public void setMaxSpeed(double value)
@@ -306,7 +310,13 @@ public abstract class GameObject {
 			if (!IsInWorld())
 				return;
 			
-			if (isNetowrkEntity)
+			if (this.isDead) {
+				if ((System.currentTimeMillis() - this.deathTimeStart) > this.deathDespawnDuration) {
+					Despawn();
+				}
+			}
+			
+			if (isNetowrkEntity == 1)
 			{
 				double t = (System.currentTimeMillis() - interpolation_start) / ping;
 				setPosition(last_packet.x * (1 - t) + new_packet.x * (t),
@@ -336,7 +346,8 @@ public abstract class GameObject {
 		
 		public void updatePacket(MovementData p)
 		{
-
+			
+			
 			if (new_packet.timeframe < p.timeframe) {
 				last_packet.clone(new_packet);
 				new_packet.clone(p);
@@ -397,12 +408,14 @@ public abstract class GameObject {
 			entity_packet.facingRight = facingRight;
 			entity_packet.health = health;
 			//TODO entity_packet.HEALTH
+			
+			
 			return entity_packet;
 		}
 		
 		public NetworkSpawner getNetowrkSpawner()
 		{
-			return new NetworkSpawner(name, handle, type, (float)x, (float)y, facingRight, true);
+			return new NetworkSpawner(name, handle, type, (float)x, (float)y, facingRight, isNetowrkEntity);
 		}
 		
 		public void Despawn() {
@@ -411,6 +424,14 @@ public abstract class GameObject {
 			
 			removeEntity = true;
 			World.getInstance().requestObjectDespawn(this.gethandle());
+			
+		}
+		
+		public void Die() {
+			deathTimeStart = System.currentTimeMillis();	
+			isDead = true;
+			moveSpeed = 0;
+			broadcaster.QueuePacket(new WorldPacket(WorldPacket.DIE, gethandle()), true, gethandle());
 			
 		}
 		

@@ -14,8 +14,8 @@ import PACKET.NetworkSpawner;
 import PACKET.SpeechPacket;
 import PACKET.WorldPacket;
 import UI.Control;
-import entity.Entity;
-import entity.Spawner;
+import componentNew.EntityManager;
+
 import gamestate.GameStateManager;
 import main.LOGGER;
 import main.World;
@@ -37,7 +37,7 @@ public class Session {
 	public Stack<MovementData> worldPackets = new Stack<MovementData>();
 	protected Control callbackstatusControl = null;
 	private static Session instance = null;
-	public Entity _player = null;
+	public String playerName = null;
 	
 	public static Session getInstance() {
 		if (instance == null)
@@ -50,19 +50,18 @@ public class Session {
 		this.callbackstatusControl = callbackstatusControl;
 
 		if (clientSocket != null && !clientSocket.isClosed()) {
-			callbackstatusControl.setText("Connection failed, you are connected!");
-			LOGGER.log(Level.WARNING, "Connection call failed, the user is connected!", this);
-			callbackstatusControl = null;
+			callbackstatusControl.setText("Connecting failed, you are connected!");
+			LOGGER.log(Level.WARNING, "Connecting failed, the user is connected!", this);
+			this.callbackstatusControl = null;
 		} else {
 			callbackstatusControl.setText("Connecting...");
 			this.port = port;
 			this.IP = IP;
 			LOGGER.log(Level.INFO, "Connecting to " + IP + "@" + port, this);
 			try {
-				clientSocket = new Socket(IP, port);
 				startTCP();
 				callbackstatusControl.setText("Authenticating...");
-				LOGGER.log(Level.INFO, "Sending Autherizaing request...", this);
+				LOGGER.log(Level.INFO, "Sending authorization request...", this);
 				SendCommand(new WorldPacket(WorldPacket.HAND_SHAKE, new AuthorizationPacket(username, password)));
 			} catch (UnknownHostException e) {
 				callbackstatusControl.setText("Unknonw error occured!");
@@ -79,12 +78,16 @@ public class Session {
 
 	public void startTCP() throws IOException {
 		LOGGER.log(Level.INFO, "Starting TCP thread...", this);
+		clientSocket = new Socket(IP, port);
 		tcp = new WorkerRunnableTCP(this);
 		tcp.init();
 		new Thread(tcp).start();
-		try {Thread.sleep(200);} 
-		catch (InterruptedException e) {e.printStackTrace();}
+		try {
+			Thread.sleep(200);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
 		}
+	}
 
 	public void startUDP(int udp_port) {
 		LOGGER.log(Level.INFO, "Starting UDP Thread...", this);
@@ -97,8 +100,7 @@ public class Session {
 	public void disconnect() {
 		LOGGER.log(Level.INFO, "Disconnected from server...", this);
 		
-		World.getInstance().restart();
-		
+		GameStateManager.getInstance().requestState(GameStateManager.LOGINSTATE,"Disconnected from the server...");
 		try {
 			if (clientSocket != null && !clientSocket.isClosed())
 				clientSocket.close();
@@ -135,7 +137,7 @@ public class Session {
 
 				if (res.equals("accepted")) {
 					callbackstatusControl.setText("Connected!");
-					GameStateManager.getInstance().requestState(GameStateManager.ONLINESTATE);
+					GameStateManager.getInstance().requestState(GameStateManager.ONLINESTATE,"");
 					SendCommand(new WorldPacket(WorldPacket.REQUEST_UDP_PORT, null));
 					return true;
 				} else {
@@ -150,12 +152,9 @@ public class Session {
 			case WorldPacket.LOGIN:
 				NetworkSpawner spwaner = (NetworkSpawner) pct.data;
 				World.getInstance().request_spawn(spwaner.name, true, spwaner.handle, spwaner.type, spwaner.x, spwaner.y, spwaner.facing, spwaner.network);
-				//World.getInstance().request_spawn(Integer.toString(mv.handle),true, mv.handle, Spawner.PLAYERPED, mv.x, mv.y, mv.facingRight, false);
-				
 				return true;
-				
 			case WorldPacket.SETNAME:
-				_player.name = (String) pct.data;
+				playerName = (String) pct.data;
 				return true;
 
 			case WorldPacket.SPAWN:
@@ -165,19 +164,27 @@ public class Session {
 						spawner.facing, spawner.network);
 				return true;
 			case WorldPacket.DESPAWN:
-				World.getInstance().entities.get((int)pct.data).fadeOut();
+				//if (World.getInstance().entities.get((int)pct.data) == null) {
+				//	LOGGER.error("tried to despawn non existing entitiy with id: "+ ((int)pct.data), this);
+				//	return false;
+				//}
+				World.getInstance().request_despawn((int)pct.data);
+				//World.getInstance().entities.get((int)pct.data).fadeOut();
 				//World.getInstance().request_despawn((int) pct.data);
 				return true;
 			case WorldPacket.SPEECH:
 				SpeechPacket data = (SpeechPacket) pct.data;
-				World.getInstance().entities.get(data.handle).say(data.text);
+				//World.getInstance(). entities.get(data.handle).say(data.text);
+				EntityManager.getInstance().say(data.handle, data.text);
 				return true;
 			case WorldPacket.MOVEMENT_DATA:
 				synchronized (worldPackets) {
 					worldPackets.add((MovementData) pct.data);
 				}
 				return true;
-
+			case WorldPacket.DIE:
+				EntityManager.getInstance().die((int) pct.data);
+				return true;
 			default:
 				synchronized (commandsPackets) {
 					commandsPackets.add(pct);
@@ -185,7 +192,8 @@ public class Session {
 				return true;
 			}
 		} catch (Exception e) {
-			System.out.println("UNKNOWN MSG");
+			e.printStackTrace();
+			LOGGER.error("UNKNOWN MSG: " + e.getMessage(), this);
 			// sLog.outError("WorldSocket::ProcessIncomingData ByteBufferException occured
 			// while parsing an instant handled packet (opcode: %u) from client %s,
 			// accountid=%i.",

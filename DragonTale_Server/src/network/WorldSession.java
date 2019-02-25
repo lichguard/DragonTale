@@ -85,9 +85,9 @@ public class WorldSession {
 
 	public void handleLogin(WorldPacket packet) {
 		LOGGER.info("handleLogin", this);
-		int handle = World.getInstance().requestObjectSpawn(account.name, Spawner.PLAYERPED, account.x, account.y, false, true, worldsocket); //0 - playerped
+		int handle = World.getInstance().requestObjectSpawn(account.name, Spawner.PLAYERPED, account.x, account.y, false, 1, worldsocket); //0 - playerped
 		SendWorldPacket(new WorldPacket(WorldPacket.LOGIN, 
-				new NetworkSpawner(account.name,handle, Spawner.PLAYERPED,  account.x,  account.y, account.facingright, false)
+				new NetworkSpawner(account.name,handle, Spawner.PLAYERPED,  account.x,  account.y, account.facingright, 1)
 				));
 		
 		
@@ -108,11 +108,10 @@ public class WorldSession {
 	 */
 
 	public void QueuePacket(WorldPacket packet) {
-		if(WorldPacket.MOVEMENT_DATA == packet.packet_code) {
+		if (WorldPacket.MOVEMENT_DATA == packet.packet_code) {
 			m_location = packet;
-		}
-		else
-		m_recvQueue.add(packet);
+		} else
+			m_recvQueue.add(packet);
 	}
 
 	public WorldSession(WorldSocket worldsocket) {

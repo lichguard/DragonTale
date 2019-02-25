@@ -77,7 +77,7 @@ public class World {
 		return requestObjectSpawn(sp.name ,sp.type,sp.x,sp.y,sp.facing,sp.network,null);
 	}
 
-	public int requestObjectSpawn(String name, int type, double x, double y, boolean facing, boolean network,WorldSocket socketcallback) {
+	public int requestObjectSpawn(String name, int type, double x, double y, boolean facing, int network,WorldSocket socketcallback) {
 		if (objects.Spawner.entities_count <= type || type < 0)
 			return -1;
 

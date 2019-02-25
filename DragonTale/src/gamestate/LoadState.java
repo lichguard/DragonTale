@@ -13,7 +13,7 @@ public class LoadState extends GameState{
 	{
 	}
 	@Override
-	public void init() {
+	public void init(String requestedStateInitMessage) {
 		// TODO Auto-generated method stub
 		
 	}

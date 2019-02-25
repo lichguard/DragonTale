@@ -31,7 +31,7 @@ public class Coin extends WorldObject {
 
 	public void update() {
 
-		if (!isNetowrkEntity) {
+		if (isNetowrkEntity == 1) {
 			ArrayList<GameObject> entities = World.getInstance().getCollisions(this);
 			for (GameObject entity : entities) {
 				if (entity instanceof Player) {

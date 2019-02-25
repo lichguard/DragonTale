@@ -13,7 +13,7 @@ public class LOGGER {
 	public static void log(Level level,String msg, Object object)
 	{
 		date.setTime(System.currentTimeMillis());
-		System.out.println(dateFormat.format(date.getTime()) + " [" + level.getName()  +"] " +object.getClass().getName() + ": " + msg);
+		System.out.println(dateFormat.format(date.getTime()) + " [" + level.getName()  +"] " + (object == null ? "" : object.getClass().getName()) + ": " + msg);
 
 	}
 	public static void info(String msg, Object object)

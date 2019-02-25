@@ -22,6 +22,7 @@ public class Background {
 		try
 		{
 			image = ImageIO.read(getClass().getResourceAsStream(s));
+			
 			moveScale = ms;
 		}
 		catch(Exception e)
@@ -48,14 +49,14 @@ public class Background {
 	}
 	public void draw(Graphics2D g)
 	{
-		g.drawImage(image, (int)x,	(int)y,	null);
+		g.drawImage(image, (int)x,	(int)y, GameConstants.WIDTH ,GameConstants.HEIGHT,	null);
 		if ( x< 0)
 		{
-			g.drawImage(image, (int)x + GameConstants.WIDTH, (int)y, null);
+			g.drawImage(image, (int)x + GameConstants.WIDTH, (int)y,GameConstants.WIDTH ,GameConstants.HEIGHT,	 null);
 		}
 		if ( x > 0)
 		{
-			g.drawImage(image, (int)x - GameConstants.WIDTH, (int)y, null);
+			g.drawImage(image, (int)x - GameConstants.WIDTH, (int)y,GameConstants.WIDTH ,GameConstants.HEIGHT,	 null);
 		}
 	}
 }

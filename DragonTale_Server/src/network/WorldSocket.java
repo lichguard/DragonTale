@@ -77,8 +77,9 @@ public class WorldSocket {
 
 	public boolean ProcessIncomingData(WorldPacket pct) {
 		try {
+			
 			if (pct.packet_code != WorldPacket.MOVEMENT_DATA) 
-			LOGGER.info("INC:: " + pct.toString(), this);
+				LOGGER.info("INC:: " + pct.toString(), this);
 			
 			switch (pct.packet_code) {
 			case WorldPacket.HAND_SHAKE:
@@ -128,8 +129,7 @@ public class WorldSocket {
 
 		
 		AuthorizationPacket pct = (AuthorizationPacket) recvPacket.data;
-		//int Accountid = MySQLDB.getInstance().GetUserfromDB(pct.username, pct.password);
-		Account acc = Account.accounts_map.get(pct.username+pct.password);
+		Account acc = MySQLDB.getInstance().GetUserAccountfromDB(pct.username, pct.password);
 		if (acc == null) {
 			SendWorldPacket(new WorldPacket(WorldPacket.HAND_SHAKE, "refused"));
 			return false;

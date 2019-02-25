@@ -7,6 +7,7 @@ import java.awt.Graphics2D;
 import TileMap.Background;
 import UI.Action;
 import UI.Button;
+import UI.Label;
 import UI.Messagebox;
 import UI.Textbox;
 import main.CONTROLS;
@@ -15,23 +16,23 @@ import network.Session;
 public class LoginState extends GameState {
 
 	protected Background bg;
-	protected Color titleColor;
-	protected Font titleFont;
 	protected Font font;
 
+	protected Label title;
 	protected Textbox password_txtbox;
 	protected Textbox username_txtbox;
 	protected Button login_button;
 	protected Thread connecting_thread;
 	protected boolean cancel_login = false;
 	
+	
 	@Override
-	public void init() {
-
+	public void init(String requestedStateInitMessage) {
+		super.init(requestedStateInitMessage);
 		bg = new Background("/Backgrounds/menubg.gif", 0.1);
 		bg.setVector(-0.1, 0);
-		titleColor = new Color(128, 0, 0);
-		titleFont = new Font("Century Gothic", Font.PLAIN, 28);
+		//titleColor = new Color(128, 0, 0);
+		//titleFont = new Font("Century Gothic", Font.PLAIN, 28);
 		font = new Font("Arial", Font.PLAIN, 12);
 		connecting_thread = null;
 		init_UI();
@@ -62,8 +63,16 @@ public class LoginState extends GameState {
 		login_button.setposition(0.4f, 0.65f);
 		login_button.setsize(0.3f, 0.02f);
 		login_button.registerAction(action);
-		login_button.setforecolor(new Color(0,0,0,255));
+		login_button.setforecolor(new Color(255,255,255,255));
 		this.uimanager.registerControl(login_button);
+		
+		title = new Label();
+		title.setText("Dragon Tale");
+		title.setposition(0.5f, 0.17f);
+		title.registerAction(action);
+		title.setforecolor(new Color(0,0,0,255));
+		title.setfont(new Font("Century Gothic", Font.PLAIN, 40));
+		this.uimanager.registerControl(title);
 		
 	}
 
@@ -113,13 +122,6 @@ public class LoginState extends GameState {
 	@Override
 	public void draw(Graphics2D g) {
 		bg.draw(g);
-		g.setColor(titleColor);
-		g.setFont(titleFont);
-		g.drawString("Dragon Tale", 80, 70);
-
-		//g.setFont(font);
-		//g.drawString("Login", 140, 180);
-		//g.setFont(font);
 		super.draw(g);
 	}
 

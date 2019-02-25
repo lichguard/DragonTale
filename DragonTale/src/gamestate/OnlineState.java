@@ -2,7 +2,9 @@ package gamestate;
 
 import TileMap.*;
 import audio.AudioPlayer;
+import componentNew.EntityManager;
 import main.CONTROLS;
+import main.GameConstants;
 import main.LOGGER;
 import main.World;
 import network.Session;
@@ -47,14 +49,14 @@ public class OnlineState extends GameState {
 	}
 
 	@Override
-	public void init() {
-		super.init();
+	public void init(String requestedStateInitMessage) {
+		super.init(requestedStateInitMessage);
 		bg = new Background("/Backgrounds/grassbg1.gif", 0.1);
-		tileMap = new TileMap(30);
+		tileMap = new TileMap(GameConstants.TILESIZE);
 		tileMap.loadTiles("/TileSets/grasstileset.gif");
 		tileMap.loadMap("/Maps/level1-1.map");
 		//tileMap.setPosition(0, 0);
-		tileMap.setTween(0.07f);
+		tileMap.setCameraFocusSpeed(0.07f);
 		World.getInstance().start(tileMap);
 		populateMap();
 		bgmusic = new AudioPlayer("/Music/level1-1.mp3");
@@ -92,27 +94,17 @@ public class OnlineState extends GameState {
 					playerhandle = (int) packet.data;
 					break;
 				case WorldPacket.SPAWN:
-				
 					NetworkSpawner sp = (NetworkSpawner) packet.data;
-					if (requested_spawns_from_server.containsKey(sp.handle))
-					{
-						requested_spawns_from_server.remove(sp.handle);
-					}
-					if (playerhandle == sp.handle)
-					{
-						World.getInstance().request_spawn(Integer.toString(sp.handle), true, sp.handle, sp.type, sp.x, sp.y, sp.facing, false);
-					}
-						else
-							World.getInstance().request_spawn(Integer.toString(sp.handle),false, sp.handle, sp.type, sp.x, sp.y, sp.facing, sp.network);
-
+					World.getInstance().request_spawn(Integer.toString(sp.handle), playerhandle == sp.handle, sp.handle, sp.type, sp.x, sp.y, sp.facing, sp.network );
 					break;
 				case WorldPacket.SPEECH:
 					SpeechPacket data = (SpeechPacket) packet.data;
-					World.getInstance().entities.get(data.handle).say(data.text);
+					//World.getInstance().entities.get(data.handle).say(data.text);
+					//World.getInstance().entities.get(data.handle).say(data.text);
+					EntityManager.getInstance().say(data.handle, data.text);
 					break;
 				case WorldPacket.DESPAWN:
-					World.getInstance().entities.get((int)packet.data).fadeOut();
-					//World.getInstance().request_despawn((int) packet.data);
+					World.getInstance().request_despawn((int) packet.data);
 					break;
 				case WorldPacket.UDP_PORT:
 					Session.getInstance().startUDP((int) packet.data);
@@ -130,10 +122,12 @@ public class OnlineState extends GameState {
 		synchronized (Session.getInstance().worldPackets) {
 			while (!Session.getInstance().worldPackets.isEmpty()) {
 				MovementData packet = Session.getInstance().worldPackets.pop();
-				if (World.getInstance().entities.containsKey(packet.handle)) {
-						World.getInstance().entities.get(packet.handle).updatePacket(packet, World.getInstance());
-					
-				} 
+				//if (World.getInstance().entities.containsKey(packet.handle)) {
+						//World.getInstance().entities.get(packet.handle).updatePacket(packet, World.getInstance());
+						
+							
+				//} 
+				EntityManager.getInstance().updatePacket(packet.handle, packet);
 			}
 		}
 	}
@@ -163,7 +157,7 @@ public class OnlineState extends GameState {
 	public void handleInput() {
 		super.handleInput();
 		if (CONTROLS.isPressed(CONTROLS.ESCAPE)) {
-			GameStateManager.getInstance().requestState(GameStateManager.LOGINSTATE);
+			GameStateManager.getInstance().requestState(GameStateManager.LOGINSTATE,"");
 			Session.getInstance().disconnect();
 
 		}

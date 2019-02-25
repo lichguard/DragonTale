@@ -11,7 +11,6 @@ import java.io.InputStreamReader;
 import javax.imageio.ImageIO;
 
 import main.GameConstants;
-import main.LOGGER;
 
 import java.io.InputStream;
 
@@ -41,6 +40,8 @@ public class TileMap {
 	private BufferedImage tileset;
 	private int numTilesAcross;
 	private Tile[][] tiles;
+	
+	private Tile[][][] tilesChunks;
 
 	// drawing
 	private int rowOffset;
@@ -56,6 +57,7 @@ public class TileMap {
 	}
 
 	public void loadTiles(String s) {
+		int tileSize = 30;
 		try {
 			tileset = ImageIO.read(getClass().getResourceAsStream(s));
 			numTilesAcross = tileset.getWidth() / tileSize;
@@ -86,17 +88,17 @@ public class TileMap {
 
 			xmin = GameConstants.WIDTH - width;
 			xmax = 0;
-			
+
 			ymin = GameConstants.HEIGHT - height;
 			ymax = 0;
-							
+
 			String delims = "\\s+";
 			for (int row = 0; row < numRows; row++) {
 				String line = br.readLine();
 				String[] tokens = line.split(delims);
 				for (int col = 0; col < numCols; col++) {
 					map[row][col] = Integer.parseInt(tokens[col]);
-					}
+				}
 			}
 
 		} catch (Exception e) {
@@ -104,6 +106,10 @@ public class TileMap {
 		}
 	}
 
+	public void loadChunk(int x,int y) {
+		
+	}
+	
 	public int getTileSize() {
 		return tileSize;
 	}
@@ -124,7 +130,7 @@ public class TileMap {
 		return height;
 	}
 	
-	public void setTween(float t)
+	public void setCameraFocusSpeed(float t)
 	{
 		tween = t;
 	}
@@ -188,7 +194,7 @@ public class TileMap {
 				int r = rc / numTilesAcross;
 				int c = rc % numTilesAcross;
 	
-				g.drawImage(tiles[r][c].getImage(), (int) x + col * tileSize, (int) y + row * tileSize, null);
+				g.drawImage(tiles[r][c].getImage(), (int) x + col * tileSize, (int) y + row * tileSize,GameConstants.TILESIZE,GameConstants.TILESIZE, null);
 			}
 		}
 	}

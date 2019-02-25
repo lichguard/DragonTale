@@ -25,7 +25,7 @@ public class Cell {
 			Point[] points = new Point[] { new Point(100, 20) };
 	
 			for (Point p : points) {
-				World.getInstance().requestObjectSpawn("",Spawner.SLUGGER, p.x, p.y, true, false, null);
+				World.getInstance().requestObjectSpawn("",Spawner.SLUGGER, p.x, p.y, true, 0, null);
 			}
 		}
 	}

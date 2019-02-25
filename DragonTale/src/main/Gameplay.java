@@ -69,7 +69,7 @@ public class Gameplay extends JPanel implements Runnable, KeyListener,MouseListe
 
 	public void update() {
 		GameStateManager.getInstance().update();// gsm.update();
-		CONTROLS.update();
+		CONTROLS.update();  
 	}
 
 	public void draw() {
