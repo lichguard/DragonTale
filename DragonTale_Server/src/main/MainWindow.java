@@ -1,10 +1,9 @@
 package main;
 
-import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 
-import game.Gameplay;
+import game.Master;
 import java.awt.GridBagLayout;
 import javax.swing.JButton;
 import java.awt.GridBagConstraints;
@@ -15,8 +14,10 @@ import java.awt.event.ActionEvent;
 public class MainWindow {
 
 	private JFrame frame;
-	private Gameplay gm;
+	private Master gm;
 	public static void main(String[] args) {
+		Main.main(null);
+		/*
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
@@ -27,6 +28,7 @@ public class MainWindow {
 				}
 			}
 		});
+		*/
 	}
 
 	/**
@@ -57,7 +59,7 @@ public class MainWindow {
 						if (gm == null)
 						{
 							btnStart.setText("Stop");
-							gm = new Gameplay();
+							gm = new Master();
 							(new Thread(gm)).start();
 						}
 						else

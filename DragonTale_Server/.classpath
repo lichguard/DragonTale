@@ -5,5 +5,6 @@
 	<classpathentry kind="src" path="Resources"/>
 	<classpathentry kind="lib" path="/NetworkPacket/bin"/>
 	<classpathentry kind="lib" path="lib/mysql-connector-java-5.1.45-bin.jar"/>
+	<classpathentry kind="lib" path="jgoodies-forms-1.8.0.jar" sourcepath="jgoodies-forms-1.8.0-sources.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

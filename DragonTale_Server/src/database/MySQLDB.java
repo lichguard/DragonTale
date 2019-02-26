@@ -13,7 +13,7 @@ public class MySQLDB implements IDB {
 		Connection con = null;
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
-			con = DriverManager.getConnection("jdbc:mysql://localhost:3306/?useSSL=false", "gameserver", "gameserver");
+			con = DriverManager.getConnection("jdbc:mysql://10.0.0.2:3306/?useSSL=false", "gameserver", "gameserver");
 		} catch (Exception e) {
 			e.printStackTrace();
 			con = null;
@@ -52,6 +52,32 @@ public class MySQLDB implements IDB {
 		}
 		return id;
 	}
+	
+	public Account GetUserAccountfromDB(String username, String password) {
+
+		
+		if (!enableSQL) //0 will let anyone in
+			return Account.accounts_map.get(username+password);
+		
+		int id = -1;
+		try {
+			Connection con = getMySQLConnection();
+			Statement stmt = con.createStatement();
+			ResultSet rs = stmt.executeQuery(
+					"select `id`, `password`,`salt` from `game_world`.`accounts` where `username` = '" + username + "'");
+			while (rs.next()) {
+				if (rs.getString("password").compareTo(password) == 0) {
+					id = rs.getInt("id");
+				}
+			}
+
+			con.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;//new Account(name, id, x, y, facingright);
+	}
+	
 
 	public int CreateAccountinDB(String username, String password) {
 		
@@ -76,5 +102,6 @@ public class MySQLDB implements IDB {
 			return -1;
 		}
 	}
+
 
 }

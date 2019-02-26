@@ -4,7 +4,8 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
 
-import main.Gameplay;
+import main.GameConstants;
+
 
 public class Background {
 	
@@ -21,6 +22,7 @@ public class Background {
 		try
 		{
 			image = ImageIO.read(getClass().getResourceAsStream(s));
+			
 			moveScale = ms;
 		}
 		catch(Exception e)
@@ -31,8 +33,8 @@ public class Background {
 	
 	public void setPosition(double x, double y)
 	{
-		this.x = (x * moveScale) % Gameplay.WIDTH;
-		this.y = (y * moveScale) % Gameplay.HEIGHT;
+		this.x = (x * moveScale) % GameConstants.WIDTH;
+		this.y = (y * moveScale) % GameConstants.HEIGHT;
 	}
 	
 	public void setVector(double dx, double dy)
@@ -47,14 +49,14 @@ public class Background {
 	}
 	public void draw(Graphics2D g)
 	{
-		g.drawImage(image, (int)x,	(int)y,	null);
+		g.drawImage(image, (int)x,	(int)y, GameConstants.WIDTH ,GameConstants.HEIGHT,	null);
 		if ( x< 0)
 		{
-			g.drawImage(image, (int)x + Gameplay.WIDTH, (int)y, null);
+			g.drawImage(image, (int)x + GameConstants.WIDTH, (int)y,GameConstants.WIDTH ,GameConstants.HEIGHT,	 null);
 		}
 		if ( x > 0)
 		{
-			g.drawImage(image, (int)x - Gameplay.WIDTH, (int)y, null);
+			g.drawImage(image, (int)x - GameConstants.WIDTH, (int)y,GameConstants.WIDTH ,GameConstants.HEIGHT,	 null);
 		}
 	}
 }

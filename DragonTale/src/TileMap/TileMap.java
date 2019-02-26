@@ -10,7 +10,7 @@ import java.io.InputStreamReader;
 
 import javax.imageio.ImageIO;
 
-import main.Gameplay;
+import main.GameConstants;
 
 import java.io.InputStream;
 
@@ -40,6 +40,8 @@ public class TileMap {
 	private BufferedImage tileset;
 	private int numTilesAcross;
 	private Tile[][] tiles;
+	
+	private Tile[][][] tilesChunks;
 
 	// drawing
 	private int rowOffset;
@@ -49,12 +51,13 @@ public class TileMap {
 
 	public TileMap(int tileSize) {
 		this.tileSize = tileSize;
-		numRowsToDraw = Gameplay.HEIGHT / tileSize + 2;
-		numColsToDraw = Gameplay.WIDTH / tileSize + 2;
+		numRowsToDraw = GameConstants.HEIGHT / tileSize + 2;
+		numColsToDraw = GameConstants.WIDTH / tileSize + 2;
 		tween = 0.07f;
 	}
 
 	public void loadTiles(String s) {
+		int tileSize = 30;
 		try {
 			tileset = ImageIO.read(getClass().getResourceAsStream(s));
 			numTilesAcross = tileset.getWidth() / tileSize;
@@ -83,19 +86,19 @@ public class TileMap {
 			width = numCols * tileSize;
 			height = numRows * tileSize;
 
-			xmin = Gameplay.WIDTH - width;
+			xmin = GameConstants.WIDTH - width;
 			xmax = 0;
-			
-			ymin = Gameplay.HEIGHT - height;
+
+			ymin = GameConstants.HEIGHT - height;
 			ymax = 0;
-							
+
 			String delims = "\\s+";
 			for (int row = 0; row < numRows; row++) {
 				String line = br.readLine();
 				String[] tokens = line.split(delims);
 				for (int col = 0; col < numCols; col++) {
 					map[row][col] = Integer.parseInt(tokens[col]);
-					}
+				}
 			}
 
 		} catch (Exception e) {
@@ -103,6 +106,10 @@ public class TileMap {
 		}
 	}
 
+	public void loadChunk(int x,int y) {
+		
+	}
+	
 	public int getTileSize() {
 		return tileSize;
 	}
@@ -123,7 +130,7 @@ public class TileMap {
 		return height;
 	}
 	
-	public void setTween(float t)
+	public void setCameraFocusSpeed(float t)
 	{
 		tween = t;
 	}
@@ -146,6 +153,7 @@ public class TileMap {
 	}
 	
 	public void setPosition(float x, float y) {
+		
 		this.x += (x - this.x) * tween;
 		this.y += (y - this.y) * tween;
 
@@ -186,9 +194,19 @@ public class TileMap {
 				int r = rc / numTilesAcross;
 				int c = rc % numTilesAcross;
 	
-				g.drawImage(tiles[r][c].getImage(), (int) x + col * tileSize, (int) y + row * tileSize, null);
+				g.drawImage(tiles[r][c].getImage(), (int) x + col * tileSize, (int) y + row * tileSize,GameConstants.TILESIZE,GameConstants.TILESIZE, null);
 			}
 		}
 	}
 
+	public void destroy() {
+		// position
+		x = 0;
+		y = 0;
+		tween =0; // smoothly scrolling camera
+		map = null;
+		tileset = null;
+		tiles = null;
+		tilesChunks = null;
+	}
 }

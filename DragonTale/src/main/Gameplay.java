@@ -1,44 +1,33 @@
 package main;
 
 import java.awt.*;
-
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
-import java.util.logging.Level;
-
 import javax.swing.JPanel;
-
-import dt.gamestate.GameStateManager;
+import gamestate.GameStateManager;
 import main.LOGGER;
 
 public class Gameplay extends JPanel implements Runnable, KeyListener,MouseListener {
 
 	private static final long serialVersionUID = 1L;
-	public static final int WIDTH = 320; // 320
-	public static final int HEIGHT = 268; // 268
-
-	public static final int SCALE = 100;
-	public static final boolean DEBUG = true;
-	public static final boolean DISABLEESOUND = true;
-	public GameStateManager gsm;
 	private Thread thread;
 	private boolean running;
 	private int target_FPS = 60;
-	public static long FPS = 0;
+	public static long FPS = 1;
 	private long targetTime = 1000 / target_FPS;
 	private BufferedImage image;
 	private Graphics2D g;
 	public Gameplay() {
 		super();
-		setPreferredSize(new Dimension(WIDTH * SCALE, HEIGHT * SCALE));
+		setPreferredSize(new Dimension(GameConstants.WIDTH * GameConstants.SCALE, GameConstants.HEIGHT * GameConstants.SCALE));
 		setFocusable(true);
 		requestFocus();
 		setFocusTraversalKeysEnabled(false); 
 	}
 
 	private void init() {
-		gsm = new GameStateManager();
-		image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_BGR);
+		LOGGER.info("Starting up Gameplay @" + target_FPS + " fps", this);
+		image = new BufferedImage(GameConstants.WIDTH, GameConstants.HEIGHT, BufferedImage.TYPE_INT_BGR);
 		g = (Graphics2D) image.getGraphics();
 		running = true;
 	}
@@ -55,11 +44,10 @@ public class Gameplay extends JPanel implements Runnable, KeyListener,MouseListe
 
 	@Override
 	public void run() {
-		LOGGER.log(Level.INFO, "Starting up Gameplay", this);
+		
 		init();
 		long start;
 		long elapsed;
-		long wait;
 		while (running) {
 			start = System.nanoTime();
 			update();
@@ -67,10 +55,10 @@ public class Gameplay extends JPanel implements Runnable, KeyListener,MouseListe
 			drawToScreen();
 
 			elapsed = System.nanoTime() - start;
+			//FPS is how long it takes to calculate a frame in milliseconds
 			FPS = elapsed / 1000000;
-			wait = Math.max(targetTime - FPS,5);
 			try {
-				Thread.sleep(wait);
+				Thread.sleep(Math.max(targetTime - FPS,0));
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -80,12 +68,12 @@ public class Gameplay extends JPanel implements Runnable, KeyListener,MouseListe
 	}
 
 	public void update() {
-		gsm.update();
-		CONTROLS.update();
+		GameStateManager.getInstance().update();// gsm.update();
+		CONTROLS.update();  
 	}
 
 	public void draw() {
-		gsm.draw(g);
+		GameStateManager.getInstance().draw(g); //gsm.draw(g);
 	}
 
 	private void drawToScreen() {

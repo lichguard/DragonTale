@@ -13,7 +13,26 @@ public class LOGGER {
 	public static void log(Level level,String msg, Object object)
 	{
 		date.setTime(System.currentTimeMillis());
-		System.out.println(dateFormat.format(date.getTime()) + " [" + level.getName()  +"] " +object.getClass().getName() + ": " + msg);
+		System.out.println(dateFormat.format(date.getTime()) + " [" + level.getName()  +"] " + (object == null ? "" : object.getClass().getName()) + ": " + msg);
 
+	}
+	public static void info(String msg, Object object)
+	{
+		log(Level.INFO,msg,object);
+	}
+	
+	public static void debug(String msg, Object object)
+	{
+		log(Level.FINE,msg,object);
+	}
+	
+	public static void warn(String msg, Object object)
+	{
+		log(Level.WARNING,msg,object);
+	}
+	
+	public static void error(String msg, Object object)
+	{
+		log(Level.SEVERE,msg,object);
 	}
 }
