@@ -39,7 +39,9 @@ public class Assets {
 		try {
 			switch (name) {
 			case Spawner.COIN: //"coin":
-				setSprites(Animation.IDLE, 6,20,30,100,"/Sprites/Player/coin.png",0,sprites,numFrames,width,height,delay);
+				setSprites(Animation.IDLE, 6,20,30,220,"/Sprites/Player/coin.png",0,sprites,numFrames,width,height,delay);
+				setSprites(Animation.FALLING, 6,20,30,220,"/Sprites/Player/coin.png",0,sprites,numFrames,width,height,delay);
+				
 				break;
 			case Spawner.EXPLOSION: //"explosion":
 				setSprites(Animation.IDLE, 6,30,30,50,"/Sprites/Enemies/explosion.gif",0,sprites,numFrames,width,height,delay);
@@ -47,6 +49,7 @@ public class Assets {
 			case Spawner.FIREBALL: //"fireball":
 				//not really idle
 				setSprites(Animation.IDLE, 4,30,30,40,"/Sprites/Player/fireball.gif",0,sprites,numFrames,width,height,delay);
+				setSprites(Animation.WALKING, 4,30,30,40,"/Sprites/Player/fireball.gif",0,sprites,numFrames,width,height,delay);
 				setSprites(Animation.DEAD, 4,30,30,40,"/Sprites/Player/fireball.gif",30,sprites,numFrames,width,height,delay);
 				
 				break;
@@ -68,7 +71,7 @@ public class Assets {
 				//not really idle
 				setSprites(Animation.IDLE, 1,30,30,40,"/Sprites/Enemies/slugger.gif",0,sprites,numFrames,width,height,delay);
 				setSprites(Animation.WALKING, 3,30,30,40,"/Sprites/Enemies/slugger.gif",0,sprites,numFrames,width,height,delay);
-				setSprites(Animation.DEAD, 3,30,30,40,"/Sprites/Enemies/dead_slugger.gif",30,sprites,numFrames,width,height,delay);
+				setSprites(Animation.DEAD, 1,30,30,40,"/Sprites/Enemies/dead_slugger.gif",30,sprites,numFrames,width,height,delay);
 				break;
 			default:
 	

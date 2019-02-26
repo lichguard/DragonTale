@@ -91,7 +91,7 @@ public class LoginState extends GameState {
 				password_txtbox.setText("");
 
 				if (cancel_login) {
-					Session.getInstance().disconnect();
+					Session.getInstance().disconnect("");
 					cancel_login = false;
 					return;
 				}

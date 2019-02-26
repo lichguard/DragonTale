@@ -9,8 +9,6 @@ import componentNew.Movement;
 import componentNew.PlayerData;
 import componentNew.Position;
 import main.CONTROLS;
-import main.GameConstants;
-import main.World;
 import network.Session;
 
 public class InputSystem {

@@ -8,9 +8,6 @@ import componentNew.EntityManager;
 
 
 public class World {
-	//public Map<Integer, Entity> entities = new HashMap<Integer, Entity>();
-	//public Stack<Integer> despawn_requests = new Stack<Integer>();
-	//public Stack<Spawner> spawn_requests = new Stack<Spawner>();
 	public TileMap tm;
 	private static World instance = null;
 
@@ -53,47 +50,30 @@ public class World {
 	public void request_despawn(int handle) {
 		
 		try {
+			LOGGER.info("despawning despawn of handle: " + handle, this);
 			EntityManager.getInstance().removeEntity(handle);
 		} catch (Exception e) {
 			LOGGER.error("Failed to despawn an entity", this);
 			e.printStackTrace();
 		}
 		
-		LOGGER.log(Level.INFO, "Requesting despawn of handle: " + handle, this);
-		//despawn_requests.push(handle);
 	}
 
 	public void update() {
 		EntityManager.getInstance().update();
-/*
-		Stack<Spawner> failedSpawns = new Stack<Spawner>();
-		// spawns new entities
-		while (!spawn_requests.isEmpty()) {
-			Spawner spwn = spawn_requests.pop();
-			if (!spwn.spawn()) {
-				
-				failedSpawns.push(spwn);
-			}
-		}
-		while (!failedSpawns.isEmpty())
-			spawn_requests.push(failedSpawns.pop());
-
-		// update and remove dead entities
-		for (Iterator<Entity> it = entities.values().iterator(); it.hasNext();) {
-			if (!((Entity) it.next()).update())
-				it.remove();
-		}
-*/
 	}
 
 	public void draw(Graphics2D g) {
 		EntityManager.getInstance().draw(g);
-		/*
-		for (Entity entity : entities.values())
-			entity.draw(g);
-			*/
 	}
-/*
+
+	public void destroy() {
+		tm.destroy();
+		EntityManager.getInstance().destroy();
+	}
+	
+	/*
+	
 	public ArrayList<Entity> getCollisions(Entity entity) {
 		ArrayList<Entity> returnObjects = new ArrayList<Entity>();
 		for (Entity _entity : entities.values()) {

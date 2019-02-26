@@ -20,9 +20,7 @@ public class PhysicsSystem implements IComponentSystem {
 		if (movementComponent == null)
 			return;
 		
-		Collision collisionComponent=(Collision) EntityManager.getInstance().getEntityComponent(id, EntityManager.CollisionID);
-		if (collisionComponent == null)
-			return;
+
 		
 		
 		Animation animationComponent=(Animation) EntityManager.getInstance().getEntityComponent(id, EntityManager.AnimationID);
@@ -84,7 +82,10 @@ public class PhysicsSystem implements IComponentSystem {
 		} else if (movementComponent.doublejump != 0)
 			movementComponent.doublejump = 0;
 
-		checkTileMapCollision(positionComponent, movementComponent, velocityComponent,collisionComponent);
+		Collision collisionComponent=(Collision) EntityManager.getInstance().getEntityComponent(id, EntityManager.CollisionID);
+		if (collisionComponent != null)
+			checkTileMapCollision(positionComponent, movementComponent, velocityComponent,collisionComponent);
+		
 		positionComponent.setPosition(movementComponent.xtemp, movementComponent.ytemp);
 		
 		positionComponent.setMapPosition();

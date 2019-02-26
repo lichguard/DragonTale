@@ -4,7 +4,7 @@ public class Appearance implements componentNew.IComponent {
 	public float alpha = 1.0f; //draw half transparent
 	public boolean fadeout = false;
 	public boolean fadein = false;
-	public float fadeDuration = 800.0f;
+	public float fadeDuration = 500.0f;
 	public long statFadeTimer = 0;
 	
 	

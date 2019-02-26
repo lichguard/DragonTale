@@ -86,4 +86,7 @@ public class UIManager {
 		}
 	}
 
+	public void destroy() {
+		
+	}
 }

@@ -10,8 +10,7 @@ import main.World;
 import network.Session;
 
 import java.awt.Graphics2D;
-import java.util.HashMap;
-import java.util.Map;
+import java.io.IOException;
 import java.util.logging.Level;
 
 import PACKET.MovementData;
@@ -24,10 +23,7 @@ public class OnlineState extends GameState {
 	private AudioPlayer bgmusic;
 	private TileMap tileMap;
 	private Background bg;
-	private int playerhandle = -1;
-	public Map<Integer, Integer> requested_spawns_from_server = new HashMap<Integer,Integer>();
-
-
+	
 	private void populateMap() {
 
 		/*
@@ -55,30 +51,30 @@ public class OnlineState extends GameState {
 		tileMap = new TileMap(GameConstants.TILESIZE);
 		tileMap.loadTiles("/TileSets/grasstileset.gif");
 		tileMap.loadMap("/Maps/level1-1.map");
-		//tileMap.setPosition(0, 0);
+		// tileMap.setPosition(0, 0);
 		tileMap.setCameraFocusSpeed(0.07f);
 		World.getInstance().start(tileMap);
 		populateMap();
 		bgmusic = new AudioPlayer("/Music/level1-1.mp3");
 		bgmusic.play();
 
-		//try {
-		//	Thread.sleep(1000);
-		//} catch (InterruptedException e) {
-		//	// TODO Auto-generated catch block
-		//	e.printStackTrace();
-		//}
+		// try {
+		// Thread.sleep(1000);
+		// } catch (InterruptedException e) {
+		// // TODO Auto-generated catch block
+		// e.printStackTrace();
+		// }
 
-		Session.getInstance().SendCommand(new WorldPacket(WorldPacket.LOGIN,null));
-				
-		//gsm.session.SendCommand(new WorldPacket(WorldPacket.REQUEST_HANDLE,
-		//		new NetworkSpawner(0, Spawner.PLAYERPED, 200, 200, true, true)));
+		Session.getInstance().SendCommand(new WorldPacket(WorldPacket.LOGIN, null));
+
+		// gsm.session.SendCommand(new WorldPacket(WorldPacket.REQUEST_HANDLE,
+		// new NetworkSpawner(0, Spawner.PLAYERPED, 200, 200, true, true)));
 	}
 
 	@Override
 	public void update() {
 		super.update();
-		//dispatchCommands();
+		dispatchCommands();
 		dispatchWorldPackets();
 		World.getInstance().update();
 		handleInput();
@@ -90,27 +86,36 @@ public class OnlineState extends GameState {
 			while (!Session.getInstance().commandsPackets.isEmpty()) {
 				WorldPacket packet = Session.getInstance().commandsPackets.poll();
 				switch (packet.packet_code) {
-				case WorldPacket.HANDLE:
-					playerhandle = (int) packet.data;
-					break;
 				case WorldPacket.SPAWN:
 					NetworkSpawner sp = (NetworkSpawner) packet.data;
-					World.getInstance().request_spawn(Integer.toString(sp.handle), playerhandle == sp.handle, sp.handle, sp.type, sp.x, sp.y, sp.facing, sp.network );
-					break;
-				case WorldPacket.SPEECH:
-					SpeechPacket data = (SpeechPacket) packet.data;
-					//World.getInstance().entities.get(data.handle).say(data.text);
-					//World.getInstance().entities.get(data.handle).say(data.text);
-					EntityManager.getInstance().say(data.handle, data.text);
+					World.getInstance().request_spawn(sp.name, false, sp.handle, sp.type, sp.x, sp.y, sp.facing,
+							sp.network);
 					break;
 				case WorldPacket.DESPAWN:
 					World.getInstance().request_despawn((int) packet.data);
 					break;
+				case WorldPacket.SPEECH:
+					SpeechPacket data = (SpeechPacket) packet.data;
+					EntityManager.getInstance().say(data.handle, data.text);
+					break;
+				case WorldPacket.DIE:
+					EntityManager.getInstance().die((int) packet.data);
+					break;
+				case WorldPacket.LOGIN:
+					NetworkSpawner spwaner = (NetworkSpawner) packet.data;
+					World.getInstance().request_spawn(spwaner.name, true, spwaner.handle, spwaner.type, spwaner.x,
+							spwaner.y, spwaner.facing, spwaner.network);
+					break;
 				case WorldPacket.UDP_PORT:
-					Session.getInstance().startUDP((int) packet.data);
+					try {
+						Session.getInstance().startUDP((int) packet.data);
+					} catch (IOException e) {
+						e.printStackTrace();
+						Session.getInstance().disconnect("Error establishing connection");
+					}
 					break;
 				default:
-					LOGGER.log(Level.WARNING,"Unknown CommandPacket code: " + packet.packet_code, this);
+					LOGGER.log(Level.WARNING, "Unknown CommandPacket code: " + packet.packet_code, this);
 					break;
 				}
 			}
@@ -122,11 +127,11 @@ public class OnlineState extends GameState {
 		synchronized (Session.getInstance().worldPackets) {
 			while (!Session.getInstance().worldPackets.isEmpty()) {
 				MovementData packet = Session.getInstance().worldPackets.pop();
-				//if (World.getInstance().entities.containsKey(packet.handle)) {
-						//World.getInstance().entities.get(packet.handle).updatePacket(packet, World.getInstance());
-						
-							
-				//} 
+				// if (World.getInstance().entities.containsKey(packet.handle)) {
+				// World.getInstance().entities.get(packet.handle).updatePacket(packet,
+				// World.getInstance());
+
+				// }
 				EntityManager.getInstance().updatePacket(packet.handle, packet);
 			}
 		}
@@ -141,25 +146,29 @@ public class OnlineState extends GameState {
 		// if (player.getPlayerPed().isDead()) {
 		// g.setColor(Color.yellow);
 		// g.setFont(new Font("Arial", Font.BOLD, 30));
-		// g.drawString("GAME OVER", GameConstants.WIDTH / 2 - 80, GameConstants.HEIGHT / 2);
+		// g.drawString("GAME OVER", GameConstants.WIDTH / 2 - 80, GameConstants.HEIGHT
+		// / 2);
 		// }
 		// player.draw(g);
 		// draw hud should be last
 	}
 
 	protected void finalize() {
-		bgmusic.close();
-		LOGGER.log(Level.INFO,"closing onlinestate", this);
-		Session.getInstance().disconnect();
+		LOGGER.log(Level.INFO, "onlinestate was destroyed by java GC", this);
 	}
 
 	@Override
 	public void handleInput() {
 		super.handleInput();
 		if (CONTROLS.isPressed(CONTROLS.ESCAPE)) {
-			GameStateManager.getInstance().requestState(GameStateManager.LOGINSTATE,"");
-			Session.getInstance().disconnect();
-
+			GameStateManager.getInstance().requestState(GameStateManager.LOGINSTATE, "");
 		}
+	}
+	public void destroy() {
+		super.destroy();
+		Session.getInstance().disconnect("");
+		World.getInstance().destroy();
+		bgmusic.close();
+		
 	}
 }

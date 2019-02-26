@@ -199,4 +199,14 @@ public class TileMap {
 		}
 	}
 
+	public void destroy() {
+		// position
+		x = 0;
+		y = 0;
+		tween =0; // smoothly scrolling camera
+		map = null;
+		tileset = null;
+		tiles = null;
+		tilesChunks = null;
+	}
 }

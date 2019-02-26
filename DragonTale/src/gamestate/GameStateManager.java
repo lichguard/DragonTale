@@ -47,6 +47,7 @@ public class GameStateManager {
 	}
 
 	private void unloadState(int state) {
+		gameStates[state].destroy();
 		gameStates[state] = null;
 		System.gc();
 	}
@@ -58,8 +59,11 @@ public class GameStateManager {
 	}
 
 	public void requestState(int state,String message) {
-		requestedState = state;
-		requestedStateInitMessage = message;
+		if (requestedState != state) 
+		{
+			requestedState = state;
+			requestedStateInitMessage = message;
+		}
 	}
 
 	public void update() {

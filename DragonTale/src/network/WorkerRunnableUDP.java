@@ -28,25 +28,24 @@ public class WorkerRunnableUDP implements Runnable {
 	protected byte[] outbuf = null;
 	protected byte[] inbuf = null;
 	protected long last_packet_received_time = 0;
-
+	protected Thread runningThread = null;
+	
 	public WorkerRunnableUDP(Session session) {
 		this.session = session;
 	}
 
-	public boolean init() {
+	public void init(int port) throws SocketException {
 		//LOGGER.error("PORT: " + session.udp_port, this);
 		outbuf = new byte[session.packet_size];
 		inbuf = new byte[session.packet_size];
-		outpacket = new DatagramPacket(outbuf, outbuf.length, session.clientSocket.getInetAddress(),
-				session.clientSocket.getLocalPort() + session.udp_port);
+		outpacket = new DatagramPacket(outbuf, outbuf.length, session.tcp.clientSocket.getInetAddress(),
+				session.tcp.clientSocket.getLocalPort() + session.udp_port);
 		inpacket = new DatagramPacket(inbuf, inbuf.length);
-		try {
-			socket = new DatagramSocket(session.clientSocket.getPort() + session.udp_port);
-		} catch (SocketException e) {
-			e.printStackTrace();
-			return false;
-		}
-		return true;
+		socket = new DatagramSocket(port);
+
+		runningThread = new Thread(this);
+		runningThread.start();
+		
 	}
 
 	public void run() {
@@ -61,7 +60,7 @@ public class WorkerRunnableUDP implements Runnable {
 				//LOGGER.log(Level.SEVERE,"An error has occured with client..", this);
 			LOGGER.log(Level.INFO,"UDP socket closed", this);
 		}
-		session.disconnect();
+		session.disconnect("Error establishing UDP connection");
 	}
 
 	public void dispatchPacket() {
@@ -82,7 +81,7 @@ public class WorkerRunnableUDP implements Runnable {
 
 				e.printStackTrace();
 				LOGGER.log(Level.SEVERE,"An error has occured with client..", this);
-				session.disconnect();
+				session.disconnect("connection error with udp listening");
 		}
 
 	}
@@ -99,7 +98,7 @@ public class WorkerRunnableUDP implements Runnable {
 			bStream.close();
 		} catch (IOException e) {
 			e.printStackTrace();
-			session.disconnect();
+			session.disconnect("error sending udp packet");
 		}
 	}
 
@@ -107,5 +106,24 @@ public class WorkerRunnableUDP implements Runnable {
 
 		if (socket != null)
 			socket.close();
+		
+		if (inputStream != null)
+			try {
+				inputStream.close();
+			} catch (IOException e) {
+				//e.printStackTrace();
+			}
+		
+		if (objectInput != null)
+			try {
+				objectInput.close();
+			} catch (IOException e) {
+				//e.printStackTrace();
+			}
+		
+
+		if (runningThread != null)
+			runningThread.interrupt();
+		
 	}
 }

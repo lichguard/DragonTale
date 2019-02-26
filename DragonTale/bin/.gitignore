@@ -1,4 +1,7 @@
+/SFX/
+/Sprites/
 /TileMap/
+/Tilesets/
 /UI/
 /audio/
 /componentNew/
@@ -7,5 +10,3 @@
 /gamestate/
 /main/
 /network/
-/Resources/
-/Tilesets/

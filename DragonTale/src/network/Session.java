@@ -1,7 +1,6 @@
 package network;
 
 import java.io.IOException;
-import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -10,19 +9,13 @@ import java.util.logging.Level;
 
 import PACKET.AuthorizationPacket;
 import PACKET.MovementData;
-import PACKET.NetworkSpawner;
-import PACKET.SpeechPacket;
 import PACKET.WorldPacket;
 import UI.Control;
-import componentNew.EntityManager;
-
 import gamestate.GameStateManager;
 import main.LOGGER;
-import main.World;
 
 public class Session {
 
-	protected Socket clientSocket = null;
 	protected WorkerRunnableTCP tcp = null;
 	protected WorkerRunnableUDP udp = null;
 	protected int packet_size = 500;
@@ -32,24 +25,24 @@ public class Session {
 	protected int port = 9000;
 
 	protected int handle = -1;
-	public long lastbroadcast = 0;
 	public Queue<WorldPacket> commandsPackets = new LinkedList<WorldPacket>();
 	public Stack<MovementData> worldPackets = new Stack<MovementData>();
 	protected Control callbackstatusControl = null;
 	private static Session instance = null;
 	public String playerName = null;
-	
+	protected boolean isConnected = false;
+
 	public static Session getInstance() {
 		if (instance == null)
 			instance = new Session();
 		return instance;
 	}
 
-
-	public void Connect(Control callbackstatusControl, String IP, int port, String username, String password) {
+	public synchronized void Connect(Control callbackstatusControl, String IP, int port, String username,
+			String password) {
 		this.callbackstatusControl = callbackstatusControl;
 
-		if (clientSocket != null && !clientSocket.isClosed()) {
+		if (isConnected) {
 			callbackstatusControl.setText("Connecting failed, you are connected!");
 			LOGGER.log(Level.WARNING, "Connecting failed, the user is connected!", this);
 			this.callbackstatusControl = null;
@@ -57,56 +50,51 @@ public class Session {
 			callbackstatusControl.setText("Connecting...");
 			this.port = port;
 			this.IP = IP;
-			LOGGER.log(Level.INFO, "Connecting to " + IP + "@" + port, this);
+			LOGGER.info("Connecting to " + IP + "@" + port, this);
 			try {
-				startTCP();
+				startTCP(IP, port);
 				callbackstatusControl.setText("Authenticating...");
-				LOGGER.log(Level.INFO, "Sending authorization request...", this);
-				SendCommand(new WorldPacket(WorldPacket.HAND_SHAKE, new AuthorizationPacket(username, password)));
+				LOGGER.info("Sending authorization request...", this);
+				if (isConnected) {
+					SendCommand(new WorldPacket(WorldPacket.HAND_SHAKE, new AuthorizationPacket(username, password)));
+				}
+				else {
+					throw new UnknownHostException();
+				}
 			} catch (UnknownHostException e) {
 				callbackstatusControl.setText("Unknonw error occured!");
 				callbackstatusControl = null;
-				disconnect();
+				disconnect("Unknonw error occured while trying to connect!");
 			} catch (IOException e) {
 				LOGGER.log(Level.WARNING, "Server offline!", this);
 				callbackstatusControl.setText("Server is offline");
 				callbackstatusControl = null;
-				disconnect();
+				disconnect("");
 			}
 		}
 	}
 
-	public void startTCP() throws IOException {
+	public void startTCP(String IP, int port) throws IOException {
 		LOGGER.log(Level.INFO, "Starting TCP thread...", this);
-		clientSocket = new Socket(IP, port);
 		tcp = new WorkerRunnableTCP(this);
-		tcp.init();
-		new Thread(tcp).start();
-		try {
-			Thread.sleep(200);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
+		isConnected = true;
+		tcp.init(IP, port);
 	}
 
-	public void startUDP(int udp_port) {
+	public void startUDP(int udp_port) throws IOException {
 		LOGGER.log(Level.INFO, "Starting UDP Thread...", this);
 		this.udp_port = udp_port;
 		udp = new WorkerRunnableUDP(this);
-		udp.init();
-		new Thread(udp).start();
+		udp.init(tcp.clientSocket.getPort() + udp_port);
+
 	}
 
-	public void disconnect() {
-		LOGGER.log(Level.INFO, "Disconnected from server...", this);
-		
-		GameStateManager.getInstance().requestState(GameStateManager.LOGINSTATE,"Disconnected from the server...");
-		try {
-			if (clientSocket != null && !clientSocket.isClosed())
-				clientSocket.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+	public synchronized void disconnect(String reason) {
+		if (!isConnected)
+			return;
+
+		LOGGER.info("Disconnected from the server...", this);
+		GameStateManager.getInstance().requestState(GameStateManager.LOGINSTATE, "Disconnected from the server...");
 
 		if (udp != null)
 			udp.disconnect();
@@ -114,99 +102,71 @@ public class Session {
 		if (tcp != null)
 			tcp.disconnect();
 
+		isConnected = false;
 	}
 
 	public void SendWorldPacket(MovementData packet) {
-		if (udp != null && packet != null && clientSocket != null && !clientSocket.isClosed())
-			udp.sendWorldPacket(packet);
+		udp.sendWorldPacket(packet);
 	}
 
-	public void SendCommand(WorldPacket packet) {
-		if (tcp != null && packet != null && clientSocket != null && !clientSocket.isClosed())
+	public synchronized void SendCommand(WorldPacket packet) {
+		try {
 			tcp.sendCommand(packet);
+		} catch (IOException e) {
+			e.printStackTrace();
+			disconnect("error sending command packet");
+		}
 	}
 
-	public boolean ProcessIncomingData(WorldPacket pct) {
+	public void ProcessIncomingData(WorldPacket pct) {
 		try {
 			switch (pct.packet_code) {
 			case WorldPacket.HAND_SHAKE:
-
-				String res = (String) pct.data;
-
-				LOGGER.debug("HAND_SHAKE REUSLT: " + res, this);
-
-				if (res.equals("accepted")) {
-					callbackstatusControl.setText("Connected!");
-					GameStateManager.getInstance().requestState(GameStateManager.ONLINESTATE,"");
+				boolean accepeted = handleHandShake(pct);
+				if (accepeted) {
+					GameStateManager.getInstance().requestState(GameStateManager.ONLINESTATE, "");
 					SendCommand(new WorldPacket(WorldPacket.REQUEST_UDP_PORT, null));
-					return true;
 				} else {
-					callbackstatusControl.setText("The information you have entered is not valid.!");
-					return false;
+					disconnect("Server refused connection for this account");
 				}
-
-			case WorldPacket.UDP_PORT:
-				startUDP((int) pct.data);
-				return true;
-
-			case WorldPacket.LOGIN:
-				NetworkSpawner spwaner = (NetworkSpawner) pct.data;
-				World.getInstance().request_spawn(spwaner.name, true, spwaner.handle, spwaner.type, spwaner.x, spwaner.y, spwaner.facing, spwaner.network);
-				return true;
+				break;
 			case WorldPacket.SETNAME:
 				playerName = (String) pct.data;
-				return true;
-
-			case WorldPacket.SPAWN:
-				NetworkSpawner spawner = (NetworkSpawner) pct.data;
-
-				World.getInstance().request_spawn(spawner.name, false, spawner.handle, spawner.type, spawner.x, spawner.y,
-						spawner.facing, spawner.network);
-				return true;
-			case WorldPacket.DESPAWN:
-				//if (World.getInstance().entities.get((int)pct.data) == null) {
-				//	LOGGER.error("tried to despawn non existing entitiy with id: "+ ((int)pct.data), this);
-				//	return false;
-				//}
-				World.getInstance().request_despawn((int)pct.data);
-				//World.getInstance().entities.get((int)pct.data).fadeOut();
-				//World.getInstance().request_despawn((int) pct.data);
-				return true;
-			case WorldPacket.SPEECH:
-				SpeechPacket data = (SpeechPacket) pct.data;
-				//World.getInstance(). entities.get(data.handle).say(data.text);
-				EntityManager.getInstance().say(data.handle, data.text);
-				return true;
+				break;
 			case WorldPacket.MOVEMENT_DATA:
 				synchronized (worldPackets) {
 					worldPackets.add((MovementData) pct.data);
 				}
-				return true;
-			case WorldPacket.DIE:
-				EntityManager.getInstance().die((int) pct.data);
-				return true;
+				break;
 			default:
 				synchronized (commandsPackets) {
 					commandsPackets.add(pct);
 				}
-				return true;
+				break;
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			LOGGER.error("UNKNOWN MSG: " + e.getMessage(), this);
-			// sLog.outError("WorldSocket::ProcessIncomingData ByteBufferException occured
-			// while parsing an instant handled packet (opcode: %u) from client %s,
-			// accountid=%i.",
-			// opcode, GetRemoteAddress().c_str(), m_session ? m_session->GetAccountId() :
-			// -1);
-
-			// DETAIL_LOG("Disconnecting session [account id %i / address %s] for badly
-			// formatted packet.",
-			// m_session ? m_session->GetAccountId() : -1, GetRemoteAddress().c_str());
-
-			return false;
+			LOGGER.error("UNKNOWN ERROR (PACKET_CODE " + pct.packet_code + ") : " + e.getMessage(), this);
 		}
 
+	}
+
+	public boolean handleHandShake(WorldPacket pct) {
+		String res = (String) pct.data;
+		LOGGER.info("HAND_SHAKE result: " + res, this);
+		if (res.equals("accepted")) {
+			callbackstatusControl.setText("Connected!");
+			return true;
+		} else if (res.equals("refused")) {
+			callbackstatusControl.setText("The information you have entered is not valid!");
+		} else if (res.equals("temp banned")) {
+			callbackstatusControl.setText("Your account has been suspended, try again later");
+		} else if (res.equals("banned")) {
+			callbackstatusControl.setText("Your account has been banned");
+		} else {
+			callbackstatusControl.setText("The server refused the connection for unknown reason");
+		}
+		return false;
 	}
 
 }

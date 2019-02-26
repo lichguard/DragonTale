@@ -3,8 +3,6 @@ package main;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
-import javax.swing.JScrollPane;
-
 import java.awt.GridBagLayout;
 import javax.swing.JTextField;
 import javax.swing.text.DefaultCaret;

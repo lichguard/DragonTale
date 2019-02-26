@@ -4,6 +4,7 @@ import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
+import java.net.Socket;
 import java.util.logging.Level;
 
 import PACKET.WorldPacket;
@@ -14,65 +15,89 @@ import main.LOGGER;
 
 public class WorkerRunnableTCP implements Runnable {
 	protected Session session;
-
+	protected Socket clientSocket = null;
 	protected InputStream inputStream = null;
 	protected OutputStream outStream = null;
 
 	protected ObjectInputStream objectInput = null;
 	protected ObjectOutputStream objectOutput = null;
-
+	protected Thread listeningThread = null;
+	
 	public WorkerRunnableTCP(Session session) {
 		this.session = session;
 	}
 
-	public void init() throws IOException{
-			outStream = session.clientSocket.getOutputStream();
-			inputStream = session.clientSocket.getInputStream();
+	public void init(String IP, int port) throws IOException {
+		clientSocket = new Socket(IP, port);
+		
+		outStream = clientSocket.getOutputStream();
+		inputStream = clientSocket.getInputStream();
 
-			objectOutput = new ObjectOutputStream(outStream);
-			objectInput = new ObjectInputStream(inputStream);
+		objectOutput = new ObjectOutputStream(outStream);
+		objectInput = new ObjectInputStream(inputStream);
+		
+		listeningThread = new Thread(this);
+		listeningThread.start();
+		
+		
+		try {
+			synchronized (listeningThread) {
+				listeningThread.wait(5000);
+			}
+			Thread.sleep(100);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 
+	}
+	
+	public boolean isConnected() {
+		return clientSocket != null && !clientSocket.isClosed() && clientSocket.isConnected();
 	}
 
 	public void run() {
-		LOGGER.log(Level.INFO, "TCP thread running...", this);
+		LOGGER.info("Thread running...", this);
+		synchronized (listeningThread) {
+			listeningThread.notifyAll();
+		}
 		try {
 			while (!Thread.interrupted()) {
 				WorldPacket packet;
 				packet = (WorldPacket) objectInput.readObject();
-				LOGGER.log(Level.INFO, "Receieving command: " + packet.getCommandName(), this);
-
+				LOGGER.info("Received command: " + packet.getCommandName(), this);
 				session.ProcessIncomingData(packet);
 			}
-
-		} catch (EOFException e) {
-			disconnect();
-		} catch (ClassNotFoundException | IOException e) {
-			if (e.getMessage().equals("Socket closed")) {
+			
+		} 
+		catch (EOFException e1) {
+			LOGGER.info("EOF Exception", this);
+		}
+		catch (ClassNotFoundException | IOException e) {
+			if (e != null && e.getMessage().equals("Socket closed")) {
 				LOGGER.info("TCP Socket closed", this);
 			} else {
 				e.printStackTrace();
-				LOGGER.log(Level.SEVERE, "An error has occured with server..", this);
+				LOGGER.error("An error has occured with the server: " + e.getMessage(), this);
 			}
 		}
 
-		session.disconnect();
+		LOGGER.info("Thread terminating...", this);
+		Session.getInstance().disconnect("tcp listening error");
 	}
 
-	public void sendCommand(WorldPacket packet) {
+	public void sendCommand(WorldPacket packet) throws IOException {
 		LOGGER.log(Level.INFO, "Sending command: " + packet.getCommandName(), this);
-		synchronized (objectOutput) {
-		try {
-			objectOutput.writeObject(packet);
-		} catch (IOException e) {
-			e.printStackTrace();
-			session.disconnect();
-		}
-	}
+		objectOutput.writeObject(packet);
 	}
 
 	public void disconnect() {
-
+		try {
+			if (isConnected()) {
+				clientSocket.close();
+			}
+		} catch (IOException e) {
+			// e.printStackTrace();
+		}
 		try {
 			if (objectInput != null)
 				objectInput.close();
@@ -98,6 +123,8 @@ public class WorkerRunnableTCP implements Runnable {
 			//e.printStackTrace();
 		}
 
+		if (listeningThread != null)
+			listeningThread.interrupt();
 	}
 
 }

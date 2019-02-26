@@ -216,6 +216,10 @@ public class DrawSystem {
 		if (speechComponent == null)
 			return;
 		
+		if (System.currentTimeMillis() -  speechComponent.start_time  > speechComponent.duration) {
+			EntityManager.getInstance().removeEntityComponent(id, EntityManager.SpeechID);
+		}
+		
 		Position positionComponent=(Position) EntityManager.getInstance().getEntityComponent(id, EntityManager.PositionID);
 		if (positionComponent == null)
 			return;

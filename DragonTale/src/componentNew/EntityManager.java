@@ -40,6 +40,7 @@ public class EntityManager {
 	public int entityCount = 0;
 	
 	public int cameraFocusEntityID = 0;
+	
 	public componentNew.IComponent[][] components = new IComponent[MAXENTITIES][MAXCOMPONENTS];
 
 	private static EntityManager instance = null;
@@ -70,7 +71,7 @@ public class EntityManager {
 		components[id][HealthID] = new Health();
 
 		if (userAvatar) {
-			components[id][BroadCastID] = new Broadcast();
+			components[id][BroadCastID] = new Broadcast(id);
 			components[id][PlayerDataID] = new PlayerData();
 			components[id][HUDID] = new HUD();
 			components[id][VelocityID] = new Velocity(0,0);
@@ -87,7 +88,7 @@ public class EntityManager {
 				components[id][VelocityID] = new Velocity(0,0);
 				components[id][MovementID] = new Movement();
 				components[id][CollisionID] = new Collision();
-				components[id][AIID] = new AI();
+				components[id][AIID] = new AI(entityTextureType);
 			}
 		}
 		
@@ -98,6 +99,9 @@ public class EntityManager {
 	private int createID(int requested_id) throws Exception {
 		if (entityCount == MAXENTITIES) {
 			throw new Exception("cannot create new entity, max entities reached");
+		}
+		if (requested_id >= MAXENTITIES) {
+			throw new Exception("cannot create new entity with id larger than MAXENTITIES");
 		}
 
 		if (requested_id >= 0) {
@@ -304,5 +308,16 @@ public class EntityManager {
 		attributeComponent.isDead = true;
 			
 		
+	}
+
+	public void destroy() {
+		cameraFocusEntityID = 0;
+		while (this.entityCount > 0) {
+			try {
+				this.deleteEntity(this.entities[0]);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
 	}
 }
