@@ -3,7 +3,7 @@ package gamestate;
 import TileMap.*;
 import audio.AudioPlayer;
 import componentNew.EntityManager;
-import main.CONTROLS;
+import main.Controls;
 import main.GameConstants;
 import main.LOGGER;
 import main.World;
@@ -160,7 +160,7 @@ public class OnlineState extends GameState {
 	@Override
 	public void handleInput() {
 		super.handleInput();
-		if (CONTROLS.isPressed(CONTROLS.ESCAPE)) {
+		if (Controls.isPressed(Controls.ESCAPE)) {
 			GameStateManager.getInstance().requestState(GameStateManager.LOGINSTATE, "");
 		}
 	}

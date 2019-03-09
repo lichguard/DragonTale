@@ -3,6 +3,8 @@ package main;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
+import javax.swing.JScrollPane;
+
 import java.awt.GridBagLayout;
 import javax.swing.JTextField;
 import javax.swing.text.DefaultCaret;
@@ -54,7 +56,9 @@ public class Main {
 	private void initialize() {
 		
 		frame = new JFrame();
-		frame.setBounds(100, 100, 450, 300);
+		frame.setResizable(true);
+		frame.setTitle("Dragon Tale Server v0.1");
+		frame.setBounds(100, 100, 700, 400);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[]{0, 0, 0, 0};
@@ -72,6 +76,9 @@ public class Main {
 		logField.setLineWrap(true);
 		logField.setForeground(Color.WHITE);
 		logField.setBackground(Color.BLACK);
+		
+		JScrollPane scrollPane = new JScrollPane(logField,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+
 		GridBagConstraints gbc_logField = new GridBagConstraints();
 		gbc_logField.gridwidth = 3;
 		gbc_logField.gridheight = 8;
@@ -79,7 +86,7 @@ public class Main {
 		gbc_logField.fill = GridBagConstraints.BOTH;
 		gbc_logField.gridx = 0;
 		gbc_logField.gridy = 0;
-		frame.getContentPane().add(logField, gbc_logField);
+		frame.getContentPane().add(scrollPane, gbc_logField);
 		GridBagConstraints gbc_startButton = new GridBagConstraints();
 		gbc_startButton.insets = new Insets(0, 0, 0, 5);
 		gbc_startButton.gridx = 0;
@@ -110,9 +117,10 @@ public class Main {
 		textField.setColumns(10);
 		
 		
+		
 		LOGGER.setLog(logField);
 
-		//JScrollPane scrollPane = new JScrollPane();
+		
 		//scrollPane.add(logField);
 		//scrollPane.setViewportView(logField);
 	}

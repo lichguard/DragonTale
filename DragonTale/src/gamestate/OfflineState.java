@@ -3,7 +3,7 @@ import java.awt.Graphics;
 import TileMap.*;
 import audio.AudioPlayer;
 import entity.Spawner;
-import main.CONTROLS;
+import main.Controls;
 import main.GameConstants;
 import main.LOGGER;
 import main.World;
@@ -80,7 +80,7 @@ public class OfflineState extends GameState {
 	@Override
 	public void handleInput() {
 
-		if (CONTROLS.isPressed(CONTROLS.ESCAPE)) {
+		if (Controls.isPressed(Controls.ESCAPE)) {
 			GameStateManager.getInstance().requestState(GameStateManager.MAINMENUSTATE,"");
 
 		}

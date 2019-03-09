@@ -1,12 +1,14 @@
 package main;
 import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 //this class contains a boolean array of current and previous key states
 //for the 10 keys that are used for this game.
 //a key k is down when keyState[k] is true.
 
-public class CONTROLS {
+public class Controls implements KeyListener, MouseListener {
 	
 	public static final int NUM_KEYS = 14;
 	public static boolean keyState[] = new boolean[NUM_KEYS];
@@ -112,5 +114,51 @@ public class CONTROLS {
 		}
 		return false;
 	}
+
+	@Override
+	public void keyPressed(KeyEvent key) {
+		Controls.keySet(key, key.getKeyCode(), true);
+	}
+
+	@Override
+	public void keyReleased(KeyEvent key) {
+		Controls.keySet(key, key.getKeyCode(), false);
+
+	}
+
+	@Override
+	public void keyTyped(KeyEvent key) {
+		
+	}
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		// TODO Auto-generated method stub
+		Controls.Mouseset(e,true);
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		// TODO Auto-generated method stub
+		Controls.Mouseset(e,false);
+	}
+
 	
 }

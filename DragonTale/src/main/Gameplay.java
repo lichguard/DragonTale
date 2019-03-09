@@ -1,14 +1,12 @@
 package main;
 
 import java.awt.*;
-import java.awt.event.*;
 import java.awt.image.BufferStrategy;
-import java.awt.image.BufferedImage;
-import javax.swing.JPanel;
 import gamestate.GameStateManager;
 import main.LOGGER;
+import network.Session;
 
-public class Gameplay extends Canvas implements Runnable, KeyListener,MouseListener {
+public class Gameplay extends Canvas implements Runnable {
 
 	private static final long serialVersionUID = 1L;
 	private Thread thread;
@@ -16,133 +14,83 @@ public class Gameplay extends Canvas implements Runnable, KeyListener,MouseListe
 	private int target_FPS = 60;
 	public static long FPS = 1;
 	private long targetTime = 1000 / target_FPS;
-	private BufferedImage image;
-	private Graphics2D g;
+	private Controls controls;
+
 	public Gameplay() {
 		super();
-		setPreferredSize(new Dimension(GameConstants.WIDTH , GameConstants.HEIGHT ));
+		setPreferredSize(new Dimension(GameConstants.WIDTH, GameConstants.HEIGHT));
 		setFocusable(true);
-		requestFocus();
-		setFocusTraversalKeysEnabled(false); 
+		setFocusTraversalKeysEnabled(false);
+		this.controls = new Controls();
+		addKeyListener(controls);
+		addMouseListener(controls);
 	}
 
-	private void init() {
-		LOGGER.info("Starting up Gameplay @" + target_FPS + " fps", this);
-		image = new BufferedImage(GameConstants.WIDTH, GameConstants.HEIGHT, BufferedImage.TYPE_INT_BGR);
-		//g = (Graphics2D) image.getGraphics();
-		running = true;
-	}
-
-	public void addNotify() {
-		super.addNotify();
-		if (thread == null) {
-			thread = new Thread(this);
-			addKeyListener(this);
-			addMouseListener(this);
-			thread.start();
+	public synchronized void start() {
+		if (running) {
+			return;
 		}
+		LOGGER.info("Starting up Gameplay @" + target_FPS + " fps", this);
+		running = true;
+		thread = new Thread(this);
+		thread.start();
+
+	}
+	
+	public synchronized void stop() {
+		if (!running) {
+			return;
+		}
+		running = false;
+		try {
+			this.thread.join();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		Session.getInstance().disconnect("exiting the game");
+		System.out.println("CLOSING");
 	}
 
 	@Override
 	public void run() {
-		
-		init();
+
 		long start;
 		long elapsed;
+		requestFocus();
 		while (running) {
 			start = System.nanoTime();
 			update();
 			render();
-			
-			//draw();
-			//drawToScreen();
-
 			elapsed = System.nanoTime() - start;
-			//FPS is how long it takes to calculate a frame in milliseconds
-			FPS = elapsed / 1000000;
+			
+			// FPS is how long it takes to calculate a frame in milliseconds
+			FPS = elapsed / 1_000_000l;
 			try {
-				Thread.sleep(Math.max(targetTime - FPS,0));
+				Thread.sleep(Math.max(targetTime - FPS, 0));
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			
+
 		}
-		
+
 	}
 
 	public void render() {
-		
+
 		BufferStrategy bs = getBufferStrategy();
 		if (bs == null) {
 			createBufferStrategy(3);
 			return;
 		}
 		Graphics g = bs.getDrawGraphics();
-		GameStateManager.getInstance().draw(g); //gsm.draw(g);
-		//Graphics g2 = getGraphics();
-		//g2.drawImage(image, 0, 0, null);
-		//g2.dispose();
+		GameStateManager.getInstance().draw(g);
 		bs.show();
 	}
+
 	public void update() {
-		GameStateManager.getInstance().update();// gsm.update();
-		CONTROLS.update();  
+		GameStateManager.getInstance().update();
+		Controls.update();
 	}
-
-	public void draw() {
-		GameStateManager.getInstance().draw(g); //gsm.draw(g);
-	}
-
-	private void drawToScreen() {
-		Graphics g2 = getGraphics();
-		g2.drawImage(image, 0, 0, null);
-		g2.dispose();
-	}
-
-	@Override
-	public void keyPressed(KeyEvent key) {
-		CONTROLS.keySet(key, key.getKeyCode(), true);
-	}
-
-	@Override
-	public void keyReleased(KeyEvent key) {
-		CONTROLS.keySet(key, key.getKeyCode(), false);
-
-	}
-
-	@Override
-	public void keyTyped(KeyEvent key) {
-		
-	}
-
-	@Override
-	public void mouseClicked(MouseEvent e) {
-		// TODO Auto-generated method stub
-	}
-
-	@Override
-	public void mouseEntered(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mouseExited(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mousePressed(MouseEvent e) {
-		// TODO Auto-generated method stub
-		CONTROLS.Mouseset(e,true);
-	}
-
-	@Override
-	public void mouseReleased(MouseEvent e) {
-		// TODO Auto-generated method stub
-		CONTROLS.Mouseset(e,false);
-	}
-
 
 }

@@ -3,7 +3,7 @@ package UI;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.util.Vector;
-import main.CONTROLS;
+import main.Controls;
 
 public class UIManager {
 	public Vector<Control> controls = new Vector<Control>();
@@ -11,25 +11,25 @@ public class UIManager {
 
 	public UIManager()
 	{						
-		CONTROLS.focused_control = null;
+		Controls.focused_control = null;
 	}
 	
 	public void requestFocus(Control control) {
 		
-		if (CONTROLS.focused_control instanceof Messagebox)
+		if (Controls.focused_control instanceof Messagebox)
 			return;
 		
 		//System.out.println(control.getClass());
-		CONTROLS.focused_control = control;
+		Controls.focused_control = control;
 	}
 
 	public void requestunFocus(Control control) {
 		
-		if (CONTROLS.focused_control instanceof Messagebox)
+		if (Controls.focused_control instanceof Messagebox)
 			return;
 		
-		if (CONTROLS.focused_control == control)
-			CONTROLS.focused_control = null;
+		if (Controls.focused_control == control)
+			Controls.focused_control = null;
 	}
 
 	public Messagebox ShowMessageBox(String txt) {
@@ -40,8 +40,8 @@ public class UIManager {
 	}
 
 	public void DisableMessageBox() {
-		Control msgbox = CONTROLS.focused_control;
-		CONTROLS.focused_control = null;
+		Control msgbox = Controls.focused_control;
+		Controls.focused_control = null;
 		focsed_control = -1;
 		unregisterControl(msgbox);
 	}
@@ -69,7 +69,7 @@ public class UIManager {
 
 	public void switchcontrol() {
 		
-		if (CONTROLS.focused_control instanceof Messagebox)
+		if (Controls.focused_control instanceof Messagebox)
 			return;
 		
 		if (controls.size() > 0) {
@@ -82,7 +82,7 @@ public class UIManager {
 	}
 	
 	public void handleInput() {
-		if (CONTROLS.isPressed(CONTROLS.TAB)) {
+		if (Controls.isPressed(Controls.TAB)) {
 			switchcontrol();
 		}
 	}

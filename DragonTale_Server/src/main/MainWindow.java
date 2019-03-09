@@ -15,8 +15,8 @@ public class MainWindow {
 
 	private JFrame frame;
 	private Master gm;
-	public static void main(String[] args) {
-		Main.main(null);
+	public static void main2(String[] args) {
+		//Main.main(null);
 		/*
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {

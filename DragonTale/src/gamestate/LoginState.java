@@ -10,7 +10,7 @@ import UI.Button;
 import UI.Label;
 import UI.Messagebox;
 import UI.Textbox;
-import main.CONTROLS;
+import main.Controls;
 import network.Session;
 
 public class LoginState extends GameState {
@@ -113,7 +113,7 @@ public class LoginState extends GameState {
 	@Override
 	public void handleInput() {
 		super.handleInput();
-		if (CONTROLS.isPressed(CONTROLS.ESCAPE)) {
+		if (Controls.isPressed(Controls.ESCAPE)) {
 			System.exit(0);
 		}
 

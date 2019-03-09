@@ -8,7 +8,7 @@ import componentNew.EntityManager;
 import componentNew.Movement;
 import componentNew.PlayerData;
 import componentNew.Position;
-import main.CONTROLS;
+import main.Controls;
 import network.Session;
 
 public class InputSystem {
@@ -38,13 +38,13 @@ public class InputSystem {
 		
 		public static void handleInput(int id, PlayerData playerDataComponent ) {
 
-			if (CONTROLS.isPressed(CONTROLS.ENTER)) {
+			if (Controls.isPressed(Controls.ENTER)) {
 				if (!playerDataComponent.typing) {
 					playerDataComponent.command_histroy_it = null;
 					playerDataComponent.typing = true;
 					//entity.renders.add(chatboxcontrol);
 					//EntityManager.getInstance().addEntityComponent(id,EntityManager.ChatID, new Chat());
-					CONTROLS.focused_control = playerDataComponent.txtbox;
+					Controls.focused_control = playerDataComponent.txtbox;
 					//this.txtbox.focus();
 					playerDataComponent.txtbox.text = "";
 					//CONTROLS.setCaptureText(true);
@@ -54,7 +54,7 @@ public class InputSystem {
 					
 					//EntityManager.getInstance().removeEntityComponent(id, EntityManager.ChatID);
 					//entity.renders.remove(chatboxcontrol);
-					CONTROLS.focused_control = null;
+					Controls.focused_control = null;
 					//this.txtbox.unfocus();
 					//CONTROLS.setCaptureText(false);
 					if (command.compareTo("") != 0) {
@@ -78,7 +78,7 @@ public class InputSystem {
 			}
 
 			if (playerDataComponent.typing) {
-				if (CONTROLS.isPressed(CONTROLS.UP)) {
+				if (Controls.isPressed(Controls.UP)) {
 					if (playerDataComponent.command_histroy_it == null)
 						playerDataComponent.command_histroy_it = playerDataComponent.command_histroy.listIterator();
 					if (playerDataComponent.command_histroy_it.hasNext()) {
@@ -102,16 +102,16 @@ public class InputSystem {
 				return;
 			
 			
-			movementComponent.right = (CONTROLS.keyState[CONTROLS.RIGHT]);
-			movementComponent.left = (CONTROLS.keyState[CONTROLS.LEFT]);
-			movementComponent.setJumping(id,CONTROLS.keyState[CONTROLS.JUMP]);
-			movementComponent.gliding =  (CONTROLS.keyState[CONTROLS.GLIDE]);
+			movementComponent.right = (Controls.keyState[Controls.RIGHT]);
+			movementComponent.left = (Controls.keyState[Controls.LEFT]);
+			movementComponent.setJumping(id,Controls.keyState[Controls.JUMP]);
+			movementComponent.gliding =  (Controls.keyState[Controls.GLIDE]);
 
-			if (CONTROLS.isPressed(CONTROLS.SCRATCH)) {
+			if (Controls.isPressed(Controls.SCRATCH)) {
 				EntityManager.getInstance().setattack(id);
 				
 			}
-			if (CONTROLS.isPressed(CONTROLS.FIREBALL)) {
+			if (Controls.isPressed(Controls.FIREBALL)) {
 				EntityManager.getInstance().setattack2(id);
 				
 			}

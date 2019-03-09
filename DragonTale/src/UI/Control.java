@@ -5,7 +5,7 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
-import main.CONTROLS;
+import main.Controls;
 import main.GameConstants;
 
 
@@ -45,7 +45,7 @@ public abstract class Control {
 	}
 
 	public boolean isfocused() {
-		return CONTROLS.focused_control == (Control) this;
+		return Controls.focused_control == (Control) this;
 	}
 
 	public void setfont(Font f) {
