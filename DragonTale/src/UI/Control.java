@@ -2,6 +2,7 @@ package UI;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import main.CONTROLS;
@@ -91,7 +92,7 @@ public abstract class Control {
 			parent.requestunFocus(this);
 	}
 
-	public void draw(Graphics2D g) {
+	public void draw(Graphics g) {
 
 	}
 }

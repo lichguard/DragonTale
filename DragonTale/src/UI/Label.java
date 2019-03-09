@@ -1,11 +1,11 @@
 package UI;
 
 import java.awt.Graphics2D;
-
+import java.awt.Graphics;
 public class Label extends Control {
 
 	@Override
-	public void draw(Graphics2D g) {
+	public void draw(Graphics g) {
 		super.draw(g);
 		//g.setColor(bgcolor);
 		//g.fillRect(x, y, font.getSize() * text.length() - 10, height + font.getSize());

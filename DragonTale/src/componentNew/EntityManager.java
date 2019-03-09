@@ -10,7 +10,7 @@ import main.GameConstants;
 import main.LOGGER;
 import main.World;
 import network.Session;
-
+import java.awt.Graphics;
 public class EntityManager {
 
 	public static final int AIID = 0;
@@ -192,7 +192,7 @@ public class EntityManager {
 		cameraFocusEntityID = id;
 	}
 
-	public void draw(Graphics2D g) {
+	public void draw(Graphics g) {
 		for (int i = 0; i < entityCount; i++) {
 			int id = entities[i];
 			DrawSystem.draw(id, g);

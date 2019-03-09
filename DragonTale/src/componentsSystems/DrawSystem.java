@@ -2,7 +2,10 @@ package componentsSystems;
 import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Composite;
+import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.image.RescaleOp;
+
 import componentNew.*;
 import main.GameConstants;
 import main.Gameplay;
@@ -11,7 +14,7 @@ import main.World;
 
 public class DrawSystem {
 	
-	public static void draw(int id,Graphics2D g) {
+	public static void draw(int id,Graphics g) {
 		
 		Attribute attributeComponent = (Attribute) 
 				EntityManager.getInstance().getEntityComponent(id, EntityManager.AttributeID);
@@ -33,7 +36,7 @@ public class DrawSystem {
 	}
 	
 	
-	private static void chatbox(int id,Graphics2D g) {
+	private static void chatbox(int id,Graphics g) {
 		/*
 		Chat chatComponent = (Chat) EntityManager.getInstance().getEntityComponent(id, EntityManager.ChatID);
 		if (chatComponent == null)
@@ -52,7 +55,7 @@ public class DrawSystem {
 		
 	}
 	
-	private static void animation(int id,Graphics2D g) {
+	private static void animation(int id,Graphics g) {
 		Animation animationComponent = (Animation) EntityManager.getInstance().getEntityComponent(id, EntityManager.AnimationID);
 		if (animationComponent == null)
 			return;
@@ -93,11 +96,12 @@ public class DrawSystem {
 			}
 		}
 		
+		//TODO: Composite semi transpert fade in out for character login 
 	
-		Composite currentComposite = g.getComposite();
-		g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,apperanceComponent.alpha));
+	
+		//Composite currentComposite = g.getComposite();
+		//g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,apperanceComponent.alpha));
 
-		
 		if (animationComponent.facingRight)
 			g.drawImage(animationComponent.getImage()
 					,(int) (positionComponent.x + positionComponent.xmap - sizeComponent.width / 2)
@@ -114,11 +118,11 @@ public class DrawSystem {
 					, null);
 		
 		
-		g.setComposite(currentComposite);
+		//g.setComposite(currentComposite);
 	}
 	
 
-	private static void hud(int id,Graphics2D g) {
+	private static void hud(int id,Graphics g) {
 		
 		
 		Health healthComponent=(Health) EntityManager.getInstance().getEntityComponent(id, EntityManager.HealthID);
@@ -160,7 +164,7 @@ public class DrawSystem {
 		g.drawString("frame: " + Gameplay.FPS + " ms", GameConstants.WIDTH - 100, 135);
 	}
 
-	private static void name(int id,Graphics2D g) {
+	private static void name(int id,Graphics g) {
 		
 		Position positionComponent=(Position) EntityManager.getInstance().getEntityComponent(id, EntityManager.PositionID);
 		if (positionComponent == null)
@@ -180,7 +184,7 @@ public class DrawSystem {
 		g.setColor(Color.black);
 		g.drawString(attributeComponent.name, XPOS, YPOS - 3);
 	}
-	private static void nameplate(int id,Graphics2D g) {
+	private static void nameplate(int id,Graphics g) {
 		
 		
 		Position positionComponent=(Position) EntityManager.getInstance().getEntityComponent(id, EntityManager.PositionID);
@@ -209,8 +213,7 @@ public class DrawSystem {
 		g.setColor(Color.BLACK);
 		g.fillRect(XPOS + (int) (sizeComponent.width * precentage), YPOS, (int) (sizeComponent.width * (1 - precentage)), PlateBold);
 	}
-
-	private static void speech(int id,Graphics2D g) {
+	private static void speech(int id,Graphics g) {
 		
 		Speech speechComponent = (Speech) EntityManager.getInstance().getEntityComponent(id, EntityManager.SpeechID);
 		if (speechComponent == null)

@@ -1,5 +1,5 @@
 package gamestate;
-
+import java.awt.Graphics;
 import TileMap.*;
 import audio.AudioPlayer;
 import entity.Spawner;
@@ -64,7 +64,7 @@ public class OfflineState extends GameState {
 	}
 
 	@Override
-	public void draw(Graphics2D g) {
+	public void draw(Graphics g) {
 
 		bg.draw(g);
 		tileMap.draw(g);

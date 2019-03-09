@@ -1,5 +1,6 @@
 package UI;
 
+import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.util.Vector;
 import main.CONTROLS;
@@ -48,7 +49,7 @@ public class UIManager {
 	public void update() {
 	}
 
-	public void draw(Graphics2D g) {
+	public void draw(Graphics g) {
 		for (Control c : controls) {
 			if (c.visible)
 				c.draw(g);

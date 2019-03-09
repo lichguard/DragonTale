@@ -1,5 +1,5 @@
 package gamestate;
-
+import java.awt.Graphics;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
@@ -120,7 +120,7 @@ public class LoginState extends GameState {
 	}
 
 	@Override
-	public void draw(Graphics2D g) {
+	public void draw(Graphics g) {
 		bg.draw(g);
 		super.draw(g);
 	}

@@ -1,5 +1,6 @@
 package gamestate;
 
+import java.awt.Graphics;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
@@ -23,7 +24,7 @@ public class LoadState extends GameState{
 		
 	}
 	@Override
-	public void draw(Graphics2D g) {
+	public void draw(Graphics g) {
 		// TODO Auto-generated method stub
 		g.setColor(Color.lightGray);
 		g.fillRect(0, 0, GameConstants.WIDTH, GameConstants.HEIGHT);

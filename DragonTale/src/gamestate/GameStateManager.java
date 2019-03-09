@@ -1,5 +1,6 @@
 package gamestate;
 
+import java.awt.Graphics;
 
 public class GameStateManager {
 
@@ -76,7 +77,7 @@ public class GameStateManager {
 		gameStates[currentState].update();
 	}
 
-	public void draw(java.awt.Graphics2D g) {
+	public void draw(Graphics g) {
 
 		gameStates[currentState].draw(g);
 

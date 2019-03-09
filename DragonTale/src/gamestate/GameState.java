@@ -1,5 +1,6 @@
 package gamestate;
 
+import java.awt.Graphics;
 import java.awt.Graphics2D;
 import UI.UIManager;
 
@@ -23,7 +24,7 @@ public abstract class GameState {
 		uimanager.update();
 	}
 
-	public void draw(Graphics2D g)
+	public void draw(Graphics g)
 	{
 		uimanager.draw(g);
 	}

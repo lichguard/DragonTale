@@ -6,6 +6,7 @@ import java.util.logging.Level;
 import TileMap.TileMap;
 import componentNew.EntityManager;
 
+import java.awt.Graphics;
 
 public class World {
 	public TileMap tm;
@@ -63,7 +64,7 @@ public class World {
 		EntityManager.getInstance().update();
 	}
 
-	public void draw(Graphics2D g) {
+	public void draw(Graphics g) {
 		EntityManager.getInstance().draw(g);
 	}
 

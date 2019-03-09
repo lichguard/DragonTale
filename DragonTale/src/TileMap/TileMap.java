@@ -1,6 +1,6 @@
 package TileMap;
 
-
+import java.awt.Graphics;
 import java.awt.Graphics2D;
 
 import java.awt.image.BufferedImage;
@@ -176,7 +176,7 @@ public class TileMap {
 		
 	}
 
-	public void draw(Graphics2D g) {
+	public void draw(Graphics g) {
 		
 		for (int row = rowOffset; row < rowOffset + numRowsToDraw; row++) 
 		{

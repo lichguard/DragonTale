@@ -5,7 +5,7 @@ import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
 
 import main.GameConstants;
-
+import java.awt.Graphics;
 
 public class Background {
 	
@@ -47,7 +47,7 @@ public class Background {
 		x += dx;
 		y += dy;
 	}
-	public void draw(Graphics2D g)
+	public void draw(Graphics g)
 	{
 		g.drawImage(image, (int)x,	(int)y, GameConstants.WIDTH ,GameConstants.HEIGHT,	null);
 		if ( x< 0)

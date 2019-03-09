@@ -1,5 +1,5 @@
 package UI;
-
+import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 
@@ -40,7 +40,7 @@ public class Textbox extends Control {
 	}
 
 	@Override
-	public void draw(Graphics2D g) {
+	public void draw(Graphics g) {
 		super.draw(g);
 		g.setFont(font);
 		g.setColor(bgcolor);

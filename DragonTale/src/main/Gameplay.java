@@ -2,12 +2,13 @@ package main;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import javax.swing.JPanel;
 import gamestate.GameStateManager;
 import main.LOGGER;
 
-public class Gameplay extends JPanel implements Runnable, KeyListener,MouseListener {
+public class Gameplay extends Canvas implements Runnable, KeyListener,MouseListener {
 
 	private static final long serialVersionUID = 1L;
 	private Thread thread;
@@ -19,7 +20,7 @@ public class Gameplay extends JPanel implements Runnable, KeyListener,MouseListe
 	private Graphics2D g;
 	public Gameplay() {
 		super();
-		setPreferredSize(new Dimension(GameConstants.WIDTH * GameConstants.SCALE, GameConstants.HEIGHT * GameConstants.SCALE));
+		setPreferredSize(new Dimension(GameConstants.WIDTH , GameConstants.HEIGHT ));
 		setFocusable(true);
 		requestFocus();
 		setFocusTraversalKeysEnabled(false); 
@@ -28,7 +29,7 @@ public class Gameplay extends JPanel implements Runnable, KeyListener,MouseListe
 	private void init() {
 		LOGGER.info("Starting up Gameplay @" + target_FPS + " fps", this);
 		image = new BufferedImage(GameConstants.WIDTH, GameConstants.HEIGHT, BufferedImage.TYPE_INT_BGR);
-		g = (Graphics2D) image.getGraphics();
+		//g = (Graphics2D) image.getGraphics();
 		running = true;
 	}
 
@@ -51,8 +52,10 @@ public class Gameplay extends JPanel implements Runnable, KeyListener,MouseListe
 		while (running) {
 			start = System.nanoTime();
 			update();
-			draw();
-			drawToScreen();
+			render();
+			
+			//draw();
+			//drawToScreen();
 
 			elapsed = System.nanoTime() - start;
 			//FPS is how long it takes to calculate a frame in milliseconds
@@ -67,6 +70,20 @@ public class Gameplay extends JPanel implements Runnable, KeyListener,MouseListe
 		
 	}
 
+	public void render() {
+		
+		BufferStrategy bs = getBufferStrategy();
+		if (bs == null) {
+			createBufferStrategy(3);
+			return;
+		}
+		Graphics g = bs.getDrawGraphics();
+		GameStateManager.getInstance().draw(g); //gsm.draw(g);
+		//Graphics g2 = getGraphics();
+		//g2.drawImage(image, 0, 0, null);
+		//g2.dispose();
+		bs.show();
+	}
 	public void update() {
 		GameStateManager.getInstance().update();// gsm.update();
 		CONTROLS.update();  

@@ -17,7 +17,7 @@ import PACKET.MovementData;
 import PACKET.NetworkSpawner;
 import PACKET.SpeechPacket;
 import PACKET.WorldPacket;
-
+import java.awt.Graphics;
 public class OnlineState extends GameState {
 
 	private AudioPlayer bgmusic;
@@ -138,7 +138,7 @@ public class OnlineState extends GameState {
 	}
 
 	@Override
-	public void draw(Graphics2D g) {
+	public void draw(Graphics g) {
 		bg.draw(g);
 		tileMap.draw(g);
 		World.getInstance().draw(g);

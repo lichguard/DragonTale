@@ -2,7 +2,7 @@ package main;
 
 public class GameConstants {
 	public static final int WIDTH = 600;//640; // 320
-	public static final int HEIGHT = 420;//536; // 268
+	public static final int HEIGHT = WIDTH / 16 * 9 ;//536; // 268
 	public static final int ENTITYSCALE = 1;
 	
 	public static final int TILESIZE = 30; // 268
