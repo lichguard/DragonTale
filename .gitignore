@@ -1,0 +1,4 @@
+*.class
+DragonTale/bin/
+NetworkPacket/bin/
+DragonTale_Server/bin/
