@@ -8,7 +8,6 @@ import main.GameConstants;
 import main.LOGGER;
 import main.World;
 
-import java.awt.Graphics2D;
 import java.util.logging.Level;
 
 public class OfflineState extends GameState {

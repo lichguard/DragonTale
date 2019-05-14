@@ -1,7 +1,6 @@
 package UI;
 
 import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.util.Vector;
 import main.Controls;
 

@@ -1,6 +1,5 @@
 package componentNew;
 
-import java.awt.Graphics2D;
 import PACKET.MovementData;
 import PACKET.NetworkSpawner;
 import PACKET.WorldPacket;

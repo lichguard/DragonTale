@@ -1,7 +1,6 @@
 package TileMap;
 
 import java.awt.Graphics;
-import java.awt.Graphics2D;
 
 import java.awt.image.BufferedImage;
 
@@ -41,7 +40,7 @@ public class TileMap {
 	private int numTilesAcross;
 	private Tile[][] tiles;
 	
-	private Tile[][][] tilesChunks;
+	//private Tile[][][] tilesChunks;
 
 	// drawing
 	private int rowOffset;
@@ -207,6 +206,6 @@ public class TileMap {
 		map = null;
 		tileset = null;
 		tiles = null;
-		tilesChunks = null;
+		//tilesChunks = null;
 	}
 }

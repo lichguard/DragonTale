@@ -59,7 +59,7 @@ public class MySQLDB implements IDB {
 		if (!enableSQL) //0 will let anyone in
 			return Account.accounts_map.get(username+password);
 		
-		int id = -1;
+		//int id = -1;
 		try {
 			Connection con = getMySQLConnection();
 			Statement stmt = con.createStatement();
@@ -67,7 +67,7 @@ public class MySQLDB implements IDB {
 					"select `id`, `password`,`salt` from `game_world`.`accounts` where `username` = '" + username + "'");
 			while (rs.next()) {
 				if (rs.getString("password").compareTo(password) == 0) {
-					id = rs.getInt("id");
+					//id = rs.getInt("id");
 				}
 			}
 

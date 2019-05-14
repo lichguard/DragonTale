@@ -1,6 +1,5 @@
 package main;
 
-import java.awt.Graphics2D;
 import java.util.logging.Level;
 
 import TileMap.TileMap;

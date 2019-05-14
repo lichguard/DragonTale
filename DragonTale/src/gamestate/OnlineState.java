@@ -9,7 +9,6 @@ import main.LOGGER;
 import main.World;
 import network.Session;
 
-import java.awt.Graphics2D;
 import java.io.IOException;
 import java.util.logging.Level;
 
