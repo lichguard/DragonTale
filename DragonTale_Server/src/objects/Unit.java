@@ -1,5 +1,5 @@
 package objects;
-import game.World;
+
 
 public class Unit extends WorldObject {
 
@@ -249,7 +249,7 @@ public class Unit extends WorldObject {
 			if (firing) {
 				if (currentAction != ATTACK2) {
 					scratchAttack();
-					World.getInstance().requestObjectSpawn("",Spawner.FIREBALL, x, y, facingRight, 2,null);
+					//World.getInstance().requestObjectSpawn("",Spawner.FIREBALL, x, y, facingRight, 2);
 					
 					currentAction = ATTACK2;
 				}

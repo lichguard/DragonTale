@@ -6,13 +6,13 @@ import java.util.ArrayList;
 import game.GameConstants;
 import game.World;
 import main.LOGGER;
-import network.PlayerBroadcaster;
 import vmaps.Cell;
 import vmaps.Tile;
 import vmaps.GameMap;
 import PACKET.MovementData;
 import PACKET.NetworkSpawner;
 import PACKET.WorldPacket;
+import componentNew.PlayerBroadcaster;
 
 public abstract class GameObject {
 	
@@ -423,8 +423,8 @@ public abstract class GameObject {
 			if (removeEntity)
 				return;
 			
-			removeEntity = true;
-			World.getInstance().requestObjectDespawn(this.gethandle());
+			//removeEntity = true;
+			//World.getInstance().requestObjectDespawn(this.gethandle());
 			
 		}
 		

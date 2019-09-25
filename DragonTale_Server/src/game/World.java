@@ -7,9 +7,9 @@ import java.util.Map;
 import java.util.Stack;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentLinkedDeque;
-
 import PACKET.NetworkSpawner;
 import PACKET.WorldPacket;
+import componentNew.EntityManager;
 import main.LOGGER;
 import network.WorldSession;
 import network.WorldSocket;
@@ -24,10 +24,6 @@ public class World {
 	public Map<UUID, WorldSession> SessionMap = new HashMap<UUID, WorldSession>();
 	// session waiting to be added to world
 	ConcurrentLinkedDeque<WorldSession> m_sessionAddQueue = new ConcurrentLinkedDeque<WorldSession>();
-	public int handle_generator = 1;
-	public Map<Integer, GameObject> m_gameObjectsMap = new HashMap<Integer, GameObject>();
-	public Stack<Spawner> m_objectSpawnQueue = new Stack<Spawner>();
-	public Stack<Integer> m_objectRemoveQueue = new Stack<Integer>();
 	private static World instance = null;
 	public GameMap tm = null;
 	public long lastbroadcast = 0;
@@ -69,30 +65,43 @@ public class World {
 		this.tm = tm;
 	}
 
-	public int getObjectCount() {
-		return m_gameObjectsMap.size();
-	}
-
 	public int requestObjectSpawn(NetworkSpawner sp) {
 		return requestObjectSpawn(sp.name ,sp.type,sp.x,sp.y,sp.facing,sp.network,null);
 	}
 
-	public int requestObjectSpawn(String name, int type, double x, double y, boolean facing, int network,WorldSocket socketcallback) {
+	public int requestObjectSpawn(String name, int type, float x, float y, boolean facing, int network,WorldSocket worldSocket) {
+		int handle = -1;
+		try {
+			handle = EntityManager.getInstance().addEntity(-1, name, false, type, x, y, facing, network,worldSocket);
+		} catch (Exception e) {
+			LOGGER.error("Failed to spawn a new entity", this);
+			e.printStackTrace();
+		}
+		return handle;
+
+	}
+	
+	/*
+	public int requestObjectSpawn(String name, int type, double x, double y, boolean facing, int network,
+			WorldSocket socketcallback) {
 		if (objects.Spawner.entities_count <= type || type < 0)
 			return -1;
 
 		int handle = handle_generator++;
-		m_objectSpawnQueue.push(new Spawner(name,handle, type, x, y, facing, network,socketcallback));
+		m_objectSpawnQueue.push(new Spawner(name, handle, type, x, y, facing, network, socketcallback));
 
 		return handle;
 	}
-
+*/
+	
+	/*
 	public void requestObjectDespawn(int handle) {
 		LOGGER.info("REQUESTING DESPAWNING HANDLE: " + handle , this);
 		m_objectRemoveQueue.push(handle);
 	}
+	*/
 
-
+/*
 	public ArrayList<GameObject> getCollisions(GameObject entity) {
 
 		ArrayList<GameObject> returnObjects = new ArrayList<GameObject>();
@@ -129,7 +138,7 @@ public class World {
 		}
 		return returnObjects;
 	}
-
+*/
 	public static int getHeading(int x, int y) {
 		return (int) ((90.0 - (180.0 / Math.PI) * Math.atan2((double) y, (double) x)) + 360.0) % 360;
 	}

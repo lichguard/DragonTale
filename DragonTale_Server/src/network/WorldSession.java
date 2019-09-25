@@ -4,9 +4,16 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.UUID;
 
+import javax.swing.text.html.parser.Entity;
+
 import PACKET.MovementData;
 import PACKET.NetworkSpawner;
 import PACKET.WorldPacket;
+import componentNew.Animation;
+import componentNew.EntityManager;
+import componentNew.IComponent;
+import componentNew.Network;
+import componentNew.Position;
 import database.Account;
 import game.World;
 import main.LOGGER;
@@ -57,16 +64,17 @@ public class WorldSession {
 	boolean m_playerLoading;
 
 	// AccountTypes _security;
-	public Player _player;
+	public int _playerid = -1;
 	public Account account = null;
 	
 	public void savePlayer() {
-		if (account != null) {
-			if (_player != null) {
-			account.x = _player.getx(); 
-			account.y = _player.gety(); 
-			account.facingright = _player.isFacingright(); 
-			}
+		if (account != null && _playerid != -1) {
+
+			Position poscomponent = (Position)EntityManager.getInstance().getEntityComponent(_playerid, EntityManager.PositionID);
+			account.x = poscomponent.x;
+			account.y = poscomponent.y;
+			 Animation anicomponent = (Animation)EntityManager.getInstance().getEntityComponent(_playerid, EntityManager.AnimationID);
+			 account.facingright = anicomponent.facingRight;
 		}
 	} 
 	
@@ -85,7 +93,7 @@ public class WorldSession {
 
 	public void handleLogin(WorldPacket packet) {
 		LOGGER.info("handleLogin", this);
-		int handle = World.getInstance().requestObjectSpawn(account.name, Spawner.PLAYERPED, account.x, account.y, false, 1, worldsocket); //0 - playerped
+		int handle = World.getInstance().requestObjectSpawn(account.name, Spawner.PLAYERPED, account.x, account.y, false, worldsocket); //0 - playerped
 		SendWorldPacket(new WorldPacket(WorldPacket.LOGIN, 
 				new NetworkSpawner(account.name,handle, Spawner.PLAYERPED,  account.x,  account.y, account.facingright, 1)
 				));
@@ -94,6 +102,7 @@ public class WorldSession {
 	}
 	
 	public void handlechat(WorldPacket packet) {
+		
 		_player.broadcaster.QueuePacket(packet, true, -1);
 		
 	}

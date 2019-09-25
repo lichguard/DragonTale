@@ -32,6 +32,7 @@ public class GameMap {
 	private int numTilesAcross;
 	private Tile[][] tiles;
 	public Cell[][] grid;
+	private int tileSize;
 
 
 	
@@ -40,6 +41,7 @@ public class GameMap {
 
 	public void loadTiles(String s) {
 		try {
+			tileSize = GameConstants.TILESIZE;
 			tileset = ImageIO.read(getClass().getResourceAsStream(s));
 			numTilesAcross = tileset.getWidth() / GameConstants.TILESIZE;
 			tiles = new Tile[2][numTilesAcross];
@@ -100,6 +102,11 @@ public class GameMap {
 		int r = rc / numTilesAcross;
 		int c = rc % numTilesAcross;
 		return tiles[r][c].getType();
+	}
+
+	public int getTileSize() {
+		// TODO Auto-generated method stub
+		return tileSize;
 	}
 
 
