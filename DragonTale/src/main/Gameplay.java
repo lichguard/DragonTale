@@ -11,11 +11,16 @@ public class Gameplay extends Canvas implements Runnable {
 	private static final long serialVersionUID = 1L;
 	private Thread thread;
 	private boolean running;
-	private int target_FPS = 60;
-	public static long FPS = 1;
-	private long targetTime = 1000 / target_FPS;
 	private Controls controls;
+	
+	private long targetFPS = 120;
+	private static long FPS = 1;
+	private long targetFPSTime = 1000 / targetFPS;
 
+	private long targetUPS = 60;
+	private long UPS = 1;
+	private long targetUPSTime = 1000 / targetUPS;
+	
 	public Gameplay() {
 		super();
 		setPreferredSize(new Dimension(GameConstants.WIDTH, GameConstants.HEIGHT));
@@ -30,7 +35,8 @@ public class Gameplay extends Canvas implements Runnable {
 		if (running) {
 			return;
 		}
-		LOGGER.info("Starting up Gameplay @" + target_FPS + " fps", this);
+		LOGGER.info("Starting up Gameplay @" + targetFPS + " fps", this);
+		LOGGER.info("Starting up Gameplay @" + targetUPS + " ups", this);
 		running = true;
 		thread = new Thread(this);
 		thread.start();
@@ -54,20 +60,30 @@ public class Gameplay extends Canvas implements Runnable {
 
 	@Override
 	public void run() {
-
-		long start;
-		long elapsed;
+		long startFPS = System.nanoTime();
+		long startUPS = System.nanoTime();
 		requestFocus();
+			
 		while (running) {
-			start = System.nanoTime();
-			update();
-			render();
-			elapsed = System.nanoTime() - start;
 			
 			// FPS is how long it takes to calculate a frame in milliseconds
-			FPS = elapsed / 1_000_000l;
+			UPS = (System.nanoTime() - startUPS) / 1_000_000l;
+			FPS = (System.nanoTime() - startFPS) / 1_000_000l;
+			
+			if (UPS >= targetUPSTime) {
+				update();
+				startUPS = System.nanoTime();
+			}
+			if (FPS >= targetFPSTime) {
+				render();
+				startFPS = System.nanoTime();
+			}	
+			
+
 			try {
-				Thread.sleep(Math.max(targetTime - FPS, 0));
+				long wait = Math.min(targetUPSTime - UPS, targetFPSTime - FPS);
+				if (wait > 0)
+					Thread.sleep(wait);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -93,4 +109,12 @@ public class Gameplay extends Canvas implements Runnable {
 		Controls.update();
 	}
 
+	public static long getFPS() {
+		return (1000 / FPS);
+	}
+	
+	public long getUPS() {
+		return this.UPS;
+	}
 }
+ 

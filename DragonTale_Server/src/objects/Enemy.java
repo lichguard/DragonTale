@@ -14,7 +14,7 @@ public class Enemy extends Unit {
 		cheight = 20;
 
 		moveSpeed = 0.3;
-		maxSpeed = 0.3;
+		maxSpeed = 1.0;
 		stopSpeed = 0.4;
 		fallSpeed = 0.15;
 		maxFallSpeed = 4.0;

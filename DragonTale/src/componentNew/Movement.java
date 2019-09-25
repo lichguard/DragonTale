@@ -8,7 +8,7 @@ public class Movement implements componentNew.IComponent {
 	public boolean falling = false;
 	
 	public float moveSpeed = 0.8f;
-	public float maxSpeed  = 1.6f;
+	public float maxSpeed  = 1.9f;
 	public float stopSpeed = 0.4f;
 	public float fallSpeed = 0.15f;
 	public float maxFallSpeed = 4.0f;

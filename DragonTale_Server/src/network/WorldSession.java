@@ -139,6 +139,9 @@ public class WorldSession {
 				case WorldPacket.SPAWN:
 					handlespawncommand(packet);
 					break;
+				case WorldPacket.MELEE_ATTACK:
+					handleMeleecommand(packet);
+					break;
 
 				default:
 					LOGGER.warn("Unknown CommandPacket code: " + packet.packet_code, this);
@@ -156,6 +159,10 @@ public class WorldSession {
 		return true;
 	}
 
+	
+	public void handleMeleecommand(WorldPacket packet) {
+		_player.setmeleeattack();
+	}
 	
 
 	public void SendWorldPacket(WorldPacket packet) {

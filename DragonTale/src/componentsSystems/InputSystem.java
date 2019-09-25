@@ -109,7 +109,7 @@ public class InputSystem {
 
 			if (Controls.isPressed(Controls.SCRATCH)) {
 				EntityManager.getInstance().setattack(id);
-				
+				Session.getInstance().SendCommand(new WorldPacket(WorldPacket.MELEE_ATTACK, null));
 			}
 			if (Controls.isPressed(Controls.FIREBALL)) {
 				EntityManager.getInstance().setattack2(id);

@@ -156,7 +156,9 @@ public class DrawSystem {
 		g.drawString("PosY: " + positionComponent.y, GameConstants.WIDTH - 100, 95);
 		g.drawString("Entities: " + World.getInstance().getEntitityCount(), GameConstants.WIDTH - 100, 115);
 		
-		g.drawString("frame: " + Gameplay.FPS + " ms", GameConstants.WIDTH - 100, 135);
+		g.drawString("render: " + (Gameplay.getFPS()) + " FPS", GameConstants.WIDTH - 100, 135);
+		//g.drawString("delay: " + (Gameplay.getUPS()) + " ms", GameConstants.WIDTH - 100, 150);
+		
 	}
 
 	private static void name(int id,Graphics g) {

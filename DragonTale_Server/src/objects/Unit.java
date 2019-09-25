@@ -295,4 +295,8 @@ public class Unit extends WorldObject {
 		facingRight = face;
 	}
 
+	public void knockBack(float vx, float vy,boolean rightside) {
+		this.moveSpeed = vx * (rightside ? 1.0f : -1.0f);
+		this.fallSpeed = vy;
+	}
 }

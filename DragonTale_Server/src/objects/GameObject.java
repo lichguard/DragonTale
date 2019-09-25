@@ -386,6 +386,7 @@ public abstract class GameObject {
 				if (entity instanceof Enemy)
 				{
 					((Enemy)entity).hit(20);
+					((Enemy)entity).knockBack(1.0f,-1.0f,this.facingRight);
 					//break
 				}
 			}

@@ -16,7 +16,7 @@ public class Master implements Runnable {
 	public static final boolean DISABLEESOUND = true;
 	public Thread thread;
 	public boolean running;
-	private int target_FPS = 60;
+	private int target_FPS = 30;
 	public static long FPS = 0;
 	private long targetTime = 1000 / target_FPS;
 	public GameMap tileMap;
@@ -63,7 +63,7 @@ public class Master implements Runnable {
 
 				elapsed = System.nanoTime() - start;
 				FPS = elapsed / 1000000;
-				wait = Math.max(targetTime - FPS, 5);
+				wait = Math.max(targetTime - FPS,0);
 				Thread.sleep(wait);
 			}
 		} catch (Exception e) {
