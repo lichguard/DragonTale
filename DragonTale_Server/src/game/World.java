@@ -1,10 +1,8 @@
 package game;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Stack;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import PACKET.NetworkSpawner;
@@ -13,8 +11,6 @@ import componentNew.EntityManager;
 import main.LOGGER;
 import network.WorldSession;
 import network.WorldSocket;
-import objects.GameObject;
-import objects.Spawner;
 import vmaps.GameMap;
 
 public class World {
@@ -170,31 +166,31 @@ public class World {
 		}
 
 		//add requested objects
-		while (!m_objectSpawnQueue.isEmpty()) 
-			m_objectSpawnQueue.pop().create_entity();
+	//	while (!m_objectSpawnQueue.isEmpty()) 
+	//		m_objectSpawnQueue.pop().create_entity();
 			
 
 		//remove objects
-		while (!m_objectRemoveQueue.isEmpty()) {
-			int handle = m_objectRemoveQueue.pop();
-
-			LOGGER.info("DESPAWNING HANDLE: " + handle , this);
-			
-			m_gameObjectsMap.get(handle).cell.unregisterObject(handle);
-			m_gameObjectsMap.get(handle).cell.map.remove(handle);
-			m_gameObjectsMap.remove(handle);
+	//	while (!m_objectRemoveQueue.isEmpty()) {
+	//		int handle = m_objectRemoveQueue.pop();
+//
+//			LOGGER.info("DESPAWNING HANDLE: " + handle , this);
+//			
+//			m_gameObjectsMap.get(handle).cell.unregisterObject(handle);
+//			m_gameObjectsMap.get(handle).cell.map.remove(handle);
+//			m_gameObjectsMap.remove(handle);
 	
-		}
+//		}
 
 		//to make sure we dont visit the same cell twice
-		this.visited_update = !visited_update;
-		// update world session packets
-		for (Iterator<WorldSession> iterator = SessionMap.values().iterator(); iterator.hasNext();) {
-			WorldSession s = (WorldSession) iterator.next();
-			if (s._player != null) {
-				s._player.cell.update(visited_update);
-			}
-		}
+//		this.visited_update = !visited_update;
+//		// update world session packets
+//		for (Iterator<WorldSession> iterator = SessionMap.values().iterator(); iterator.hasNext();) {
+//			WorldSession s = (WorldSession) iterator.next();
+//			if (s._player != null) {
+//				s._player.cell.update(visited_update);
+//			}
+//		}
 	}
 
 }

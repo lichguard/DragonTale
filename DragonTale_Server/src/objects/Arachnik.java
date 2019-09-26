@@ -1,7 +1,7 @@
 package objects;
 
 public class Arachnik extends Enemy {
-
+/*
 	public Arachnik() {
 		
 		super();
@@ -11,4 +11,5 @@ public class Arachnik extends Enemy {
 		cheight = 20;
 		health = maxHealth = 250;
 	}	
+	*/
 }

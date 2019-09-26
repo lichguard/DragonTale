@@ -1,9 +1,9 @@
 package objects;
 
-import game.World;
+//import game.World;
 
 public class Enemy extends Unit {
-
+/*
 	protected int static_damage;
 
 	public Enemy() {
@@ -66,5 +66,5 @@ public class Enemy extends Unit {
 		}
 
 	}
-
+*/
 }

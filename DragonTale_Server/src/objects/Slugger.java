@@ -1,7 +1,7 @@
 package objects;
 
 public class Slugger extends Enemy {
-
+/*
 	public Slugger() {
 		super();
 		width = 30;
@@ -16,4 +16,5 @@ public class Slugger extends Enemy {
 		super.Die();
 		
 	}
+	*/
 }

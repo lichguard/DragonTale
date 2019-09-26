@@ -4,7 +4,7 @@ package objects;
 
 public class Explosion extends WorldObject {
 
-
+/*
 	//private int width;
 	//private int height;
 	
@@ -27,6 +27,7 @@ public class Explosion extends WorldObject {
 		//if (animation.hasPlayedOnce())
 		//	world.despawn_entity(this.handle);
 	}
+	*/
 }
 
 	

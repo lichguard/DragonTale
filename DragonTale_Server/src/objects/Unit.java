@@ -2,7 +2,7 @@ package objects;
 
 
 public class Unit extends WorldObject {
-
+/*
 	protected boolean flinching;
 	protected long filinchTimer;
 
@@ -199,7 +199,7 @@ public class Unit extends WorldObject {
 	}
 
 	private void scratchAttack() {
-/*
+
 		ArrayList<ENTITY> entities;
 		if (facingRight)
 			entities = world.getNearEntities((ENTITY) this, 45, 0, 180);
@@ -213,8 +213,7 @@ public class Unit extends WorldObject {
 				enemy.hit(60);
 			}
 
-		}
-*/
+
 	}
 
 	@Override
@@ -299,4 +298,5 @@ public class Unit extends WorldObject {
 		this.moveSpeed = vx * (rightside ? 1.0f : -1.0f);
 		this.fallSpeed = vy;
 	}
+	*/
 }

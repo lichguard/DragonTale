@@ -3,7 +3,7 @@ package objects;
 
 
 public abstract class WorldObject extends GameObject {
-
+/*
 	// constructor
 	public WorldObject() {
 		super();
@@ -41,5 +41,5 @@ public abstract class WorldObject extends GameObject {
 		setPosition(xtemp, ytemp);
 		//setMapPosition();
 	}
-
+*/
 }

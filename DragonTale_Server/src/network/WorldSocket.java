@@ -41,9 +41,9 @@ public class WorldSocket {
 	public void disconnect() {
 		 LOGGER.info("Disconnecting client " + id + "...", this);
 
-		if (m_session != null && m_session._player != null) {
+		if (m_session != null) {
 			m_session.savePlayer();
-			m_session._player.Despawn();
+			m_session.Despawn();
 		}
 		
 		try {

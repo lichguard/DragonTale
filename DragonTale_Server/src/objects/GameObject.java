@@ -1,5 +1,5 @@
 package objects;
-
+/*
 import java.awt.Rectangle;
 import java.util.ArrayList;
 
@@ -12,10 +12,9 @@ import vmaps.GameMap;
 import PACKET.MovementData;
 import PACKET.NetworkSpawner;
 import PACKET.WorldPacket;
-import componentNew.PlayerBroadcaster;
-
+*/
 public abstract class GameObject {
-	
+	/*
 		public GameMap gameMap;
 		protected double xmap;
 		protected double ymap;
@@ -435,6 +434,6 @@ public abstract class GameObject {
 			broadcaster.QueuePacket(new WorldPacket(WorldPacket.DIE, gethandle()), true, gethandle());
 			
 		}
-		
+	*/	
 }
 

@@ -1,12 +1,12 @@
 package objects;
 
-
+/*
 import java.util.ArrayList;
 
 import  game.World;
-
+*/
 public class FireBall extends WorldObject{
-
+/*
 	//private boolean hit;
 	private int damage;
 	//private BufferedImage[] sprites;
@@ -59,6 +59,6 @@ public class FireBall extends WorldObject{
 		//setMapPosition();
 		
 	}
-
+*/
 
 }

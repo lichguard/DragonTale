@@ -1,11 +1,10 @@
 package componentNew;
 
 import PACKET.MovementData;
-import componentsSystems.DrawSystem;
 import main.LOGGER;
 import network.WorldSocket;
 
-import java.awt.Graphics;
+
 public class EntityManager {
 
 	public static final int AIID = 0;
@@ -159,16 +158,17 @@ public class EntityManager {
 	public void update() {
 		for (int i = 0; i < entityCount; i++) {
 			int id = entities[i];
-
-			componentsSystems.AnimationSystem.update(id);
-			componentsSystems.PhysicsSystem.update(id);
-			componentsSystems.AISystem.update(id);
-			componentsSystems.NetoworkSystem.update(id);
-			componentsSystems.InputSystem.update(id);
-			componentsSystems.RegenPower.update(id);
+			update(id);
 		}
-		
-		cameraSystem();
+	}
+
+	public void update(int id) {
+		componentsSystems.AnimationSystem.update(id);
+		componentsSystems.PhysicsSystem.update(id);
+		componentsSystems.AISystem.update(id);
+		componentsSystems.NetoworkSystem.update(id);
+		componentsSystems.InputSystem.update(id);
+		componentsSystems.RegenPower.update(id);
 		
 	}
 	
@@ -190,12 +190,6 @@ public class EntityManager {
 		cameraFocusEntityID = id;
 	}
 
-	public void draw(Graphics g) {
-		for (int i = 0; i < entityCount; i++) {
-			int id = entities[i];
-			DrawSystem.draw(id, g);
-		}
-	}
 
 	public void setMaxSpeed(int id, float value) {
 		((Movement) components[id][MovementID]).maxSpeed = value;

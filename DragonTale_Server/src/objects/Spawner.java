@@ -1,6 +1,6 @@
 package objects;
 
-
+/*
 import java.util.logging.Level;
 
 import PACKET.NetworkSpawner;
@@ -8,9 +8,9 @@ import game.World;
 import main.LOGGER;
 import network.WorldSocket;
 
-
+*/
 public class Spawner {
-
+/*
 	public static final int entities_count = 6;
 	
 	public static final int PLAYERPED = 0;
@@ -88,4 +88,5 @@ public class Spawner {
 		LOGGER.log(Level.INFO, "new handle: " + handle, this);
 		World.getInstance().m_gameObjectsMap.put(handle, entity);
 	}
+	*/
 }

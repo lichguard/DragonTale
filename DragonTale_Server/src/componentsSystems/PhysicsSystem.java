@@ -87,9 +87,9 @@ public class PhysicsSystem implements IComponentSystem {
 		if (collisionComponent != null)
 			checkTileMapCollision(positionComponent, movementComponent, velocityComponent,collisionComponent);
 		
-		positionComponent.setPosition(movementComponent.xtemp, movementComponent.ytemp);
+		Position.setPosition(id,movementComponent.xtemp, movementComponent.ytemp);
 		
-		positionComponent.setMapPosition();
+		///positionComponent.setMapPosition();
 		
 	}
 

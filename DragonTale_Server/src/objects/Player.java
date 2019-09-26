@@ -1,7 +1,8 @@
 package objects;
-import network.WorldSocket;
+//import network.WorldSocket;
 
 public class Player extends Unit{
+	/*
 	public boolean is_player;
 	public Player(WorldSocket session) {
 		// TODO Auto-generated constructor stub
@@ -15,5 +16,5 @@ public class Player extends Unit{
 	}
 
 	
-
+*/
 }

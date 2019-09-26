@@ -1,13 +1,8 @@
 package objects;
 
-import java.util.ArrayList;
-import java.util.Random;
-
-import game.World;
-
 
 public class Coin extends WorldObject {
-
+/*
 	// private BufferedImage[] sprites;
 
 	public Coin() {
@@ -43,5 +38,5 @@ public class Coin extends WorldObject {
 		}
 		super.update();
 	}
-
+*/
 }

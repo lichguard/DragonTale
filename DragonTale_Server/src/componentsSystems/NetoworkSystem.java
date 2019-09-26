@@ -26,10 +26,10 @@ public class NetoworkSystem {
 			//this if is to avoid jitters while standing still
 		//	if (positionComponent.x != networkComponent.new_packet.x
 		//			&& positionComponent.y != networkComponent.new_packet.y) {
-				positionComponent.setPosition(
+			Position.setPosition(id,
 						networkComponent.last_packet.x * (1.0f - t) + networkComponent.new_packet.x * t,
 						networkComponent.last_packet.y * (1.0f - t) + networkComponent.new_packet.y * t);
-				positionComponent.setMapPosition();
+			//Position.setMapPosition();
 		//	}
 		}
 
