@@ -1,7 +1,7 @@
 package componentsSystems;
 
 import componentNew.*;
-import entity.Spawner;
+
 
 public class AISystem implements IComponentSystem {
 	
@@ -22,14 +22,14 @@ public class AISystem implements IComponentSystem {
 			return;
 		
 		
-		switch (aiComponent.entityTextureType) {
-		case Spawner.COIN:
+		switch (aiComponent.type) {
+		case AI.coin:
 			movementComponent.right = (false);
 			movementComponent.left = (false);
 			movementComponent.setJumping(id,false);
 			movementComponent.gliding = false;
 			break;
-		case Spawner.FIREBALL:
+		case AI.fireball:
 			movementComponent.right = animationComponent.facingRight;
 			movementComponent.left = !animationComponent.facingRight;
 			movementComponent.setJumping(id,false);

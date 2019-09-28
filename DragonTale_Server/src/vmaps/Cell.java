@@ -1,14 +1,11 @@
 package vmaps;
 
-import java.awt.Point;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
 import componentNew.Broadcast;
 import componentNew.EntityManager;
-import componentNew.Position;
-import game.World;
 import main.LOGGER;
 
 public class Cell {
@@ -21,34 +18,27 @@ public class Cell {
 	public Cell(int x, int y) {
 		cell_x = x;
 		cell_y = y;
-		if (x == 0 && y == 0) {
-			LOGGER.info("SPAWN NEW CELLLLL 0,0", this);
-			Point[] points = new Point[] { new Point(100, 20) };
-	
-			for (Point p : points) {
-				World.getInstance().requestObjectSpawn("slug", 1, p.x, p.y, true, 0, null);
-			}
-		}
+		LOGGER.info("SPAWN NEW CELL 0,0", this);
 	}
+
 	
 	public void registerObject(int handle) {
 
-		Position.setCell(handle);
 		map.add(handle);
-		//LOGGER.debug("REGISTERING: " + cell_x + "," + cell_y + " HANDLE:" + obj.gethandle(), this);
+		LOGGER.debug("REGISTERING: " + cell_x + "," + cell_y + " HANDLE:" + handle, this);
 
-		for (Integer current_obj : map) {
-			Broadcast.AddListener(current_obj, handle);
-			Broadcast.AddListener(handle, current_obj);
+		for (Integer cell_handle : map) {
+			Broadcast.AddListener(cell_handle, handle);
+			Broadcast.AddListener(handle, cell_handle);
 		}
 
 	}
 	
 	public void unregisterObject(int handle) {
 
-		for (Integer current_obj : map) {
-			Broadcast.RemoveListenerfromID(current_obj, handle);
-			Broadcast.RemoveListenerfromID(handle, current_obj);
+		for (Integer cell_handle : map) {
+			Broadcast.RemoveListenerfromID(cell_handle, handle);
+			Broadcast.RemoveListenerfromID(handle, cell_handle);
 		}
 	}
 	
@@ -59,6 +49,7 @@ public class Cell {
 
 		this.visited = !this.visited;
 
+		//LOGGER.info("updaing cell: " + cell_x + " " + cell_y, this);
 		for (Iterator<Integer> iterator = map.iterator(); iterator.hasNext();) {
 			EntityManager.getInstance().update(iterator.next());
 		}

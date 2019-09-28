@@ -1,5 +1,6 @@
 package game;
 
+import java.awt.Point;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -8,9 +9,11 @@ import java.util.concurrent.ConcurrentLinkedDeque;
 import PACKET.NetworkSpawner;
 import PACKET.WorldPacket;
 import componentNew.EntityManager;
+import componentNew.Position;
 import main.LOGGER;
 import network.WorldSession;
 import network.WorldSocket;
+import vmaps.Cell;
 import vmaps.GameMap;
 
 public class World {
@@ -37,6 +40,13 @@ public class World {
 		}
 	}
 
+	public void createenemies() {
+		Point[] points = new Point[] { new Point(100, 20) };
+		
+		for (Point p : points) {
+			World.getInstance().requestObjectSpawn("slug", 1, p.x, p.y, true, 0, null);
+		}
+	}
 
 	public static World getInstance() {
 		if (instance == null) {
@@ -65,10 +75,10 @@ public class World {
 		return requestObjectSpawn(sp.name ,sp.type,sp.x,sp.y,sp.facing,sp.network,null);
 	}
 
-	public int requestObjectSpawn(String name, int type, float x, float y, boolean facing, int network,WorldSocket worldSocket) {
-		int handle = -1;
+	public int requestObjectSpawn(String name, int type, float x, float y, boolean facing, int AIType,WorldSocket worldSocket) {
+		int handle = -1;  
 		try {
-			handle = EntityManager.getInstance().addEntity(-1, name, false, type, x, y, facing, network,worldSocket);
+			handle = EntityManager.getInstance().addEntity(-1, name, type, x, y, facing, AIType,worldSocket);
 		} catch (Exception e) {
 			LOGGER.error("Failed to spawn a new entity", this);
 			e.printStackTrace();
@@ -165,32 +175,21 @@ public class World {
 			
 		}
 
-		//add requested objects
-	//	while (!m_objectSpawnQueue.isEmpty()) 
-	//		m_objectSpawnQueue.pop().create_entity();
-			
+		// to make sure we dont visit the same cell twice
+		this.visited_update = !visited_update;
+		// update the cells that has players in it
+		for (Iterator<WorldSession> iterator = SessionMap.values().iterator(); iterator.hasNext();) {
+			WorldSession s = (WorldSession) iterator.next();
+			int playerhandle = s._playerid;
+			if (playerhandle < 0)
+				continue;
 
-		//remove objects
-	//	while (!m_objectRemoveQueue.isEmpty()) {
-	//		int handle = m_objectRemoveQueue.pop();
-//
-//			LOGGER.info("DESPAWNING HANDLE: " + handle , this);
-//			
-//			m_gameObjectsMap.get(handle).cell.unregisterObject(handle);
-//			m_gameObjectsMap.get(handle).cell.map.remove(handle);
-//			m_gameObjectsMap.remove(handle);
-	
-//		}
-
-		//to make sure we dont visit the same cell twice
-//		this.visited_update = !visited_update;
-//		// update world session packets
-//		for (Iterator<WorldSession> iterator = SessionMap.values().iterator(); iterator.hasNext();) {
-//			WorldSession s = (WorldSession) iterator.next();
-//			if (s._player != null) {
-//				s._player.cell.update(visited_update);
-//			}
-//		}
+			Cell cell = Position.getCell(playerhandle);
+			if (cell != null) {
+				
+				cell.update(visited_update);
+			}
+		}
 	}
 
 }

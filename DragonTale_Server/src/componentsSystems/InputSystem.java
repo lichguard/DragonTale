@@ -1,10 +1,7 @@
 package componentsSystems;
 
-import componentNew.Animation;
 import componentNew.EntityManager;
-import componentNew.Movement;
 import componentNew.PlayerData;
-import componentNew.Position;
 
 
 public class InputSystem {
@@ -39,7 +36,7 @@ public class InputSystem {
 		}
 
 		public static void execute_server_command(int id, String command) {
-			
+			/*
 			String[] args = command.split(" ");
 			switch (args[0]) {
 			case "spawn":
@@ -49,7 +46,7 @@ public class InputSystem {
 				
 				Animation animationComponent = (Animation) EntityManager.getInstance().getEntityComponent(id,
 						EntityManager.AnimationID);
-				
+				*/
 				/*
 				Session.getInstance().SendCommand(new WorldPacket(
 						WorldPacket.SPAWN, new NetworkSpawner("-1", -1, Integer.parseInt(args[1]),
@@ -57,7 +54,7 @@ public class InputSystem {
 								animationComponent.facingRight, 0)));
 				//TODO: the network 0 should depend on the type of thing created
 				*/
-				
+				/*
 				break;
 			case "setspeed":
 				Movement movemenetComponent = (Movement) EntityManager.getInstance().getEntityComponent(id,
@@ -68,7 +65,7 @@ public class InputSystem {
 			default:
 				break;
 			}
-			
+			*/
 		}
 
 		public static void say(int id, String command) {

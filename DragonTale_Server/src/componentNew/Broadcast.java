@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import PACKET.MovementData;
+import PACKET.NetworkSpawner;
 import PACKET.WorldPacket;
 import network.WorldSocket;
 
@@ -23,9 +24,6 @@ public class Broadcast implements componentNew.IComponent {
 	public Set<Integer> listeners = new HashSet<Integer>();
 	public Deque<BroadcastData> m_queue = new ArrayDeque<BroadcastData>();
 
-	static int num_bcaster_created = 0;
-	static int num_bcaster_deleted = 0;
-
 	public static void ClearListeners(int id) {
 		Broadcast bc = (Broadcast) EntityManager.getInstance().getEntityComponent(id, EntityManager.BroadCastID);
 
@@ -38,16 +36,22 @@ public class Broadcast implements componentNew.IComponent {
 
 	public static void AddListener(int id, int target) {
 		Broadcast bc = (Broadcast) EntityManager.getInstance().getEntityComponent(id, EntityManager.BroadCastID);
-
+		Position pc = (Position)EntityManager.getInstance().getEntityComponent(id, EntityManager.PositionID);
 		if (id == target) {
 			return;
 		}
 
+		if (bc == null) {
+			return;
+		}
+		
 		synchronized (bc.listeners) {
 			bc.listeners.add(target);
 			if (bc.m_socket != null) {
-				bc.m_socket.SendWorldPacket(new WorldPacket(WorldPacket.SPAWN, null));
-				startListening(target, id);
+				bc.m_socket.SendWorldPacket(new WorldPacket(WorldPacket.SPAWN,
+						new NetworkSpawner("greg", target, 0, pc.x, pc.y, true, 
+								1)));
+				//startListening(target, id);
 			}
 		}
 	}
@@ -73,14 +77,18 @@ public class Broadcast implements componentNew.IComponent {
 					targetbc.m_socket.SendWorldPacket(new WorldPacket(WorldPacket.DESPAWN, id));
 				}
 				// tells the listener to stop listening to me if he is
-				stoplistening(target, id);
+				//stoplistening(target, id);
 			}
 		}
 	}
 
+	/*
 	private static void startListening(int id, int target) {
 		Broadcast bc = (Broadcast) EntityManager.getInstance().getEntityComponent(id, EntityManager.BroadCastID);
 
+		if (bc == null)
+			return;
+		
 		synchronized (bc.listeners) {
 			if (!bc.listeners.contains(target) && target != id) {
 				bc.listeners.add(target);
@@ -101,17 +109,19 @@ public class Broadcast implements componentNew.IComponent {
 			}
 		}
 	}
-	
+	*/
 	public static void QueuePacket(int handle, WorldPacket p, boolean self) {
 		Broadcast bc = (Broadcast) EntityManager.getInstance().getEntityComponent(handle, EntityManager.BroadCastID);
-		
-		synchronized (bc.m_queue) {
-			bc.m_queue.add(new BroadcastData(p, self, handle));
-		}
+		if (bc == null)
+			return;
+		bc.m_queue.add(new BroadcastData(p, self, handle));
 	}
 
 	public static void SendPacket(Integer handle, WorldPacket packet) {
 		Broadcast bc = (Broadcast) EntityManager.getInstance().getEntityComponent(handle, EntityManager.BroadCastID);
+		if (bc == null)
+			return;
+		
 		if (bc.m_socket != null) {
 			bc.m_socket.SendWorldPacket(packet);
 		}

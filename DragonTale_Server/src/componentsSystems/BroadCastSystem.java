@@ -2,17 +2,22 @@ package componentsSystems;
 
 import java.util.Iterator;
 
+import PACKET.WorldPacket;
+import componentNew.Animation;
 import componentNew.Broadcast;
 import componentNew.BroadcastData;
 import componentNew.EntityManager;
+import componentNew.Health;
+import componentNew.Position;
 
 public class BroadCastSystem {
 
+	public static final int UPDATEINTEVAL = 0;
 	
-	public void ProcessQueue(int handle, int num_packets) {
+	public static void ProcessQueue(int handle) {
 		Broadcast bc = (Broadcast) EntityManager.getInstance().getEntityComponent(handle, EntityManager.BroadCastID);
 		
-		if (bc.m_queue.isEmpty())
+		if (bc == null || bc.m_queue.isEmpty())
 			return;
 
 		synchronized (bc.m_queue) {
@@ -27,6 +32,48 @@ public class BroadCastSystem {
 
 			}
 		}
+	}
+
+
+	public static void brodcastEntityStateToNetowrk(int id) {
+
+		Broadcast broadcastComponent = (Broadcast) EntityManager.getInstance().getEntityComponent(id,
+				EntityManager.BroadCastID);
+		if (broadcastComponent == null)
+			return;
+
+		if (System.currentTimeMillis() - broadcastComponent.packet.timeframe > UPDATEINTEVAL) {
+
+			Animation animationComponent = (Animation) EntityManager.getInstance().getEntityComponent(id,
+					EntityManager.AnimationID);
+			if (animationComponent != null) {
+				broadcastComponent.packet.facingRight = animationComponent.facingRight;
+				broadcastComponent.packet.currentAction = animationComponent.currentPlayingAction;
+			}
+
+			Position positionComponent = (Position) EntityManager.getInstance().getEntityComponent(id,
+					EntityManager.PositionID);
+			if (positionComponent != null) {
+				broadcastComponent.packet.x = positionComponent.x;
+				broadcastComponent.packet.y = positionComponent.y;
+			}
+
+			Health healthComponent = (Health) EntityManager.getInstance().getEntityComponent(id,
+					EntityManager.HealthID);
+			if (healthComponent != null)
+				broadcastComponent.packet.health = healthComponent.health;
+
+			broadcastComponent.packet.timeframe = System.currentTimeMillis();
+
+			Broadcast.QueuePacket(id, new WorldPacket(WorldPacket.MOVEMENT_DATA ,broadcastComponent.packet), true);
+		//	Session.getInstance().SendWorldPacket(broadcastComponent.packet);
+		}
+
+	}
+	
+	public static void update(int id) {
+		brodcastEntityStateToNetowrk(id);
+		ProcessQueue(id);
 	}
 	
 }

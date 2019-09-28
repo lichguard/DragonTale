@@ -87,20 +87,14 @@ public class WorldSocket {
 					LOGGER.error("WorldSocket::ProcessIncomingData: Player send CommandPacket.HAND_SHAKE again", this);
 					return false;
 				}
-				
 				return HandleAuthSession(pct);
-			
-
 			case WorldPacket.PING_REQUEST:
 				return HandlePing(pct);
-
 			case WorldPacket.REQUEST_UDP_PORT:
 				return HandleUDP(pct);
-
 			default:
 				if (m_session == null) {
-					LOGGER.error("WorldSocket::ProcessIncomingData: Client not authed opcode: " + pct.getCommandName(),
-							this);
+					LOGGER.error("WorldSocket::ProcessIncomingData: Client not authed opcode: " + pct.getCommandName(),this);
 					return false;
 				}
 				m_session.QueuePacket(pct);
@@ -126,8 +120,6 @@ public class WorldSocket {
 
 
 	boolean HandleAuthSession(WorldPacket recvPacket) {
-
-		
 		AuthorizationPacket pct = (AuthorizationPacket) recvPacket.data;
 		Account acc = MySQLDB.getInstance().GetUserAccountfromDB(pct.username, pct.password);
 		if (acc == null) {
@@ -137,14 +129,8 @@ public class WorldSocket {
 		
 		m_session = new WorldSession(this);
 		m_session.account = acc;
-
-		
 		//m_session.AccountID = Accountid;
 		m_session.id = id;
-		
-		
-		
-		
 		
 		//LOGGER.error("NOT IMPLMENETED YET!", this);
 		World.getInstance().AddSession(m_session);

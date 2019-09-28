@@ -101,9 +101,11 @@ public class OnlineState extends GameState {
 					EntityManager.getInstance().die((int) packet.data);
 					break;
 				case WorldPacket.LOGIN:
+					
 					NetworkSpawner spwaner = (NetworkSpawner) packet.data;
 					World.getInstance().request_spawn(spwaner.name, true, spwaner.handle, spwaner.type, spwaner.x,
 							spwaner.y, spwaner.facing, spwaner.network);
+					Session.getInstance().handle = spwaner.handle;
 					break;
 				case WorldPacket.UDP_PORT:
 					try {

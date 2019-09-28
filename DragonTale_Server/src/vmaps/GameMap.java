@@ -109,6 +109,15 @@ public class GameMap {
 		return tileSize;
 	}
 
+	public Cell getCell(int cell_x, int cell_y) {
+		// create the cell if needed
+		if (grid[cell_x][cell_y] == null) {
+			grid[cell_x][cell_y] = new Cell(cell_x, cell_y);
+		}
+		// TODO Auto-generated method stub
+		return grid[cell_x][cell_y];
+	}
+
 
 	
 

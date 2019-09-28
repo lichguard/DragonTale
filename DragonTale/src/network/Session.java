@@ -24,7 +24,7 @@ public class Session {
 	protected int udp_port = -1;
 	protected int port = 9000;
 
-	protected int handle = -1;
+	public int handle = -1;
 	public Queue<WorldPacket> commandsPackets = new LinkedList<WorldPacket>();
 	public Stack<MovementData> worldPackets = new Stack<MovementData>();
 	protected Control callbackstatusControl = null;

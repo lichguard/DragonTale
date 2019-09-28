@@ -21,7 +21,9 @@ public class PhysicsSystem implements IComponentSystem {
 		if (movementComponent == null)
 			return;
 		
-
+		Network NetworkComponent=(Network) EntityManager.getInstance().getEntityComponent(id, EntityManager.NetworkID);
+		if (NetworkComponent != null)
+			return;
 		
 		
 		Animation animationComponent=(Animation) EntityManager.getInstance().getEntityComponent(id, EntityManager.AnimationID);

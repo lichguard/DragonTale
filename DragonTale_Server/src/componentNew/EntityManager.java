@@ -1,6 +1,5 @@
 package componentNew;
 
-import PACKET.MovementData;
 import main.LOGGER;
 import network.WorldSocket;
 
@@ -50,43 +49,44 @@ public class EntityManager {
 		components[id][compoenntID] = newcomp;
 	}
 
-	public int addEntity(int requestedHandle, String name, boolean userAvatar, int entityTextureType, float x, float y,
-			boolean facing, int network, WorldSocket worldSocket) throws Exception {
+	public int addEntity(int requestedHandle, String name , int entityTextureType, float x, float y,
+			boolean facing, int AIType, WorldSocket worldSocket) throws Exception {
 
 		int id = createID(requestedHandle);
 		LOGGER.info("created Entity with id: " + requestedHandle, this);
 
 		components[id][AnimationID] = new Animation(entityTextureType, Animation.IDLE);
-		components[id][PositionID] = new Position(x, y);
+		components[id][PositionID] = new Position();
+		
 		components[id][SizeID] = new Size();
 
 		components[id][AppearanceID] = new Appearance();
 		components[id][AttributeID] = new Attribute(name);
 		components[id][HealthID] = new Health();
-
-		if (userAvatar) {
-			components[id][BroadCastID] = new Broadcast(id,worldSocket);
-			components[id][PlayerDataID] = new PlayerData();
-			components[id][HUDID] = new HUD();
-			components[id][VelocityID] = new Velocity(0,0);
-			components[id][MovementID] = new Movement();
-			components[id][InventoryID] = new Inventory();
-			components[id][CollisionID] = new Collision();
-			focusCameraonEntity(id);
+		components[id][BroadCastID] = new Broadcast(id,worldSocket);
+		
+		components[id][VelocityID] = new Velocity(0,0);
+		components[id][MovementID] = new Movement();
+		components[id][InventoryID] = new Inventory();
+		components[id][CollisionID] = new Collision();
+		
+		
+		components[id][NetworkID] = new Network();
+		((Position)components[id][PositionID]).init(id,x, y);
+/*
+		if (AIType == AItypes.playercontrolled.ordinal()) {
+			components[id][NetworkID] = new Network();
 		} else {
-		
-			if (network != 2) {
-					components[id][NetworkID] = new Network();
-					
-			} else {
-				components[id][VelocityID] = new Velocity(0,0);
-				components[id][MovementID] = new Movement();
-				components[id][CollisionID] = new Collision();
-				components[id][AIID] = new AI(entityTextureType);
-			}
+			components[id][AIID] = new AI(AIType);
 		}
+	*/	
+		/*
+		if (AIType == AItypes.AIcontrolled.ordinal()) {
+			components[id][PhysicsID] = new Inventory();
+		}
+		*/
+	
 		
-
 		return id;
 	}
 
@@ -167,23 +167,10 @@ public class EntityManager {
 		componentsSystems.PhysicsSystem.update(id);
 		componentsSystems.AISystem.update(id);
 		componentsSystems.NetoworkSystem.update(id);
+		componentsSystems.BroadCastSystem.update(id);
 		componentsSystems.InputSystem.update(id);
 		componentsSystems.RegenPower.update(id);
 		
-	}
-	
-	private void cameraSystem() {
-		/*
-		//camera system
-		Position positionComponent = (Position) EntityManager.getInstance().getEntityComponent(cameraFocusEntityID,
-				EntityManager.PositionID);
-		
-		if (positionComponent != null) {
-			World.getInstance().tm.setPosition(GameConstants.WIDTH / 2 - positionComponent.x,
-					GameConstants.HEIGHT / 2 - positionComponent.y);
-
-		}
-		*/	
 	}
 
 	public void focusCameraonEntity(int id) {
@@ -206,49 +193,6 @@ public class EntityManager {
 		return ((Animation) components[id][AnimationID]).currentPlayingAction;
 	}
 
-	public void updatePacket(int id, MovementData p) {
-
-		Network networkComponent = (Network) getEntityComponent(id, NetworkID);
-		
-		if (networkComponent == null)
-			return;
-		
-		if (networkComponent.new_packet.timeframe < p.timeframe) {
-			networkComponent.last_packet.clone(networkComponent.new_packet);
-			networkComponent.new_packet.clone(p);
-
-			networkComponent.ping = (networkComponent.new_packet.timeframe - networkComponent.last_packet.timeframe + networkComponent.ping) / 2;
-
-			if (networkComponent.ping <= 0 || networkComponent.ping > 1000)
-				networkComponent.ping = 500;
-
-			networkComponent.interpolation_start = System.currentTimeMillis();
-			
-
-			Animation animationComponent = (Animation) getEntityComponent(id, AnimationID);
-			animationComponent.facingRight = networkComponent.last_packet.facingRight;
-			
-			Health healthComponent = (Health) getEntityComponent(id, HealthID);
-			if (healthComponent != null)
-				healthComponent.health = networkComponent.new_packet.health;
-			
-			if (networkComponent.last_packet.currentAction != this.getCurrentAction(id)) {
-				
-				setCurrentAction(id,networkComponent.last_packet.currentAction);
-				/*
-				if (networkComponent.last_packet.currentAction == Animation.ATTACK1) {
-					
-					// setattack();
-					// world.re spawn_entity(Spawner.FIREBALL, x, y, facingRight, false);
-				} else if (networkComponent.last_packet.currentAction == Animation.ATTACK2) {
-					// setattack2();
-					// scratchAttack(world);
-
-				}
-				*/
-			}
-		}
-	}
 
 	public void say(int id, String s) {
 		if (components[id][SpeechID] == null)

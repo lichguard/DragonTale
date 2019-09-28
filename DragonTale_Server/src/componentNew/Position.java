@@ -1,6 +1,7 @@
 package componentNew;
 
 import game.GameConstants;
+import game.World;
 import vmaps.Cell;
 import vmaps.GameMap;
 
@@ -12,9 +13,9 @@ public class Position implements componentNew.IComponent {
 	public Cell cell = null;
 	public GameMap gameMap = null;
 	
-	public Position(float x, float y) {
-		this.x = x;
-		this.y =y;
+	public void init(int handle, float x, float y) {
+		gameMap = World.getInstance().tm;
+		Position.setPosition(handle,x,y);
 	}
 	
 	public static float getx(int id) {
@@ -42,24 +43,26 @@ public class Position implements componentNew.IComponent {
 
 	public static void setCell(int handle) {
 		Position pc = ((Position) EntityManager.getInstance().getEntityComponent(handle, EntityManager.PositionID));
-		
+
 		int cell_x = (int) (Position.getx(handle) / GameConstants.WIDTH);
 		int cell_y = (int) (Position.gety(handle) / GameConstants.HEIGHT);
 
-		if (pc.cell == null || pc.cell != pc.gameMap.grid[cell_x][cell_y]) {
+		Cell cell = pc.gameMap.getCell(cell_x, cell_y);
+		if (cell != pc.cell) {
 			if (pc.cell != null) {
 				pc.cell.unregisterObject(handle);
 			}
-			// create the cell if needed
-			if (pc.gameMap.grid[cell_x][cell_y] == null) {
-				pc.gameMap.grid[cell_x][cell_y] = new Cell(cell_x, cell_y);
-			}
 			// finally register object
-			pc.gameMap.grid[cell_x][cell_y].registerObject(handle);
+			cell.registerObject(handle);
 			// LOGGER.info(gethandle() + " MOVED TO CELL: " + cell_x + "," + cell_y , this);
-			pc.cell =  pc.gameMap.grid[cell_x][cell_y];
+			pc.cell = cell;
 		}
 
+	}
+
+	public static Cell getCell(int handle) {
+		Position pc = ((Position) EntityManager.getInstance().getEntityComponent(handle, EntityManager.PositionID));
+		return pc.cell;
 	}
 
 }

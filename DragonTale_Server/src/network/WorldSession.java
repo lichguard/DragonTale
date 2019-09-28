@@ -7,6 +7,7 @@ import java.util.UUID;
 import PACKET.MovementData;
 import PACKET.NetworkSpawner;
 import PACKET.WorldPacket;
+import componentNew.AItypes;
 import componentNew.Animation;
 import componentNew.Broadcast;
 import componentNew.EntityManager;
@@ -80,7 +81,10 @@ public class WorldSession {
 
 	public void QueuePacket(WorldPacket packet) {
 		if (WorldPacket.MOVEMENT_DATA == packet.packet_code) {
-			m_location = packet;
+			//m_location = packet;
+			if (_playerid > 0) {
+				Network.setNewPacket(_playerid,(MovementData) packet.data);
+			}
 		} else {
 			synchronized (m_recvQueue) {
 				m_recvQueue.add(packet);
@@ -126,8 +130,7 @@ public class WorldSession {
 
 			}
 		}
-		Network.setNewPacket(_playerid,(MovementData) m_location.data);
-
+		
 		return true;
 	}
 
@@ -145,20 +148,18 @@ public class WorldSession {
 
 	public void handleLogin(WorldPacket packet) {
 		LOGGER.info("handleLogin", this);
-
 		int handle = World.getInstance().requestObjectSpawn(account.name, 0, account.x, account.y,
 				false, 1, worldsocket); // 0 - playerped
 		
-		SendWorldPacket(new WorldPacket(WorldPacket.LOGIN, handle));
+		this._playerid = handle;
+		NetworkSpawner spwaner = new NetworkSpawner(account.name, handle, 0, account.x, account.y,false, AItypes.playercontrolled.ordinal());
+		
+		SendWorldPacket(new WorldPacket(WorldPacket.LOGIN, spwaner));
 
 	}
 
 	public void handlechat(WorldPacket packet) {
 		Broadcast.QueuePacket(_playerid, packet, true);
-
-		// Broadcast.BroadcastData0
-		// _player.broadcaster.QueuePacket(packet, true, -1);
-
 	}
 
 	public void handlespawncommand(WorldPacket packet) {
