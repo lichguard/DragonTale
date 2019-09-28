@@ -1,7 +1,7 @@
 package componentsSystems;
 
 
-import componentNew.*;
+import component.*;
 import game.World;
 import vmaps.Tile;
 

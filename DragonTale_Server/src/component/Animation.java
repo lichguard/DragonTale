@@ -1,10 +1,10 @@
-package componentNew;
+package component;
 
 import java.awt.image.BufferedImage;
 
 import entity.Assets;
 
-public class Animation implements componentNew.IComponent {
+public class Animation implements component.IComponent {
 	
 	public static final int IDLE = 0;
 	public static final int WALKING = 1;

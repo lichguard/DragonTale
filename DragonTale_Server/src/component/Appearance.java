@@ -1,6 +1,6 @@
-package componentNew;
+package component;
 
-public class Appearance implements componentNew.IComponent {
+public class Appearance implements component.IComponent {
 	public float alpha = 1.0f; //draw half transparent
 	public boolean fadeout = false;
 	public boolean fadein = false;

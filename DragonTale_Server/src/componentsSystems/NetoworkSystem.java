@@ -1,7 +1,7 @@
 package componentsSystems;
 
 
-import componentNew.*;
+import component.*;
 
 public class NetoworkSystem {
 

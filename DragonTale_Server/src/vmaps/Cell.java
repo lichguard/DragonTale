@@ -4,8 +4,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-import componentNew.Broadcast;
-import componentNew.EntityManager;
+import component.Broadcast;
+import component.EntityManager;
 import main.LOGGER;
 
 public class Cell {

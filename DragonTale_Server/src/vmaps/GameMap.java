@@ -68,6 +68,7 @@ public class GameMap {
 			map = new int[numRows][numCols];
 			width = numCols * GameConstants.TILESIZE;
 			height = numRows * GameConstants.TILESIZE;
+			
 			grid = new Cell[(width/GameConstants.WIDTH)+1][(height/GameConstants.HEIGHT)+1];
 			
 			String delims = "\\s+";
@@ -110,6 +111,7 @@ public class GameMap {
 	}
 
 	public Cell getCell(int cell_x, int cell_y) {
+		System.out.println("X:" + cell_x +  " y: " + cell_y);
 		// create the cell if needed
 		if (grid[cell_x][cell_y] == null) {
 			grid[cell_x][cell_y] = new Cell(cell_x, cell_y);

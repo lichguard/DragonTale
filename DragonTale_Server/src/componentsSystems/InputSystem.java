@@ -1,7 +1,7 @@
 package componentsSystems;
 
-import componentNew.EntityManager;
-import componentNew.PlayerData;
+import component.EntityManager;
+import component.PlayerData;
 
 
 public class InputSystem {

@@ -1,6 +1,6 @@
-package componentNew;
+package component;
 
-public class Velocity implements componentNew.IComponent {
+public class Velocity implements component.IComponent {
 	public float dx = 0;
 	public float dy = 0;
 	

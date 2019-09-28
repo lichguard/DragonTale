@@ -1,6 +1,6 @@
-package componentNew;
+package component;
 
-public class AI implements componentNew.IComponent {
+public class AI implements component.IComponent {
 	
 	public static final int  player = 0;
 	public static final int  fireball = 1;

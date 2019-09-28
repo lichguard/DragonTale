@@ -1,11 +1,11 @@
-package componentNew;
+package component;
 
 import game.GameConstants;
 import game.World;
 import vmaps.Cell;
 import vmaps.GameMap;
 
-public class Position implements componentNew.IComponent {
+public class Position implements component.IComponent {
 	public float x;
 	public float y;
 	public float xmap;

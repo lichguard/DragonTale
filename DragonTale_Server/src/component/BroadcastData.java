@@ -1,4 +1,4 @@
-package componentNew;
+package component;
 
 import PACKET.WorldPacket;
 

@@ -1,8 +1,8 @@
-package componentNew;
+package component;
 
 import main.GameConstants;
 
-public class Collision implements componentNew.IComponent {
+public class Collision implements component.IComponent {
 	public int cwidth = 30 * GameConstants.ENTITYSCALE;
 	public int cheight = 30 * GameConstants.ENTITYSCALE;
 	public int currRow = 0;

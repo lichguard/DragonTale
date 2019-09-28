@@ -1,8 +1,8 @@
-package componentNew;
+package component;
 
 import java.awt.Font;
 
-public class Speech implements componentNew.IComponent {
+public class Speech implements component.IComponent {
 
 	public Speech(String s) {
 		setSpeech(s);

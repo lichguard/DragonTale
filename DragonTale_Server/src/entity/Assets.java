@@ -7,7 +7,7 @@ import java.util.Map;
 
 import javax.imageio.ImageIO;
 
-import componentNew.Animation;
+import component.Animation;
 import main.LOGGER;
 
 public class Assets {

@@ -3,12 +3,12 @@ package componentsSystems;
 import java.util.Iterator;
 
 import PACKET.WorldPacket;
-import componentNew.Animation;
-import componentNew.Broadcast;
-import componentNew.BroadcastData;
-import componentNew.EntityManager;
-import componentNew.Health;
-import componentNew.Position;
+import component.Animation;
+import component.Broadcast;
+import component.BroadcastData;
+import component.EntityManager;
+import component.Health;
+import component.Position;
 
 public class BroadCastSystem {
 

@@ -1,4 +1,4 @@
-package componentNew;
+package component;
 
 import main.LOGGER;
 import network.WorldSocket;
@@ -34,7 +34,7 @@ public class EntityManager {
 	
 	public int cameraFocusEntityID = 0;
 	
-	public componentNew.IComponent[][] components = new IComponent[MAXENTITIES][MAXCOMPONENTS];
+	public component.IComponent[][] components = new IComponent[MAXENTITIES][MAXCOMPONENTS];
 
 	private static EntityManager instance = null;
 
@@ -72,6 +72,8 @@ public class EntityManager {
 		
 		
 		components[id][NetworkID] = new Network();
+		
+		//register
 		((Position)components[id][PositionID]).init(id,x, y);
 /*
 		if (AIType == AItypes.playercontrolled.ordinal()) {
@@ -107,7 +109,7 @@ public class EntityManager {
 		}
 
 		// get new id
-		int id = 0;
+		int id = 1;
 		while (takenIdx[id]) {
 			id++;
 		}
@@ -163,6 +165,15 @@ public class EntityManager {
 	}
 
 	public void update(int id) {
+		/*
+		Position positionComponent = (Position) EntityManager.getInstance().getEntityComponent(id,
+				EntityManager.PositionID);
+		
+		if (positionComponent != null) {
+			System.out.println("id: " + id +  "x: " + positionComponent.x + " y: " + positionComponent.y);
+		}
+		
+		*/
 		componentsSystems.AnimationSystem.update(id);
 		componentsSystems.PhysicsSystem.update(id);
 		componentsSystems.AISystem.update(id);

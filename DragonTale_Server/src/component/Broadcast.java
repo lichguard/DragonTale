@@ -1,4 +1,4 @@
-package componentNew;
+package component;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
@@ -10,7 +10,7 @@ import PACKET.NetworkSpawner;
 import PACKET.WorldPacket;
 import network.WorldSocket;
 
-public class Broadcast implements componentNew.IComponent {
+public class Broadcast implements component.IComponent {
 
 	public long lastbroadcast = 0;
 	public MovementData packet = new MovementData();
@@ -37,6 +37,7 @@ public class Broadcast implements componentNew.IComponent {
 	public static void AddListener(int id, int target) {
 		Broadcast bc = (Broadcast) EntityManager.getInstance().getEntityComponent(id, EntityManager.BroadCastID);
 		Position pc = (Position)EntityManager.getInstance().getEntityComponent(id, EntityManager.PositionID);
+		System.out.println("SPAWN HERE MY POINT NEED TO SEE THIS TWICE  -  1");
 		if (id == target) {
 			return;
 		}
@@ -48,6 +49,8 @@ public class Broadcast implements componentNew.IComponent {
 		synchronized (bc.listeners) {
 			bc.listeners.add(target);
 			if (bc.m_socket != null) {
+				System.out.println("SPAWN : x " +  pc.x + " y " +  pc.y + " playerid socket: " + bc.m_socket.m_session._playerid);
+				
 				bc.m_socket.SendWorldPacket(new WorldPacket(WorldPacket.SPAWN,
 						new NetworkSpawner("greg", target, 0, pc.x, pc.y, true, 
 								1)));
