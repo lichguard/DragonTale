@@ -48,7 +48,11 @@ public class GameStateManager {
 	}
 
 	private void unloadState(int state) {
+		try {
 		gameStates[state].destroy();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		gameStates[state] = null;
 		System.gc();
 	}

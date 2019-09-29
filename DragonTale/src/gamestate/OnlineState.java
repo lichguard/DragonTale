@@ -165,7 +165,7 @@ public class OnlineState extends GameState {
 			GameStateManager.getInstance().requestState(GameStateManager.LOGINSTATE, "");
 		}
 	}
-	public void destroy() {
+	public void destroy() throws Exception {
 		super.destroy();
 		Session.getInstance().disconnect("");
 		World.getInstance().destroy();

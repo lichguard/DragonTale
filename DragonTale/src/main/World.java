@@ -67,7 +67,7 @@ public class World {
 		EntityManager.getInstance().draw(g);
 	}
 
-	public void destroy() {
+	public void destroy() throws Exception {
 		tm.destroy();
 		EntityManager.getInstance().destroy();
 	}

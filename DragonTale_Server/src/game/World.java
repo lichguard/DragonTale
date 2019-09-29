@@ -8,8 +8,10 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import PACKET.NetworkSpawner;
 import PACKET.WorldPacket;
+import component.AItypes;
 import component.EntityManager;
 import component.Position;
+import entity.Spawner;
 import main.LOGGER;
 import network.WorldSession;
 import network.WorldSocket;
@@ -44,7 +46,7 @@ public class World {
 		Point[] points = new Point[] { new Point(100, 20) };
 		
 		for (Point p : points) {
-			World.getInstance().requestObjectSpawn("slug", 1, p.x, p.y, true, 0, null);
+			World.getInstance().requestObjectSpawn("Sluggy", Spawner.SLUGGER, p.x, p.y, true, AItypes.slug.ordinal(), null);
 		}
 	}
 
@@ -69,6 +71,7 @@ public class World {
 	//start the world
 	public void startWorld(GameMap tm) {
 		this.tm = tm;
+		createenemies();
 	}
 
 	public int requestObjectSpawn(NetworkSpawner sp) {
@@ -186,7 +189,6 @@ public class World {
 
 			Cell cell = Position.getCell(playerhandle);
 			if (cell != null) {
-				
 				cell.update(visited_update);
 			}
 		}

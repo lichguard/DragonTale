@@ -23,7 +23,7 @@ public class Position implements component.IComponent {
 	}
 	
 	public static float gety(int id) {
-		return ((Position)EntityManager.getInstance().getEntityComponent(id, EntityManager.PositionID)).x;
+		return ((Position)EntityManager.getInstance().getEntityComponent(id, EntityManager.PositionID)).y;
 	}
 	
 	

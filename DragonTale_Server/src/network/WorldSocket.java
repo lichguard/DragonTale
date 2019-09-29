@@ -63,16 +63,22 @@ public class WorldSocket {
 
 	}
 
-	public boolean SendWorldPacket(WorldPacket packet) {
+	public void SendWorldPacket(WorldPacket packet) {
+		boolean socketopen = true;
 		if (packet.packet_code == WorldPacket.MOVEMENT_DATA) {
 			if (udp != null && packet != null)
-				return udp.sendWorldPacket(packet);
+				socketopen =  udp.sendWorldPacket(packet);
 		} else {
 			LOGGER.info("SENDING DATA: " + packet.getCommandName(), this);
 			if (tcp != null && packet != null)
-				return tcp.sendPacket(packet);
+				socketopen = tcp.sendPacket(packet);
 		}
-		return false;
+		/*
+		if (!socketopen) {
+			disconnect();
+		}
+		*/
+		
 	}
 
 	public boolean ProcessIncomingData(WorldPacket pct) {

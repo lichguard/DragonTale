@@ -70,8 +70,11 @@ public class EntityManager {
 		components[id][InventoryID] = new Inventory();
 		components[id][CollisionID] = new Collision();
 		
-		
-		components[id][NetworkID] = new Network();
+		if (AItypes.playercontrolled.ordinal() == AIType)
+			components[id][NetworkID] = new Network();
+		else {
+			components[id][AIID] = new AI(AIType);
+		}
 		
 		//register
 		((Position)components[id][PositionID]).init(id,x, y);

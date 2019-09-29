@@ -1,5 +1,5 @@
 package component;
 
 public enum AItypes {
-	coin,playercontrolled,fireball
+	coin,playercontrolled, slug,zombie
 }

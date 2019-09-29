@@ -309,14 +309,10 @@ public class EntityManager {
 		
 	}
 
-	public void destroy() {
+	public void destroy() throws Exception {
 		cameraFocusEntityID = 0;
 		while (this.entityCount > 0) {
-			try {
 				this.deleteEntity(this.entities[0]);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
 		}
 	}
 }

@@ -33,7 +33,7 @@ public abstract class GameState {
 		uimanager.handleInput();
 	}
 
-	public void destroy() {
+	public void destroy() throws Exception {
 		uimanager.destroy();
 	}
 }

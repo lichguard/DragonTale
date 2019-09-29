@@ -51,10 +51,13 @@ public class Broadcast implements component.IComponent {
 			if (bc.m_socket != null) {
 				System.out.println("SPAWN : x " +  pc.x + " y " +  pc.y + " playerid socket: " + bc.m_socket.m_session._playerid);
 				
+				
+				Animation ac = (Animation)EntityManager.getInstance().getEntityComponent(target, EntityManager.AnimationID);
+				Attribute atc = (Attribute)EntityManager.getInstance().getEntityComponent(target, EntityManager.AttributeID);
+
 				bc.m_socket.SendWorldPacket(new WorldPacket(WorldPacket.SPAWN,
-						new NetworkSpawner("greg", target, 0, pc.x, pc.y, true, 
+						new NetworkSpawner(atc.name, target,  ac.texture, pc.x, pc.y, ac.facingRight, 
 								1)));
-				//startListening(target, id);
 			}
 		}
 	}

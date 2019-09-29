@@ -167,6 +167,12 @@ public class WorldSession {
 	}
 
 	public void Despawn() {
+		try {
+			EntityManager.getInstance().deleteEntity(_playerid);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		// TODO Auto-generated method stub
 		
 	}

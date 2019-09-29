@@ -65,7 +65,7 @@ public class GameMap {
 			BufferedReader br = new BufferedReader(new InputStreamReader(in));
 			numCols = Integer.parseInt(br.readLine());
 			numRows = Integer.parseInt(br.readLine());
-			map = new int[numRows][numCols];
+			map = new int[numRows][numCols]; //tiles
 			width = numCols * GameConstants.TILESIZE;
 			height = numRows * GameConstants.TILESIZE;
 			
@@ -111,7 +111,6 @@ public class GameMap {
 	}
 
 	public Cell getCell(int cell_x, int cell_y) {
-		System.out.println("X:" + cell_x +  " y: " + cell_y);
 		// create the cell if needed
 		if (grid[cell_x][cell_y] == null) {
 			grid[cell_x][cell_y] = new Cell(cell_x, cell_y);

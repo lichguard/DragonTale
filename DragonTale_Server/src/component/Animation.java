@@ -34,12 +34,13 @@ public class Animation implements component.IComponent {
 	public long delay;
 	public float animationSpeed;
 	public boolean playedonce;
-
+	public int texture;
 	public int currentPlayingAction;
 	
-	public Animation(int name, int startingAction) {
+	public Animation(int texture, int startingAction) {
 		animationSpeed = 1.0f;
-		loadAssets(name);
+		this.texture = texture;
+		loadAssets(texture);
 		setAnimation(startingAction);
 	}
 	
