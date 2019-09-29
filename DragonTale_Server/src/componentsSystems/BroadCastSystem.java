@@ -12,7 +12,7 @@ import component.Position;
 
 public class BroadCastSystem {
 
-	public static final int UPDATEINTEVAL = 0;
+	public static final int UPDATEINTEVAL = 250;
 	
 	public static void ProcessQueue(int handle) {
 		Broadcast bc = (Broadcast) EntityManager.getInstance().getEntityComponent(handle, EntityManager.BroadCastID);

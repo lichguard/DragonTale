@@ -171,11 +171,11 @@ public class World {
 
 		// process world session packets and do handlers
 		// if the socket is disconnected than remove it from world
+		
 		for (Iterator<WorldSession> iterator = SessionMap.values().iterator(); iterator.hasNext();) {
 			WorldSession s = (WorldSession) iterator.next();
 			if (!s.Update())
 				iterator.remove();
-			
 		}
 
 		// to make sure we dont visit the same cell twice

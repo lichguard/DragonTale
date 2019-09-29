@@ -36,28 +36,24 @@ public class Broadcast implements component.IComponent {
 
 	public static void AddListener(int id, int target) {
 		Broadcast bc = (Broadcast) EntityManager.getInstance().getEntityComponent(id, EntityManager.BroadCastID);
-		Position pc = (Position)EntityManager.getInstance().getEntityComponent(id, EntityManager.PositionID);
-		System.out.println("SPAWN HERE MY POINT NEED TO SEE THIS TWICE  -  1");
+		Position pc = (Position) EntityManager.getInstance().getEntityComponent(id, EntityManager.PositionID);
+		Animation ac = (Animation) EntityManager.getInstance().getEntityComponent(id, EntityManager.AnimationID);
+		Attribute atc = (Attribute) EntityManager.getInstance().getEntityComponent(id, EntityManager.AttributeID);
+
 		if (id == target) {
 			return;
 		}
 
-		if (bc == null) {
-			return;
-		}
-		
 		synchronized (bc.listeners) {
 			bc.listeners.add(target);
 			if (bc.m_socket != null) {
-				System.out.println("SPAWN : x " +  pc.x + " y " +  pc.y + " playerid socket: " + bc.m_socket.m_session._playerid);
-				
-				
-				Animation ac = (Animation)EntityManager.getInstance().getEntityComponent(target, EntityManager.AnimationID);
-				Attribute atc = (Attribute)EntityManager.getInstance().getEntityComponent(target, EntityManager.AttributeID);
-
-				bc.m_socket.SendWorldPacket(new WorldPacket(WorldPacket.SPAWN,
-						new NetworkSpawner(atc.name, target,  ac.texture, pc.x, pc.y, ac.facingRight, 
-								1)));
+			//	System.out.println(
+			//			"SPAWN : x " + pc.x + " y " + pc.y + " playerid socket: " + bc.m_socket.m_session._playerid);
+				Broadcast targetbc = (Broadcast) EntityManager.getInstance().getEntityComponent(target,
+						EntityManager.BroadCastID);
+				if (targetbc.m_socket != null)
+					targetbc.m_socket.SendWorldPacket(new WorldPacket(WorldPacket.SPAWN,
+							new NetworkSpawner(atc.name, id, ac.texture, pc.x, pc.y, ac.facingRight, 1)));
 			}
 		}
 	}
@@ -67,19 +63,17 @@ public class Broadcast implements component.IComponent {
 		Broadcast targetbc = (Broadcast) EntityManager.getInstance().getEntityComponent(target,
 				EntityManager.BroadCastID);
 
-		if (bc.m_socket != null && id == target) {
+		if (id == target) {
 			return;
 		}
+		
 		synchronized (bc.listeners) {
-			if (bc.listeners.contains(target)) {
-				bc.listeners.remove(target);
-
-			}
 			if (bc.listeners.contains(target)) {
 
 				// stop that player from listening to my broadcaster
-				targetbc.listeners.remove(id);
-				if (bc.m_socket != null) {
+				//targetbc.listeners.remove(id);
+				bc.listeners.remove(target);
+				if (targetbc.m_socket != null) {
 					targetbc.m_socket.SendWorldPacket(new WorldPacket(WorldPacket.DESPAWN, id));
 				}
 				// tells the listener to stop listening to me if he is

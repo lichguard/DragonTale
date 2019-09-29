@@ -39,6 +39,7 @@ public class NetoworkSystem {
 			if (networkComponent.packet.currentAction != AnimationComponent.currentPlayingAction) {
 				AnimationComponent.setAnimation(networkComponent.packet.currentAction);
 			}
+			AnimationComponent.facingRight  = networkComponent.packet.facingRight;
 		}
 
 	}
