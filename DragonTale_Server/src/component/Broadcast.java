@@ -39,18 +39,19 @@ public class Broadcast implements component.IComponent {
 		Position pc = (Position) EntityManager.getInstance().getEntityComponent(id, EntityManager.PositionID);
 		Animation ac = (Animation) EntityManager.getInstance().getEntityComponent(id, EntityManager.AnimationID);
 		Attribute atc = (Attribute) EntityManager.getInstance().getEntityComponent(id, EntityManager.AttributeID);
-
+		Broadcast targetbc = (Broadcast) EntityManager.getInstance().getEntityComponent(target,
+				EntityManager.BroadCastID);
+		
 		if (id == target) {
 			return;
 		}
 
 		synchronized (bc.listeners) {
 			bc.listeners.add(target);
-			if (bc.m_socket != null) {
+			if (targetbc.m_socket != null) {
 			//	System.out.println(
 			//			"SPAWN : x " + pc.x + " y " + pc.y + " playerid socket: " + bc.m_socket.m_session._playerid);
-				Broadcast targetbc = (Broadcast) EntityManager.getInstance().getEntityComponent(target,
-						EntityManager.BroadCastID);
+				
 				if (targetbc.m_socket != null)
 					targetbc.m_socket.SendWorldPacket(new WorldPacket(WorldPacket.SPAWN,
 							new NetworkSpawner(atc.name, id, ac.texture, pc.x, pc.y, ac.facingRight, 1)));

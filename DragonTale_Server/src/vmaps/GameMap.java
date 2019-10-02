@@ -112,6 +112,11 @@ public class GameMap {
 
 	public Cell getCell(int cell_x, int cell_y) {
 		// create the cell if needed
+		
+		if (cell_x > numRows || cell_y > numCols) {
+			return null;
+		}
+		
 		if (grid[cell_x][cell_y] == null) {
 			grid[cell_x][cell_y] = new Cell(cell_x, cell_y);
 		}

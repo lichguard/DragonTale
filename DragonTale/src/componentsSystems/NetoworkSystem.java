@@ -8,6 +8,7 @@ public class NetoworkSystem {
 	public static final int UPDATEINTEVAL = 0;
 
 	public static void update(int id) {
+		
 		getEntityStatefromNetwork(id);
 		brodcastEntityStateToNetowrk(id);
 	}
@@ -17,6 +18,7 @@ public class NetoworkSystem {
 				EntityManager.NetworkID);
 		if (networkComponent == null)
 			return;
+		
 
 		Position positionComponent = (Position) EntityManager.getInstance().getEntityComponent(id,
 				EntityManager.PositionID);

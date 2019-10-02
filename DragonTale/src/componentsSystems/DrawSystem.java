@@ -1,6 +1,10 @@
 package componentsSystems;
+import java.awt.AlphaComposite;
 import java.awt.Color;
+import java.awt.Composite;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
+
 import componentNew.*;
 import main.GameConstants;
 import main.Gameplay;
@@ -92,11 +96,11 @@ public class DrawSystem {
 		}
 		
 		//TODO: Composite semi transpert fade in out for character login 
-	
-	
-		//Composite currentComposite = g.getComposite();
-		//g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,apperanceComponent.alpha));
-
+		//g.setComposite(AlphaComposite.getInstance,apperanceComponent.alpha));
+        Composite comp = AlphaComposite.getInstance(AlphaComposite.SRC_OVER , apperanceComponent.alpha );
+     
+		 ((Graphics2D)g).setComposite(comp);
+		 
 		if (animationComponent.facingRight)
 			g.drawImage(animationComponent.getImage()
 					,(int) (positionComponent.x + positionComponent.xmap - sizeComponent.width / 2)

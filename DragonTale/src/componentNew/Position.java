@@ -10,8 +10,8 @@ public class Position implements componentNew.IComponent {
 	public float ymap;
 	
 	public Position(float x, float y) {
-		this.x = x;
-		this.y =y;
+		setPosition(x,y);
+		setMapPosition();
 	}
 	
 	public void setPosition(float x, float y) {

@@ -49,11 +49,11 @@ public class Position implements component.IComponent {
 
 		Cell cell = pc.gameMap.getCell(cell_x, cell_y);
 		if (cell != pc.cell) {
-			if (pc.cell != null) {
+			if (pc.cell != null ) {
 				pc.cell.unregisterObject(handle);
 			}
 			// finally register object
-			cell.registerObject(handle);
+      			cell.registerObject(handle);
 			// LOGGER.info(gethandle() + " MOVED TO CELL: " + cell_x + "," + cell_y , this);
 			pc.cell = cell;
 		}
