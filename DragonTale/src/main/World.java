@@ -3,7 +3,7 @@ package main;
 import java.util.logging.Level;
 
 import TileMap.TileMap;
-import componentNew.EntityManager;
+import component.EntityManager;
 
 import java.awt.Graphics;
 

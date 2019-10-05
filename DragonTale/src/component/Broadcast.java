@@ -1,8 +1,8 @@
-package componentNew;
+package component;
 
 import PACKET.MovementData;
 
-public class Broadcast implements componentNew.IComponent {
+public class Broadcast implements component.IComponent {
 
 	public long lastbroadcast = 0;
 	public MovementData packet = new MovementData();

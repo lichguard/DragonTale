@@ -3,6 +3,13 @@ package component;
 import main.GameConstants;
 
 public class Collision implements component.IComponent {
+	
+	public static final int componentID = EntityManager.CollisionID;
+	@Override
+	public int getComponentID() {
+		return componentID;
+	}
+	
 	public int cwidth = 30 * GameConstants.ENTITYSCALE;
 	public int cheight = 30 * GameConstants.ENTITYSCALE;
 	public int currRow = 0;

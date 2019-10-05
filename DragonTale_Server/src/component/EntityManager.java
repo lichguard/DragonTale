@@ -5,7 +5,7 @@ import network.WorldSocket;
 
 
 public class EntityManager {
-
+	
 	public static final int AIID = 0;
 	public static final int AnimationID = 1;
 	public static final int AppearanceID = 2;
@@ -45,53 +45,42 @@ public class EntityManager {
 		return instance;
 	}
 
-	public void addEntityComponent(int id, int compoenntID, IComponent newcomp) {
-		components[id][compoenntID] = newcomp;
+	public void addEntityComponent(int id, IComponent newcomp) {
+		components[id][newcomp.getComponentID()] = newcomp;
 	}
 
-	public int addEntity(int requestedHandle, String name , int entityTextureType, float x, float y,
-			boolean facing, int AIType, WorldSocket worldSocket) throws Exception {
+	public int addEntity(int requestedHandle, String name ,
+			int entityTextureType, float x, float y,
+			boolean facing,
+			int AIType,
+			WorldSocket worldSocket) throws Exception {
 
 		int id = createID(requestedHandle);
 		LOGGER.info("created Entity with id: " + requestedHandle, this);
 
-		components[id][AnimationID] = new Animation(entityTextureType, Animation.IDLE);
-		components[id][PositionID] = new Position();
+		addEntityComponent(id, new Animation(entityTextureType, Animation.IDLE));
+		addEntityComponent(id, new Position());
+		addEntityComponent(id, new Size());
 		
-		components[id][SizeID] = new Size();
-
-		components[id][AppearanceID] = new Appearance();
-		components[id][AttributeID] = new Attribute(name);
-		components[id][HealthID] = new Health();
-		components[id][BroadCastID] = new Broadcast(id,worldSocket);
+		addEntityComponent(id, new Appearance());
+		addEntityComponent(id, new Attribute(name));
+		addEntityComponent(id, new Health());
+		addEntityComponent(id, new Broadcast(id,worldSocket));
 		
-		components[id][VelocityID] = new Velocity(0,0);
-		components[id][MovementID] = new Movement();
-		components[id][InventoryID] = new Inventory();
-		components[id][CollisionID] = new Collision();
+		addEntityComponent(id, new Velocity());
+		addEntityComponent(id, new Movement());
+		addEntityComponent(id, new Inventory());
+		addEntityComponent(id, new Collision());
+		
 		
 		if (AItypes.playercontrolled.ordinal() == AIType)
-			components[id][NetworkID] = new Network();
+			addEntityComponent(id, new Network());
 		else {
-			components[id][AIID] = new AI(AIType);
+			addEntityComponent(id, new AI(AIType));
 		}
 		
-		//register
-		((Position)components[id][PositionID]).init(id,x, y);
-/*
-		if (AIType == AItypes.playercontrolled.ordinal()) {
-			components[id][NetworkID] = new Network();
-		} else {
-			components[id][AIID] = new AI(AIType);
-		}
-	*/	
-		/*
-		if (AIType == AItypes.AIcontrolled.ordinal()) {
-			components[id][PhysicsID] = new Inventory();
-		}
-		*/
-	
 		
+		Position.init(id, x, y);
 		return id;
 	}
 
@@ -257,6 +246,11 @@ public class EntityManager {
 			return;
 		
 		attributeComponent.isDead = true;
+		AI ac = (AI) EntityManager.getInstance().getEntityComponent(id,
+				EntityManager.AIID);
+		if (ac == null)
+			return;
+		ac.type = 0;
 			
 		
 	}

@@ -1,6 +1,6 @@
 package componentsSystems;
 
-import componentNew.*;
+import component.*;
 import entity.Spawner;
 
 public class AISystem implements IComponentSystem {

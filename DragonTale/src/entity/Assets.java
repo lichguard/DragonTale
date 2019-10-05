@@ -7,7 +7,7 @@ import java.util.Map;
 
 import javax.imageio.ImageIO;
 
-import componentNew.Animation;
+import component.Animation;
 import main.LOGGER;
 
 public class Assets {
@@ -72,6 +72,7 @@ public class Assets {
 				setSprites(Animation.IDLE, 1,30,30,40,"/Sprites/Enemies/slugger.gif",0,sprites,numFrames,width,height,delay);
 				setSprites(Animation.WALKING, 3,30,30,40,"/Sprites/Enemies/slugger.gif",0,sprites,numFrames,width,height,delay);
 				setSprites(Animation.DEAD, 1,30,30,40,"/Sprites/Enemies/dead_slugger.gif",30,sprites,numFrames,width,height,delay);
+				
 				break;
 			default:
 	

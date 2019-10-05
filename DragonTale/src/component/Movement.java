@@ -1,6 +1,6 @@
-package componentNew;
+package component;
 
-public class Movement implements componentNew.IComponent {
+public class Movement implements component.IComponent {
 	public boolean left = false;
 	public boolean right = false;
 	public boolean up = false;

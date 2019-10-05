@@ -113,7 +113,7 @@ public class GameMap {
 	public Cell getCell(int cell_x, int cell_y) {
 		// create the cell if needed
 		
-		if (cell_x > numRows || cell_y > numCols) {
+		if (cell_x > numRows || cell_y > numCols || cell_x < 0 || cell_y < 0 ) {
 			return null;
 		}
 		

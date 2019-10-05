@@ -6,6 +6,13 @@ import vmaps.Cell;
 import vmaps.GameMap;
 
 public class Position implements component.IComponent {
+	
+	public static final int componentID = EntityManager.PositionID;
+	@Override
+	public int getComponentID() {
+		return componentID;
+	}
+	
 	public float x;
 	public float y;
 	public float xmap;
@@ -13,8 +20,11 @@ public class Position implements component.IComponent {
 	public Cell cell = null;
 	public GameMap gameMap = null;
 	
-	public void init(int handle, float x, float y) {
-		gameMap = World.getInstance().tm;
+
+	public static void init(int handle, float x, float y) {
+		Position pc = ((Position) EntityManager.getInstance().getEntityComponent(handle, EntityManager.PositionID));
+
+		pc.gameMap = World.getInstance().tm;
 		Position.setPosition(handle,x,y);
 	}
 	

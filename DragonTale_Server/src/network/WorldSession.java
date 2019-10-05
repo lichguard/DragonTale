@@ -13,6 +13,7 @@ import component.Broadcast;
 import component.EntityManager;
 import component.Network;
 import component.Position;
+import componentsSystems.AttackSystem;
 import database.Account;
 import game.World;
 import main.LOGGER;
@@ -143,7 +144,8 @@ public class WorldSession {
 	 */
 
 	public void handleMeleecommand(WorldPacket packet) {
-		// _player.setmeleeattack();
+		
+		AttackSystem.meleeattack(this._playerid);
 	}
 
 	public void handleLogin(WorldPacket packet) {

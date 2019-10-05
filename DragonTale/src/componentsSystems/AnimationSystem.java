@@ -1,5 +1,5 @@
 package componentsSystems;
-import componentNew.*;
+import component.*;
 
 public class AnimationSystem implements IComponentSystem {
 

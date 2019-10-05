@@ -1,7 +1,7 @@
 package componentsSystems;
 
 import TileMap.Tile;
-import componentNew.*;
+import component.*;
 import main.World;
 
 public class PhysicsSystem implements IComponentSystem {

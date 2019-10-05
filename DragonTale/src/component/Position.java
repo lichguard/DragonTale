@@ -1,9 +1,9 @@
-package componentNew;
+package component;
 
 import main.GameConstants;
 import main.World;
 
-public class Position implements componentNew.IComponent {
+public class Position implements component.IComponent {
 	public float x;
 	public float y;
 	public float xmap;

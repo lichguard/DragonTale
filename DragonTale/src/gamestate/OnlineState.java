@@ -2,7 +2,7 @@ package gamestate;
 
 import TileMap.*;
 import audio.AudioPlayer;
-import componentNew.EntityManager;
+import component.EntityManager;
 import main.Controls;
 import main.GameConstants;
 import main.LOGGER;

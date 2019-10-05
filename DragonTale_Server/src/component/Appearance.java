@@ -1,6 +1,13 @@
 package component;
 
 public class Appearance implements component.IComponent {
+
+	public static final int componentID = EntityManager.AppearanceID;
+	@Override
+	public int getComponentID() {
+		return componentID;
+	}
+	
 	public float alpha = 1.0f; //draw half transparent
 	public boolean fadeout = false;
 	public boolean fadein = false;

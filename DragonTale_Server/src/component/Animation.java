@@ -6,6 +6,13 @@ import entity.Assets;
 
 public class Animation implements component.IComponent {
 	
+	public static final int componentID = EntityManager.AnimationID;
+	@Override
+	public int getComponentID() {
+		return componentID;
+	}
+	
+	
 	public static final int IDLE = 0;
 	public static final int WALKING = 1;
 	public static final int JUMPING = 2;
@@ -89,6 +96,6 @@ public class Animation implements component.IComponent {
 	public int getCurrenPlayingAnimation() {
 		return currentPlayingAction;
 	}
-	
+
 
 }

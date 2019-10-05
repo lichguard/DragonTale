@@ -3,11 +3,11 @@ package componentsSystems;
 import PACKET.NetworkSpawner;
 import PACKET.SpeechPacket;
 import PACKET.WorldPacket;
-import componentNew.Animation;
-import componentNew.EntityManager;
-import componentNew.Movement;
-import componentNew.PlayerData;
-import componentNew.Position;
+import component.Animation;
+import component.EntityManager;
+import component.Movement;
+import component.PlayerData;
+import component.Position;
 import main.Controls;
 import network.Session;
 

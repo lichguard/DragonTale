@@ -3,6 +3,12 @@ package component;
 import java.awt.Font;
 
 public class Speech implements component.IComponent {
+	
+	public static final int componentID = EntityManager.SpeechID;
+	@Override
+	public int getComponentID() {
+		return componentID;
+	}
 
 	public Speech(String s) {
 		setSpeech(s);

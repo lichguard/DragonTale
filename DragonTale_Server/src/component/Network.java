@@ -3,6 +3,13 @@ package component;
 import PACKET.MovementData;
 
 public class Network implements component.IComponent {
+	
+	public static final int componentID = EntityManager.NetworkID;
+	@Override
+	public int getComponentID() {
+		return componentID;
+	}
+	
 	public MovementData packet = new MovementData();
 	public long ping = 200;
 

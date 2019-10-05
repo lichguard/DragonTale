@@ -11,6 +11,12 @@ import PACKET.WorldPacket;
 import network.WorldSocket;
 
 public class Broadcast implements component.IComponent {
+	
+	public static final int componentID = EntityManager.BroadCastID;
+	@Override
+	public int getComponentID() {
+		return componentID;
+	}
 
 	public long lastbroadcast = 0;
 	public MovementData packet = new MovementData();

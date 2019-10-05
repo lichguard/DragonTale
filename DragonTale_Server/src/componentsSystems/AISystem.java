@@ -33,6 +33,8 @@ public class AISystem implements IComponentSystem {
 		
 		
 		switch (aiComponent.type) {
+		case 0:
+			break;
 		case 4:
 			movementComponent.right = (false);
 			movementComponent.left = (false);

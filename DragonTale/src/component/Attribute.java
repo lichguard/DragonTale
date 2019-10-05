@@ -1,6 +1,6 @@
-package componentNew;
+package component;
 
-public class Attribute implements componentNew.IComponent {
+public class Attribute implements component.IComponent {
 	public String name = "Unknown";
 	public boolean inWorld = true;
 	public boolean isDead = false;

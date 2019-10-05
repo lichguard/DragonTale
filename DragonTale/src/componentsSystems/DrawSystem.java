@@ -5,7 +5,7 @@ import java.awt.Composite;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 
-import componentNew.*;
+import component.*;
 import main.GameConstants;
 import main.Gameplay;
 import main.World;

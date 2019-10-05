@@ -1,6 +1,6 @@
 package componentsSystems;
 
-import componentNew.*;
+import component.*;
 import network.Session;
 
 public class NetoworkSystem {

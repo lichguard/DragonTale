@@ -1,6 +1,13 @@
 package component;
 
 public class Movement implements component.IComponent {
+	
+	public static final int componentID = EntityManager.MovementID;
+	@Override
+	public int getComponentID() {
+		return componentID;
+	}
+	
 	public boolean left = false;
 	public boolean right = false;
 	public boolean up = false;

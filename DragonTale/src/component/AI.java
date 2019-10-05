@@ -1,6 +1,6 @@
-package componentNew;
+package component;
 
-public class AI implements componentNew.IComponent {
+public class AI implements component.IComponent {
 	
 	public int entityTextureType;
 	

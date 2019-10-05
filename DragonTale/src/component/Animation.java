@@ -1,10 +1,10 @@
-package componentNew;
+package component;
 
 import java.awt.image.BufferedImage;
 
 import entity.Assets;
 
-public class Animation implements componentNew.IComponent {
+public class Animation implements component.IComponent {
 	
 	public static final int IDLE = 0;
 	public static final int WALKING = 1;
@@ -44,7 +44,13 @@ public class Animation implements componentNew.IComponent {
 	}
 	
 	public void setAnimation(int currentPlayingAction) {
+		
+		
+		if (numFrames[currentPlayingAction] == 0) {
+			currentPlayingAction = IDLE;
+		}
 		this.currentPlayingAction = currentPlayingAction;
+
 		this.frames = sprites[currentPlayingAction];
 		this.numofframes = numFrames[currentPlayingAction];
 		this.delay = delayArr[currentPlayingAction];

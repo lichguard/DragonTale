@@ -1,4 +1,4 @@
-package componentNew;
+package component;
 
 import PACKET.MovementData;
 import PACKET.NetworkSpawner;
@@ -40,7 +40,7 @@ public class EntityManager {
 	
 	public int cameraFocusEntityID = 0;
 	
-	public componentNew.IComponent[][] components = new IComponent[MAXENTITIES][MAXCOMPONENTS];
+	public component.IComponent[][] components = new IComponent[MAXENTITIES][MAXCOMPONENTS];
 
 	private static EntityManager instance = null;
 
