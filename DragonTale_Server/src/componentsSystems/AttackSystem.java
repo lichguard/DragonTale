@@ -25,7 +25,7 @@ public class AttackSystem {
 		for (Integer close_entity : getNearEntities(handle,sc.width + 10,angle,angle + 180)) {
 		
 			Health.decreaseHealth(close_entity,15);
-			Velocity.hit(close_entity);
+			Velocity.hit(close_entity,angle);
 		}
 		
 	}

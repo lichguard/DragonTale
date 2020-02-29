@@ -46,6 +46,18 @@ public class UIManager {
 	}
 
 	public void update() {
+		
+		if (Controls.isPressed(Controls.LMB)) {
+			for (Control control : controls) {
+				if (control.x <= Controls.mousex && control.x + control.width >= Controls.mousex  &&
+						control.y <= Controls.mousey && control.y + control.height >= Controls.mousey 	) {
+					requestFocus(control);
+					control.MouseClick();
+					break;
+				}
+			}
+			
+		}
 	}
 
 	public void draw(Graphics g) {

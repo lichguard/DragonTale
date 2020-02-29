@@ -10,6 +10,7 @@ import main.GameConstants;
 
 public abstract class Control {
 
+	public String name = "default_control_name";
 	public Font font = new Font("Arial", Font.PLAIN, 11);
 	public String text = "";
 	public int x = 0;
@@ -23,6 +24,9 @@ public abstract class Control {
 	public UIManager parent = null;
 	public Action action = null;
 	
+	public String getName() {
+		return name;
+	}
 	public void setforecolor(Color color)
 	{
 		this.forecolor = color;
@@ -94,4 +98,9 @@ public abstract class Control {
 	public void draw(Graphics g) {
 
 	}
-}
+
+	public void MouseClick() {
+		
+	}
+
+	}

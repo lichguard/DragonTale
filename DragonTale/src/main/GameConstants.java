@@ -1,7 +1,7 @@
 package main;
 
 public class GameConstants {
-	public static final int WIDTH = 600;//640; // 320
+	public static final int WIDTH = 900;//640; // 320
 	public static final int HEIGHT = WIDTH / 16 * 9 ;//536; // 268
 	public static final int ENTITYSCALE = 1;
 	

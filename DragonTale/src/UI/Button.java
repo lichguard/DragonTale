@@ -8,11 +8,21 @@ public class Button extends Control {
 	public void draw(Graphics g) {
 		super.draw(g);
 		g.setColor(bgcolor);
-		g.fillRect(x, y, font.getSize() * text.length() - 10, height + font.getSize());
+		//g.fillRect(x, y, font.getSize() * text.length() - 10, height + font.getSize());
+		
+		g.fillRect(x, y, width, height);
+		
 		g.setFont(font);
 		g.setColor(forecolor);
-		g.drawString(text, x+2, y +  font.getSize());
+		g.drawString(text, x + text.length() * font.getSize() / 2, y +  font.getSize());
 		
 	
+	}
+
+	@Override
+	public void MouseClick() {
+		if (action != null)
+			action.execute();
+		
 	}
 }

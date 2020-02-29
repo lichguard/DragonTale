@@ -71,7 +71,7 @@ public class Assets {
 				//not really idle
 				setSprites(Animation.IDLE, 1,30,30,40,"/Sprites/Enemies/slugger.gif",0,sprites,numFrames,width,height,delay);
 				setSprites(Animation.WALKING, 3,30,30,40,"/Sprites/Enemies/slugger.gif",0,sprites,numFrames,width,height,delay);
-				setSprites(Animation.DEAD, 1,30,30,40,"/Sprites/Enemies/dead_slugger.gif",30,sprites,numFrames,width,height,delay);
+				setSprites(Animation.DEAD, 1,30,30,40,"/Sprites/Enemies/dead_slugger.gif",0,sprites,numFrames,width,height,delay);
 				
 				break;
 			default:

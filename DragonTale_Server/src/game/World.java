@@ -43,7 +43,7 @@ public class World {
 	}
 
 	public void createenemies() {
-		Point[] points = new Point[] { new Point(100, 20) };
+		Point[] points = new Point[] { new Point(100, 380),new Point(685,370)  };
 		
 		for (Point p : points) {
 			World.getInstance().requestObjectSpawn("Sluggy", Spawner.SLUGGER, p.x, p.y, true, AItypes.slug.ordinal(), null);

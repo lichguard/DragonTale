@@ -45,33 +45,50 @@ public class LoginState extends GameState {
 		
 		username_txtbox = new Textbox();
 		username_txtbox.setposition(0.35f, 0.35f);
-		username_txtbox.setsize(0.3f, 0.02f);
+		username_txtbox.setsize(0.3f, 0.05f);
 		username_txtbox.bgcolor = new Color(0, 0, 0, 190);
+		username_txtbox.name = "txtbox_username";
 		this.uimanager.registerControl(username_txtbox);
 		username_txtbox.registerAction(action);
 		
 		password_txtbox = new Textbox();
 		password_txtbox.setposition(0.35f, 0.5f);
-		password_txtbox.setsize(0.3f, 0.02f);
+		password_txtbox.setsize(0.3f, 0.05f);
 		password_txtbox.bgcolor = new Color(0, 0, 0, 190);
 		password_txtbox.setpassword(true);
 		password_txtbox.registerAction(action);
+		password_txtbox.name = "password_txtbox";
 		this.uimanager.registerControl(password_txtbox);
 		
 		login_button = new Button();
 		login_button.setText("Login");
-		login_button.setposition(0.4f, 0.65f);
-		login_button.setsize(0.3f, 0.02f);
+		login_button.setposition(0.45f, 0.65f);
+		login_button.setsize(0.1f, 0.05f);
 		login_button.registerAction(action);
 		login_button.setforecolor(new Color(255,255,255,255));
+		login_button.name = "login_button";
 		this.uimanager.registerControl(login_button);
 		
 		title = new Label();
 		title.setText("Dragon Tale");
-		title.setposition(0.5f, 0.17f);
-		title.registerAction(action);
+		title.setposition(0.3f, 0.17f);
 		title.setforecolor(new Color(0,0,0,255));
 		title.setfont(new Font("Century Gothic", Font.PLAIN, 40));
+		title.name = "title_label";
+		this.uimanager.registerControl(title);
+		
+		title = new Label();
+		title.setText("Username");
+		title.setposition(0.35f, 0.34f);
+		title.setforecolor(new Color(0,0,0,255));
+		title.name = "title_label";
+		this.uimanager.registerControl(title);
+		
+		title = new Label();
+		title.setText("password");
+		title.setposition(0.35f, 0.49f);
+		title.setforecolor(new Color(0,0,0,255));
+		title.name = "title_label";
 		this.uimanager.registerControl(title);
 		
 	}
@@ -80,8 +97,11 @@ public class LoginState extends GameState {
 
 		if (connecting_thread != null && connecting_thread.isAlive())
 			return;
-		if (!(username_txtbox.isfocused() || password_txtbox.isfocused()))
+		
+		if (!(username_txtbox.isfocused() || password_txtbox.isfocused())) {
+			uimanager.ShowMessageBox("Missing password or username...");
 			return;
+		}
 
 		Messagebox msgbox = uimanager.ShowMessageBox("Initiating...");
 		connecting_thread = new Thread(new Runnable() {

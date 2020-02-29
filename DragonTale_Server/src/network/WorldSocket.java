@@ -73,11 +73,11 @@ public class WorldSocket {
 			if (tcp != null && packet != null)
 				socketopen = tcp.sendPacket(packet);
 		}
-		/*
+		
 		if (!socketopen) {
 			disconnect();
 		}
-		*/
+		
 		
 	}
 

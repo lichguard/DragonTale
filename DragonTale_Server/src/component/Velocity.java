@@ -20,8 +20,13 @@ public class Velocity implements component.IComponent {
 		this.dy = dy;
 	}
 
-	public static void hit(Integer close_entity) {
+	public static void hit(Integer close_entity, int angle) {
 		Velocity vc = (Velocity) EntityManager.getInstance().getEntityComponent(close_entity, Velocity.componentID);
 		vc.dy = -5.0f;
+		
+		if (angle == 180) 
+			vc.dx = -5.0f; 
+		else
+			vc.dx = 5.0f; 
 	}
 }

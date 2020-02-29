@@ -1,6 +1,6 @@
 package UI;
 import java.awt.Font;
-import java.awt.Graphics2D;
+import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 
 import main.GameConstants;
@@ -32,7 +32,7 @@ public class Messagebox extends Control {
 	}
 
 
-	public void draw(Graphics2D g) {
+	public void draw(Graphics g) {
 		super.draw(g);
 		g.setFont(font);
 		g.setColor(bgcolor);
@@ -41,6 +41,11 @@ public class Messagebox extends Control {
 		g.drawString(text, x+2, y + font.getSize());
 		
 		g.drawString("OK", x+2, y + font.getSize()*3);
+	}
+	@Override
+	public void MouseClick() {
+		// TODO Auto-generated method stub
+		
 	}
 	
 }

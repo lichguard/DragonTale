@@ -15,4 +15,10 @@ public class Label extends Control {
 	
 	}
 
+	@Override
+	public void MouseClick() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

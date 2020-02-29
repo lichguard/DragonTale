@@ -43,7 +43,7 @@ public class Textbox extends Control {
 		super.draw(g);
 		g.setFont(font);
 		g.setColor(bgcolor);
-		g.fillRect(x, y, width, height + font.getSize());
+		g.fillRect(x, y, width, height);
 		g.setColor(forecolor);
 
 		if (System.currentTimeMillis() % 1500 < 700 && isfocused()) {
@@ -51,6 +51,13 @@ public class Textbox extends Control {
 		} else
 			g.drawString(password ? text.replaceAll(".", "*") : text, x+2, y +  font.getSize());
 
+	}
+
+	@Override
+	public void MouseClick() {
+		
+		// TODO Auto-generated method stub
+		
 	}
 
 }
