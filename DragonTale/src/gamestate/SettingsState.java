@@ -1,10 +1,5 @@
 package gamestate;
 import java.awt.Graphics;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-
-import javax.imageio.ImageIO;
-
 import java.awt.Color;
 import java.awt.Font;
 
@@ -15,11 +10,10 @@ import UI.Button;
 import UI.Label;
 import UI.Messagebox;
 import UI.Textbox;
-import component.Animation;
 import main.Controls;
 import network.Session;
 
-public class LoginState extends GameState {
+public class SettingsState extends GameState {
 
 	protected Background bg;
 	protected Font font;
@@ -69,21 +63,15 @@ public class LoginState extends GameState {
 		login_button = new Button();
 		login_button.setText("Login");
 		login_button.setposition(0.45f, 0.65f);
-		login_button.setsize(0.1f, 0.07f);
+		login_button.setsize(0.1f, 0.05f);
 		login_button.registerAction(action);
 		login_button.setforecolor(new Color(255,255,255,255));
 		login_button.name = "login_button";
-		try {
-			login_button.texture = ImageIO.read(Animation.class.getResourceAsStream("/Sprites/Enemies/login_button.gif"));
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 		this.uimanager.registerControl(login_button);
 		
 		title = new Label();
 		title.setText("Dragon Tale");
-		title.setposition(0.36f, 0.17f);
+		title.setposition(0.3f, 0.17f);
 		title.setforecolor(new Color(0,0,0,255));
 		title.setfont(new Font("Century Gothic", Font.PLAIN, 40));
 		title.name = "title_label";

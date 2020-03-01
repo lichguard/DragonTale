@@ -44,7 +44,7 @@ public class Messagebox extends Control {
 	}
 	@Override
 	public void MouseClick() {
-		// TODO Auto-generated method stub
+		this.delete_control = true;
 		
 	}
 	
