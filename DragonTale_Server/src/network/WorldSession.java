@@ -151,7 +151,7 @@ public class WorldSession {
 	public void handleLogin(WorldPacket packet) {
 		LOGGER.info("handleLogin", this);
 		int handle = World.getInstance().requestObjectSpawn(account.name, 0, account.x, account.y,
-				false, 1, worldsocket); // 0 - playerped
+				false, AItypes.playercontrolled.ordinal(), worldsocket); // 0 - playerped
 		
 		this._playerid = handle;
 		NetworkSpawner spwaner = new NetworkSpawner(account.name, handle, 0, account.x, account.y,false, AItypes.playercontrolled.ordinal());

@@ -69,6 +69,16 @@ public class Position implements component.IComponent {
 		}
 
 	}
+	
+	public static void removeFromCell(int handle) {
+		Position pc = ((Position) EntityManager.getInstance().getEntityComponent(handle, EntityManager.PositionID));
+		if (pc == null)
+			return;
+		Position.getCell(handle).unregisterObject(handle);
+		
+
+	}
+	
 
 	public static Cell getCell(int handle) {
 		Position pc = ((Position) EntityManager.getInstance().getEntityComponent(handle, EntityManager.PositionID));

@@ -1,6 +1,7 @@
 package game;
 
 import java.awt.Point;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -48,6 +49,13 @@ public class World {
 		for (Point p : points) {
 			World.getInstance().requestObjectSpawn("Sluggy", Spawner.SLUGGER, p.x, p.y, true, AItypes.slug.ordinal(), null);
 		}
+		
+		points = new Point[] {new Point(1020,315),new Point(1000,315),new Point(400,315)  };
+		
+		for (Point p : points) {
+			World.getInstance().requestObjectSpawn("", Spawner.COIN, p.x, p.y, true, AItypes.coin.ordinal(), null);
+		}
+		
 	}
 
 	public static World getInstance() {
@@ -89,6 +97,8 @@ public class World {
 		return handle;
 
 	}
+	
+
 	
 	/*
 	public int requestObjectSpawn(String name, int type, double x, double y, boolean facing, int network,
@@ -194,4 +204,35 @@ public class World {
 		}
 	}
 
+
+	public static ArrayList<Integer> getNearEntities(int handle, int range, int direction_start, int direction_end) {
+
+		Cell cell = Position.getCell(handle);
+		ArrayList<Integer> returnObjects = new ArrayList<Integer>();
+
+
+		for (Integer close_entity : cell.map) {
+			if (handle == close_entity)
+				continue;
+			
+			float dx = Position.getx(close_entity) - Position.getx(handle);
+			float dy = Position.gety(close_entity) - Position.gety(handle);
+			
+			//System.out.println("RAG: " + Math.abs(dx) + Math.abs(dy));
+			if (Math.abs(dx) + Math.abs(dy) <= range) {
+				double angle = getHeading(dx, dy);
+
+				//System.out.println("anhge: " + angle);
+				if (direction_start <= angle && angle <= direction_end) {
+					returnObjects.add(close_entity);
+				}
+			}
+		}
+		return returnObjects;
+	}
+
+	public static float getHeading(float x, float y) {
+		return (float) (((90.0 - (180.0 / Math.PI) * Math.atan2(y,x)) + 360.0) % 360);
+	}
+	
 }

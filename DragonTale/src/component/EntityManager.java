@@ -67,6 +67,8 @@ public class EntityManager {
 
 		components[id][AppearanceID] = new Appearance();
 		components[id][AttributeID] = new Attribute(name);
+		
+		if (entityTextureType != Spawner.COIN)
 		components[id][HealthID] = new Health();
 
 		if (userAvatar) {

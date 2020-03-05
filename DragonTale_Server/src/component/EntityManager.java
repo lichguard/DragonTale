@@ -66,17 +66,15 @@ public class EntityManager {
 		addEntityComponent(id, new Attribute(name));
 		addEntityComponent(id, new Health());
 		addEntityComponent(id, new Broadcast(id,worldSocket));
-		
+		System.out.println("CREATE Broadcast FOR ID " + id);
 		addEntityComponent(id, new Velocity());
 		addEntityComponent(id, new Movement());
 		addEntityComponent(id, new Inventory());
 		addEntityComponent(id, new Collision());
 		
-		
-		if (AItypes.playercontrolled.ordinal() == AIType)
+		addEntityComponent(id, new AI(AIType));
+		if (AItypes.playercontrolled.ordinal() == AIType) {
 			addEntityComponent(id, new Network());
-		else {
-			addEntityComponent(id, new AI(AIType));
 		}
 		
 		
@@ -113,7 +111,9 @@ public class EntityManager {
 		return id;
 	}
 
-	public void removeEntity(int id) throws Exception {
+	//this should be on client not server
+	/*
+	public void removeEntity(int id) {
 
 		Appearance apperanceComponent = (Appearance) EntityManager.getInstance().getEntityComponent(id,
 				EntityManager.AppearanceID);
@@ -123,12 +123,18 @@ public class EntityManager {
 			deleteEntity(id);
 		}
 	}
-
-	public void deleteEntity(int id) throws Exception {
+*/
+	public void deleteEntity(int id)  {
 		if (!takenIdx[id]) {
-			throw new Exception("Tried to remove non existing entity");
+			LOGGER.error("Tried to remove non existing entity: " + id, this);
+			return;
+			//throw new Exception("Tried to remove non existing entity");
 		}
+		
+		
+		
 		takenIdx[id] = false;
+		Position.removeFromCell(id);
 		for (int i = 0; i < MAXCOMPONENTS; i++) {
 			components[id][i] = null;
 		}
@@ -138,6 +144,7 @@ public class EntityManager {
 			i++;
 		}
 		entities[i] = entities[entityCount];
+		
 	}
 
 	public IComponent getEntityComponent(int id, int componentID) {

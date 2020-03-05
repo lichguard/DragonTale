@@ -26,8 +26,8 @@ public class DrawSystem {
 			return;
 		
 		
-		chatbox(id,g);
 		animation(id,g);
+		chatbox(id,g);
 		hud(id,g);
 		name(id,g);
 		nameplate(id,g);

@@ -51,6 +51,10 @@ public class Broadcast implements component.IComponent {
 		if (id == target) {
 			return;
 		}
+		
+		if (targetbc == null || bc == null) {
+			return;
+		}
 
 		synchronized (bc.listeners) {
 			bc.listeners.add(target);
@@ -74,6 +78,7 @@ public class Broadcast implements component.IComponent {
 			return;
 		}
 		
+		System.out.println("CRASHED ON ID: " + id);
 		synchronized (bc.listeners) {
 			if (bc.listeners.contains(target)) {
 

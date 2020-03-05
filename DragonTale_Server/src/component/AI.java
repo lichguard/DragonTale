@@ -1,5 +1,8 @@
 package component;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class AI implements component.IComponent {
 	
 	public static final int componentID = EntityManager.AIID;
@@ -9,6 +12,7 @@ public class AI implements component.IComponent {
 	}
 	
 	public int type;
+	public List<AITask> tasks = new ArrayList<AITask>();
 	
 	public AI(int type) {
 		this.type = type;

@@ -1,6 +1,7 @@
 package componentsSystems;
 
 import component.*;
+import game.World;
 
 
 public class AISystem implements IComponentSystem {
@@ -30,47 +31,39 @@ public class AISystem implements IComponentSystem {
 		AI aiComponent=(AI) EntityManager.getInstance().getEntityComponent(id, EntityManager.AIID);
 		if (aiComponent == null)
 			return;
+
 		
-		
-		switch (aiComponent.type) {
-		case 0:
-			movementComponent.right = (false);
-			movementComponent.left = (false);
-			movementComponent.setJumping(id,false);
-			movementComponent.gliding = false;
-		case 4:
-			movementComponent.right = (false);
-			movementComponent.left = (false);
-			movementComponent.setJumping(id,false);
-			movementComponent.gliding = false;
-			break;
-		default:
-			/*
-			Collision collisionComponent = (Collision) EntityManager.getInstance().getEntityComponent(id, EntityManager.CollisionID);
-			if (collisionComponent == null)
-				return;
-			
-			System.out.println("===============================================" );
-			System.out.println(" collisionComponent.topLeft : " +  collisionComponent.topLeft );
-			System.out.println(" collisionComponent.topRight : " +  collisionComponent.topRight );
-			System.out.println(" collisionComponent.bottomLeft : " +  collisionComponent.bottomLeft );
-			System.out.println(" collisionComponent.bottomRight : " +  collisionComponent.bottomRight );
-			
-			if ( collisionComponent.topLeft || collisionComponent.topRight) {
+		//target:1021,314
+
+		if (aiComponent.type == AItypes.slug.ordinal()) {
+			if (velocityComponenet.dx == 0) {
 				animationComponent.facingRight = !animationComponent.facingRight;
 			}
-			*/
-			if (velocityComponenet.dx == 0) {
-				animationComponent.facingRight  = !animationComponent.facingRight;
-			}
-			
 			movementComponent.right = animationComponent.facingRight;
 			movementComponent.left = !animationComponent.facingRight;
-			movementComponent.setJumping(id,false);
+			movementComponent.setJumping(id, false);
 			movementComponent.gliding = false;
-			break;
-		}
+		} else if (aiComponent.type == AItypes.zombie.ordinal()) {
 		
+		} else if (aiComponent.type == AItypes.coin.ordinal()) {
+			//Size sc = (Size) EntityManager.getInstance().getEntityComponent(id, Size.componentID);
+			
+			for (Integer close_entity : World.getNearEntities(id,30,0,360)) {
+				
+				AI cai =(AI) EntityManager.getInstance().getEntityComponent(close_entity, EntityManager.AIID);
+				if (aiComponent == null || cai.type != AItypes.playercontrolled.ordinal())
+					continue;
+				
+				Inventory.addItem(close_entity,0);
+				EntityManager.getInstance().deleteEntity(id);
+				System.out.println("REMOVIGN ENTITY COIN PLAY ID: " + close_entity + " HAS COLLECTED");
+			}
+			
+			//movementComponent.right = (false);
+			//movementComponent.left = (false);
+			//movementComponent.setJumping(id, false);
+			//movementComponent.gliding = false;
+		}
 
 		//EntityManager.getInstance().setattack(id);
 		//EntityManager.getInstance().setattack2(id);
