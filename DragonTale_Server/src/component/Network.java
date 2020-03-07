@@ -15,7 +15,10 @@ public class Network implements component.IComponent {
 
 	public static void setNewPacket(int handle, MovementData data) {
 		Network nc = (Network) EntityManager.getInstance().getEntityComponent(handle, EntityManager.NetworkID);
-		nc.packet = data;
+		if (nc == null || data == null ) {
+			System.out.println("component Network: SOMETHING HERE IS NULL! handle: " +handle);
+		} else 
+			nc.packet = data;
 	}
 
 }

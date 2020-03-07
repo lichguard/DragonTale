@@ -29,9 +29,9 @@ public class NetoworkSystem {
 		//	}
 		}
 
-		Health healthComponent = (Health) EntityManager.getInstance().getEntityComponent(id, EntityManager.HealthID);
-		if (healthComponent != null)
-			healthComponent.health = networkComponent.packet.health;
+		//Health healthComponent = (Health) EntityManager.getInstance().getEntityComponent(id, EntityManager.HealthID);
+		//if (healthComponent != null)
+		//	healthComponent.health = networkComponent.packet.health;
 
 		Animation AnimationComponent = (Animation) EntityManager.getInstance().getEntityComponent(id,
 				EntityManager.AnimationID);

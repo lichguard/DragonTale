@@ -120,10 +120,21 @@ public class Gameplay extends Canvas implements Runnable {
 	float ax = 0;
 	float ay = 0;
 	boolean releaseing = false;
+	int blocktype = 21;
 	public void update() {
 		
 		//tileMap.setPosition(-50, 100);
 
+		if (Controls.isPressed(Controls.GLIDE)) {
+			tileMap.exportMap();
+		}
+		
+		if (Controls.isPressed(Controls.SCRATCH)) {
+			Controls.mousey = MouseInfo.getPointerInfo().getLocation().y-this.getLocationOnScreen().y;
+			Controls.mousex = MouseInfo.getPointerInfo().getLocation().x-this.getLocationOnScreen().x;
+			blocktype = tileMap.getBlockType(Controls.mousex,Controls.mousey);
+		}
+		
 		if (Controls.isPressed(Controls.RMB)) {
 			int y = MouseInfo.getPointerInfo().getLocation().y-this.getLocationOnScreen().y;
 			int x = MouseInfo.getPointerInfo().getLocation().x-this.getLocationOnScreen().x;
@@ -161,7 +172,7 @@ public class Gameplay extends Canvas implements Runnable {
 			Controls.mousex = MouseInfo.getPointerInfo().getLocation().x-this.getLocationOnScreen().x;
 			//System.out.println((Controls.mousey / tileMap.getTileSize())  + "," + (Controls.mousex / tileMap.getTileSize()));
 			//tileMap.map[Controls.mousey / tileMap.getTileSize()][Controls.mousex / tileMap.getTileSize()] = 22;
-			tileMap.setTileTo(Controls.mousex,Controls.mousey,21);
+			tileMap.setTileTo(Controls.mousex,Controls.mousey,blocktype);
 		
 		}
 			

@@ -15,6 +15,7 @@ import UI.Label;
 import UI.Messagebox;
 import UI.Textbox;
 import component.Animation;
+import main.Config;
 import main.Controls;
 import network.Session;
 
@@ -108,17 +109,18 @@ public class LoginState extends GameState {
 
 		if (connecting_thread != null && connecting_thread.isAlive())
 			return;
-		
+		/*
 		if (!(username_txtbox.isfocused() || password_txtbox.isfocused())) {
 			uimanager.ShowMessageBox("Missing password or username...");
 			return;
 		}
+		*/
 
 		Messagebox msgbox = uimanager.ShowMessageBox("Initiating...");
 		connecting_thread = new Thread(new Runnable() {
 			public void run() {
 				
-				Session.getInstance().Connect(msgbox, "localhost", 9000, username_txtbox.text, password_txtbox.text);
+				Session.getInstance().Connect(msgbox,Config.getConfig("serverHost", "localhost"), Integer.parseInt(Config.getConfig("serverport", "9000")), username_txtbox.text, password_txtbox.text);
 				password_txtbox.setText("");
 
 				if (cancel_login) {

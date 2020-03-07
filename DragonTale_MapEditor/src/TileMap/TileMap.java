@@ -5,11 +5,12 @@ import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 
 import javax.imageio.ImageIO;
 
-import main.Controls;
 import main.GameConstants;
 
 import java.io.InputStream;
@@ -89,7 +90,7 @@ public class TileMap {
 			xmin = GameConstants.WIDTH - width;
 			xmax = 0;
 
-			ymin = GameConstants.HEIGHT - height;
+			ymin = GameConstants.HEIGHT - height - tileSize;
 			ymax = 0;
 
 			String delims = "\\s+";
@@ -215,6 +216,26 @@ public class TileMap {
 		}
 	}
 
+	public void exportMap() {
+
+		StringBuilder mapRep = new StringBuilder();
+		mapRep.append((numCols) + "\n" + (numRows) + "\n");
+
+		for (int i = 0; i < numRows; i++) {
+			for (int j = 0; j < numCols; j++) {
+				mapRep.append(map[i][j] + " ");
+			}
+			mapRep.append("\n");
+		}
+
+		try (PrintWriter out = new PrintWriter("ExportedMap.map")) {
+		    out.println(mapRep.toString());
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 	public void destroy() {
 		// position
 		x = 0;
@@ -224,5 +245,19 @@ public class TileMap {
 		tileset = null;
 		tiles = null;
 		//tilesChunks = null;
+	}
+
+	public int getBlockType(int x, int y) {
+		int row = y / tileSize +  rowOffset;
+		int col = x / tileSize + colOffset;
+		
+		if (row  >= numRows)
+			return 0;
+	
+		if (col >= numCols)
+			return 0;
+
+		return map[row ][col]; 
+		
 	}
 }

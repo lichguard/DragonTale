@@ -88,7 +88,7 @@ public class TileMap {
 			xmin = GameConstants.WIDTH - width;
 			xmax = 0;
 
-			ymin = GameConstants.HEIGHT - height;
+			ymin = GameConstants.HEIGHT - height  - tileSize;
 			ymax = 0;
 
 			String delims = "\\s+";

@@ -43,6 +43,11 @@ public class AISystem implements IComponentSystem {
 			movementComponent.left = !animationComponent.facingRight;
 			movementComponent.setJumping(id, false);
 			movementComponent.gliding = false;
+			
+			
+			
+			AttackSystem.meleeattack(id);
+			
 		} else if (aiComponent.type == AItypes.zombie.ordinal()) {
 		
 		} else if (aiComponent.type == AItypes.coin.ordinal()) {

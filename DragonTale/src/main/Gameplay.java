@@ -13,7 +13,7 @@ public class Gameplay extends Canvas implements Runnable {
 	private boolean running;
 	private Controls controls;
 	
-	private long targetFPS = 120;
+	private long targetFPS = Long.parseLong(Config.getConfig("targetFPS", "120"));
 	private static long FPS = 1;
 	private long targetFPSTime = 1000 / targetFPS;
 

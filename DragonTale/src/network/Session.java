@@ -1,5 +1,5 @@
-package network;
 
+package network;
 import java.io.IOException;
 import java.net.UnknownHostException;
 import java.util.LinkedList;
