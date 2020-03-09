@@ -21,4 +21,5 @@ public class Collision implements component.IComponent {
 	public boolean topRight = false;
 	public boolean bottomLeft = false;
 	public boolean bottomRight = false;
+	public boolean swimming = false;
 }

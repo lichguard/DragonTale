@@ -1,19 +1,17 @@
 package TileMap;
 
 import java.awt.Graphics;
-
 import java.awt.image.BufferedImage;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.InputStreamReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.io.PrintWriter;
-
 import javax.imageio.ImageIO;
 
 import main.GameConstants;
-
-import java.io.InputStream;
 
 public class TileMap {
 
@@ -50,6 +48,10 @@ public class TileMap {
 	private int numRowsToDraw;
 	private int numColsToDraw;
 
+	public int curx = -1;
+	public int cury = -1;
+	public int curblocktype = -1;
+	
 	public TileMap(int tileSize) {
 		this.tileSize = tileSize;
 		numRowsToDraw = GameConstants.HEIGHT / tileSize + 2;
@@ -58,11 +60,19 @@ public class TileMap {
 	}
 
 	public void loadTiles(String s) {
-		int tileSize = 30;
+		//File file = new File(s);
+		
 		try {
-			tileset = ImageIO.read(getClass().getResourceAsStream(s));
+		//URL[] urls = {file.toURI().toURL()};
+		//ClassLoader loader = new URLClassLoader(urls);
+		//ResourceBundle rb = ResourceBundle.getBundle("DragonTale_Assets", Locale.getDefault(), loader);
+		
+		
+		int tileSize = 30;
+
+			tileset = ImageIO.read(new File(GameConstants.assetBasePath + s));
 			numTilesAcross = tileset.getWidth() / tileSize;
-			tiles = new Tile[2][numTilesAcross];
+			tiles = new Tile[3][numTilesAcross];
 
 			BufferedImage subimage;
 			for (int i = 0; i < numTilesAcross; i++) {
@@ -71,16 +81,21 @@ public class TileMap {
 
 				subimage = tileset.getSubimage(i * tileSize, tileSize, tileSize, tileSize);
 				tiles[1][i] = new Tile(subimage, Tile.BLOCKED);
+				
+				subimage = tileset.getSubimage(i * tileSize, tileSize * 2, tileSize, tileSize);
+				tiles[2][i] = new Tile(subimage, Tile.NORMAL);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+
+
 	}
 
 	public void loadMap(String s) {
+		BufferedReader br = null;
 		try {
-			InputStream in = (InputStream) getClass().getResourceAsStream(s);
-			BufferedReader br = new BufferedReader(new InputStreamReader(in));
+			br = new BufferedReader(new FileReader(GameConstants.assetBasePath + s));
 			numCols = Integer.parseInt(br.readLine());
 			numRows = Integer.parseInt(br.readLine());
 			map = new int[numRows][numCols];
@@ -105,12 +120,17 @@ public class TileMap {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		finally {
+			if (br != null)
+				try {
+					br.close();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+		}
 	}
 
-	public void loadChunk(int x,int y) {
-		
-	}
-	
 	public int getTileSize() {
 		return tileSize;
 	}
@@ -177,22 +197,6 @@ public class TileMap {
 		
 	}
 
-	public void setTileTo(int x,int y, int type) {
-		
-		int row = y / tileSize +  rowOffset;
-		int col = x / tileSize + colOffset;
-		
-		if (row  >= numRows)
-			return;
-	
-		if (col >= numCols)
-				return;
-
-		map[row ][col] = type; 
-		
-		
-	}
-	
 	public void draw(Graphics g) {
 		
 		for (int row = rowOffset; row < rowOffset + numRowsToDraw; row++) 
@@ -214,8 +218,35 @@ public class TileMap {
 				g.drawImage(tiles[r][c].getImage(), (int) x + col * tileSize, (int) y + row * tileSize,GameConstants.TILESIZE,GameConstants.TILESIZE, null);
 			}
 		}
+		
+		if (curx != -1 && cury != -1 && curblocktype != -1) {
+			int row = pixelToBlockY(cury);
+			int col = pixelToBlockX(curx);
+			int rc = curblocktype;
+			g.drawImage(tiles[ rc/ numTilesAcross][ rc % numTilesAcross].getImage(), (int) x + col * tileSize, (int) y + row * tileSize,GameConstants.TILESIZE,GameConstants.TILESIZE, null);
+		}
 	}
-
+	
+	public void destroy() {
+		// position
+		x = 0;
+		y = 0;
+		tween =0; // smoothly scrolling camera
+		map = null;
+		tileset = null;
+		tiles = null;
+		//tilesChunks = null;
+	}
+	
+	
+	
+	public void setTileTypeatPixel(int x,int y, int type) {
+		map[pixelToBlockY(y)][pixelToBlockX(x)] = type; 
+	}
+	public int getTileTypeatPixel(int x,int y) {
+		return map[pixelToBlockY(y)][pixelToBlockX(x)];
+	}
+	
 	public void exportMap() {
 
 		StringBuilder mapRep = new StringBuilder();
@@ -236,28 +267,24 @@ public class TileMap {
 		}
 	}
 	
-	public void destroy() {
-		// position
-		x = 0;
-		y = 0;
-		tween =0; // smoothly scrolling camera
-		map = null;
-		tileset = null;
-		tiles = null;
-		//tilesChunks = null;
-	}
 
-	public int getBlockType(int x, int y) {
-		int row = y / tileSize +  rowOffset;
-		int col = x / tileSize + colOffset;
+	public int pixelToBlockY(int x) {
+		
+		int row = x / tileSize +  rowOffset;
 		
 		if (row  >= numRows)
 			return 0;
-	
-		if (col >= numCols)
+
+		return row;
+	}
+	public int pixelToBlockX(int y) {
+		
+		int col = y / tileSize + colOffset;
+		
+		if (col  >= numCols)
 			return 0;
 
-		return map[row ][col]; 
-		
+		return col;
 	}
+
 }

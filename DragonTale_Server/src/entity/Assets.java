@@ -1,6 +1,7 @@
 package entity;
 
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -8,6 +9,7 @@ import java.util.Map;
 import javax.imageio.ImageIO;
 
 import component.Animation;
+import main.GameConstants;
 import main.LOGGER;
 
 public class Assets {
@@ -20,7 +22,7 @@ public class Assets {
 		delayArr[action] = delay;
 		numFrames[action] = frames;
 
-		BufferedImage spritesheet = ImageIO.read(Animation.class.getResourceAsStream(imageResourceName));
+		BufferedImage spritesheet = ImageIO.read(new File(GameConstants.assetBasePath + imageResourceName));
 		for (int i = 0; i < numFrames[action]; i++) {
 			sprites[action][i] = spritesheet.getSubimage(i * width, y, width, height);
 		}

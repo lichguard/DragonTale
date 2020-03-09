@@ -34,7 +34,7 @@ public class Gameplay extends Canvas implements Runnable {
 		addKeyListener(controls);
 		addMouseListener(controls);
 		
-		bg = new Background("/Backgrounds/grassbg1.gif", 0.1);
+		bg = new Background("Backgrounds/grassbg1.gif", 0.1);
 		//bg.setVector(-0.1, 0);
 		tileMap = new TileMap(GameConstants.TILESIZE);
 		tileMap.loadTiles("/TileSets/grasstileset.gif");
@@ -120,25 +120,37 @@ public class Gameplay extends Canvas implements Runnable {
 	float ax = 0;
 	float ay = 0;
 	boolean releaseing = false;
-	int blocktype = 21;
+	int blocktype = 42;
 	public void update() {
 		
-		//tileMap.setPosition(-50, 100);
-
+		Point cur = this.getMousePosition();
+		if (cur == null)
+			return;
+		
+		int x = cur.x;
+		int y = cur.y;
+		
+		if (Controls.isPressed(Controls.DOWN)) {
+			blocktype--;
+		}
+		if (Controls.isPressed(Controls.UP)) {
+			blocktype++;
+		}
+		
+		
+		//E
 		if (Controls.isPressed(Controls.GLIDE)) {
 			tileMap.exportMap();
 		}
 		
+		//R
 		if (Controls.isPressed(Controls.SCRATCH)) {
-			Controls.mousey = MouseInfo.getPointerInfo().getLocation().y-this.getLocationOnScreen().y;
-			Controls.mousex = MouseInfo.getPointerInfo().getLocation().x-this.getLocationOnScreen().x;
-			blocktype = tileMap.getBlockType(Controls.mousex,Controls.mousey);
+			blocktype = tileMap.getTileTypeatPixel(x, y);
 		}
 		
+		//move across map
 		if (Controls.isPressed(Controls.RMB)) {
-			int y = MouseInfo.getPointerInfo().getLocation().y-this.getLocationOnScreen().y;
-			int x = MouseInfo.getPointerInfo().getLocation().x-this.getLocationOnScreen().x;
-			
+
 			tileMap.setPosition(tileMap.x + (- Controls.mousex + x)*5, tileMap.y + ( -Controls.mousey + y)*5);
 			Controls.mousey = y;
 			Controls.mousex = x;
@@ -147,10 +159,8 @@ public class Gameplay extends Canvas implements Runnable {
 		} else {
 			if (releaseing ) {
 				releaseing = false;
-				int y = MouseInfo.getPointerInfo().getLocation().y-this.getLocationOnScreen().y;
-				int x = MouseInfo.getPointerInfo().getLocation().x-this.getLocationOnScreen().x;
-				ax = (- Controls.mousex + x)*5;
-				ay = (- Controls.mousey + y)*5;
+				ax = (- Controls.mousex +  x  )*5;
+				ay = (- Controls.mousey +  y   )*5;
 			}
 		}
 		if  (ax != 0 && ay != 0) {
@@ -168,12 +178,12 @@ public class Gameplay extends Canvas implements Runnable {
 		
 		
 		if (Controls.isPressed(Controls.LMB)) {
-			Controls.mousey = MouseInfo.getPointerInfo().getLocation().y-this.getLocationOnScreen().y;
-			Controls.mousex = MouseInfo.getPointerInfo().getLocation().x-this.getLocationOnScreen().x;
-			//System.out.println((Controls.mousey / tileMap.getTileSize())  + "," + (Controls.mousex / tileMap.getTileSize()));
-			//tileMap.map[Controls.mousey / tileMap.getTileSize()][Controls.mousex / tileMap.getTileSize()] = 22;
-			tileMap.setTileTo(Controls.mousex,Controls.mousey,blocktype);
-		
+			tileMap.setTileTypeatPixel(x, y, blocktype);
+		} else {
+			
+			tileMap.curx  = x;
+			tileMap.cury  = y;
+			tileMap.curblocktype = blocktype;
 		}
 			
 		bg.update();

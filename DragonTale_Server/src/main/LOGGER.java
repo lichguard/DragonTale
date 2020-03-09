@@ -19,7 +19,7 @@ public class LOGGER {
 		LOGGER.outputLog = outputLog;
 	}
 	
-	public static void log(Level level,String msg, Object object)
+	public synchronized static void log(Level level,String msg, Object object)
 	{
 		date.setTime(System.currentTimeMillis());
 		String logString = dateFormat.format(date.getTime()) + " [" + level.getName()  +"] " +object.getClass().getName() + ": " + msg;

@@ -1,9 +1,12 @@
 package UI;
 
 import java.awt.Graphics;
+import java.awt.image.BufferedImage;
 
 public class Button extends Control {
-
+	public BufferedImage texture = null;
+	public BufferedImage texture_pressed = null;
+	
 	@Override
 	public void draw(Graphics g) {
 		super.draw(g);
@@ -26,6 +29,7 @@ public class Button extends Control {
 		}
 
 	}
+	
 
 	@Override
 	public void MouseClick() {

@@ -10,4 +10,7 @@ public class GameConstants {
 	public static final boolean DEBUG = true;
 	public static final boolean DISABLEESOUND = true;
 	
+	//C:\Users\deans\source\repos\DragonTale\DragonTale_MapEditor
+	public static final String assetBasePath = System.getProperty("user.dir") + "\\..\\assets\\";
+	
 }

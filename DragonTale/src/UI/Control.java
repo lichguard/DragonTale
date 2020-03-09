@@ -4,8 +4,6 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
-import java.awt.image.BufferedImage;
-
 import main.Controls;
 import main.GameConstants;
 
@@ -25,7 +23,7 @@ public abstract class Control {
 	public boolean delete_control = false;
 	public UIManager parent = null;
 	public Action action = null;
-	public BufferedImage texture = null;
+	
 	
 	public String getName() {
 		return name;

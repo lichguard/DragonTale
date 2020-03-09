@@ -1,5 +1,6 @@
 package gamestate;
 import java.awt.Graphics;
+import java.io.File;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
@@ -14,9 +15,9 @@ import UI.Button;
 import UI.Label;
 import UI.Messagebox;
 import UI.Textbox;
-import component.Animation;
 import main.Config;
 import main.Controls;
+import main.GameConstants;
 import network.Session;
 
 public class LoginState extends GameState {
@@ -74,7 +75,7 @@ public class LoginState extends GameState {
 		login_button.setforecolor(new Color(255,255,255,255));
 		login_button.name = "login_button";
 		try {
-			login_button.texture = ImageIO.read(Animation.class.getResourceAsStream("/Sprites/Enemies/login_button.gif"));
+			login_button.texture = ImageIO.read(new File(GameConstants.assetBasePath + "UI/login_button.gif"));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

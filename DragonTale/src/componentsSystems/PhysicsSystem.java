@@ -36,6 +36,8 @@ public class PhysicsSystem implements IComponentSystem {
 			}
 		}
 
+		Collision collisionComponent=(Collision) EntityManager.getInstance().getEntityComponent(id, EntityManager.CollisionID);
+	
 		if (movementComponent.left) {
 			velocityComponent.dx -= movementComponent.moveSpeed;
 			if (velocityComponent.dx < -movementComponent.maxSpeed)
@@ -58,18 +60,31 @@ public class PhysicsSystem implements IComponentSystem {
 
 		if (movementComponent.jumping && (!movementComponent.falling)) {
 			velocityComponent.dy = movementComponent.jumpStart;
-			movementComponent.falling = true;
+			
+				movementComponent.falling = true;
+			
 		}
 
-		if (movementComponent.falling) {
+		if (collisionComponent.swimming) {
+			
+			if (velocityComponent.dy < movementComponent.maxGlideSpeed)
+				velocityComponent.dy += movementComponent.fallSpeed * 0.2f;
+			else
+				velocityComponent.dy -= movementComponent.fallSpeed * 0.4f;
+	
+			
+		}
+		
+		if (movementComponent.falling && !collisionComponent.swimming) {
+			
 			if (velocityComponent.dy > 0 && movementComponent.gliding) {
 
 				if (velocityComponent.dy < movementComponent.maxGlideSpeed)
-					velocityComponent.dy += movementComponent.fallSpeed * 0.1;
+					velocityComponent.dy += movementComponent.fallSpeed * 0.1f;
 				else
 					velocityComponent.dy -= movementComponent.fallSpeed;
 			} else
-				velocityComponent.dy += movementComponent.fallSpeed;
+				velocityComponent.dy += movementComponent.fallSpeed ;
 
 			if (velocityComponent.dy > 0)
 				movementComponent.jumping = false;
@@ -82,9 +97,8 @@ public class PhysicsSystem implements IComponentSystem {
 		} else if (movementComponent.doublejump != 0)
 			movementComponent.doublejump = 0;
 
-		Collision collisionComponent=(Collision) EntityManager.getInstance().getEntityComponent(id, EntityManager.CollisionID);
 		if (collisionComponent != null)
-			checkTileMapCollision(positionComponent, movementComponent, velocityComponent,collisionComponent);
+			checkTileMapCollision(id,positionComponent, movementComponent, velocityComponent,collisionComponent);
 		
 		positionComponent.setPosition(movementComponent.xtemp, movementComponent.ytemp);
 		
@@ -92,7 +106,7 @@ public class PhysicsSystem implements IComponentSystem {
 		
 	}
 
-	private static void checkTileMapCollision(Position positionComponent, Movement movementComponent, Velocity velocityComponent,Collision collisionComponent) {
+	private static void checkTileMapCollision(int id, Position positionComponent, Movement movementComponent, Velocity velocityComponent,Collision collisionComponent) {
 		
 		int tileSize = World.getInstance().tm.getTileSize();
 		collisionComponent.currCol = (int) positionComponent.x /tileSize;
@@ -103,7 +117,7 @@ public class PhysicsSystem implements IComponentSystem {
 
 		movementComponent.xtemp = positionComponent.x + velocityComponent.dx;
 		movementComponent.ytemp = positionComponent.y + velocityComponent.dy;
-		calculateCorners(collisionComponent,  movementComponent,positionComponent.x, collisionComponent.ydest);
+		calculateCorners(id,collisionComponent,  movementComponent,positionComponent.x, collisionComponent.ydest);
 
 		if (velocityComponent.dy < 0 && (collisionComponent.topLeft || collisionComponent.topRight)) {
 			velocityComponent.dy = 0;
@@ -116,7 +130,7 @@ public class PhysicsSystem implements IComponentSystem {
 			movementComponent.ytemp = (collisionComponent.currRow + 1) *tileSize - collisionComponent.cheight / 2;
 		}
 
-		calculateCorners(collisionComponent,  movementComponent, collisionComponent.xdest, positionComponent.y);
+		calculateCorners(id,collisionComponent,  movementComponent, collisionComponent.xdest, positionComponent.y);
 
 		if (velocityComponent.dx < 0 && (collisionComponent.topLeft || collisionComponent.bottomLeft)) {
 			velocityComponent.dx = 0;
@@ -131,13 +145,13 @@ public class PhysicsSystem implements IComponentSystem {
 		}
 
 		if (!movementComponent.falling) {
-			calculateCorners(collisionComponent,  movementComponent,positionComponent.x, collisionComponent.ydest + 1);
+			calculateCorners(id,collisionComponent,  movementComponent,positionComponent.x, collisionComponent.ydest + 1);
 			movementComponent.falling = (!collisionComponent.bottomLeft && !collisionComponent.bottomRight);
 		}
 
 	}
 
-	private static void calculateCorners(Collision collisionComponent, Movement movementComponent, float x, float y) {
+	private static void calculateCorners(int id,Collision collisionComponent, Movement movementComponent, float x, float y) {
 		int tileSize = World.getInstance().tm.getTileSize();
 		int leftTile = (int) (x - collisionComponent.cwidth / 2) /tileSize;
 		int rightTile = (int) (x + collisionComponent.cwidth / 2 - 1) /tileSize;
@@ -157,6 +171,8 @@ public class PhysicsSystem implements IComponentSystem {
 		collisionComponent.topRight = tr == Tile.BLOCKED;
 		collisionComponent.bottomLeft = bl == Tile.BLOCKED;
 		collisionComponent.bottomRight = br == Tile.BLOCKED;
+	
+		collisionComponent.swimming = (tl == Tile.WATER || tr == Tile.WATER ||  bl == Tile.WATER || bl == Tile.WATER);
 
 	}
 

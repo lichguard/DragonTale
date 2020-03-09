@@ -9,5 +9,6 @@ public class GameConstants {
 	public static final int SCALE = 100;
 	public static final boolean DEBUG = true;
 	public static final boolean DISABLEESOUND = true;
+	public static final String assetBasePath = "C:\\Users\\deans\\source\\repos\\DragonTale\\assets\\";
 	
 }

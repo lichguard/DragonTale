@@ -11,7 +11,21 @@ public class Label extends Control {
 		g.setFont(font);
 		g.setColor(forecolor);
 		g.drawString(text, x , y );
-		
+
+		/*
+		Graphics2D g2d = (Graphics2D) g;
+		AffineTransform transform = g2d.getTransform();
+		transform.translate(x, y);
+		g2d.transform(transform);
+		g2d.setColor(Color.black);
+		FontRenderContext frc = g2d.getFontRenderContext();
+		TextLayout tl = new TextLayout(text, g.getFont().deriveFont(45F), frc);
+		Shape shape = tl.getOutline(null);
+		g2d.setStroke(new BasicStroke(5f));
+		g2d.draw(shape);
+		g2d.setColor(Color.white);
+		g2d.fill(shape);
+		*/
 	
 	}
 

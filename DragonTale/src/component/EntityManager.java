@@ -68,6 +68,8 @@ public class EntityManager {
 		components[id][AppearanceID] = new Appearance();
 		components[id][AttributeID] = new Attribute(name + "(" + id + ")");
 		
+		components[id][NetworkID] = new Network();
+				
 		if (entityTextureType != Spawner.COIN)
 		components[id][HealthID] = new Health();
 
@@ -83,7 +85,7 @@ public class EntityManager {
 		} else {
 		
 			if (network != 2) {
-					components[id][NetworkID] = new Network();
+				//	components[id][NetworkID] = new Network();
 					
 			} else {
 				components[id][VelocityID] = new Velocity(0,0);

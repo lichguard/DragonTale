@@ -44,13 +44,13 @@ public class World {
 	}
 
 	public void createenemies() {
-		Point[] points = new Point[] { new Point(100, 380),new Point(685,370)  };
+		Point[] points = new Point[] { new Point(190, 555),new Point(1019,555)  };
 		
 		for (Point p : points) {
 			World.getInstance().requestObjectSpawn("Sluggy", Spawner.SLUGGER, p.x, p.y, true, AItypes.slug.ordinal(), null);
 		}
 		
-		points = new Point[] {new Point(1020,315),new Point(1000,315),new Point(400,315)  };
+		points = new Point[] {new Point(1020,315),new Point(1000,315),new Point(400,200)  };
 		
 		for (Point p : points) {
 			World.getInstance().requestObjectSpawn("", Spawner.COIN, p.x, p.y, true, AItypes.coin.ordinal(), null);

@@ -5,13 +5,12 @@ import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 
 import java.io.BufferedReader;
-import java.io.InputStreamReader;
-
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import javax.imageio.ImageIO;
 
 import main.GameConstants;
-
-import java.io.InputStream;
 
 public class TileMap {
 
@@ -58,9 +57,9 @@ public class TileMap {
 	public void loadTiles(String s) {
 		int tileSize = 30;
 		try {
-			tileset = ImageIO.read(getClass().getResourceAsStream(s));
+			tileset = ImageIO.read(new File(GameConstants.assetBasePath + s));
 			numTilesAcross = tileset.getWidth() / tileSize;
-			tiles = new Tile[2][numTilesAcross];
+			tiles = new Tile[3][numTilesAcross];
 
 			BufferedImage subimage;
 			for (int i = 0; i < numTilesAcross; i++) {
@@ -69,6 +68,9 @@ public class TileMap {
 
 				subimage = tileset.getSubimage(i * tileSize, tileSize, tileSize, tileSize);
 				tiles[1][i] = new Tile(subimage, Tile.BLOCKED);
+				
+				subimage = tileset.getSubimage(i * tileSize, tileSize * 2, tileSize, tileSize);
+				tiles[2][i] = new Tile(subimage, Tile.WATER);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -76,9 +78,9 @@ public class TileMap {
 	}
 
 	public void loadMap(String s) {
+		BufferedReader br = null;
 		try {
-			InputStream in = (InputStream) getClass().getResourceAsStream(s);
-			BufferedReader br = new BufferedReader(new InputStreamReader(in));
+			br = new BufferedReader(new FileReader(GameConstants.assetBasePath + s));
 			numCols = Integer.parseInt(br.readLine());
 			numRows = Integer.parseInt(br.readLine());
 			map = new int[numRows][numCols];
@@ -102,6 +104,14 @@ public class TileMap {
 
 		} catch (Exception e) {
 			e.printStackTrace();
+		}finally {
+			if (br != null)
+				try {
+					br.close();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 		}
 	}
 
