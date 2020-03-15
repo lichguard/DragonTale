@@ -138,9 +138,9 @@ public class LoginState extends GameState {
 	}
 
 	@Override
-	public void update() {
-		super.update();
-		bg.update();
+	public void update(long timeDelta) {
+		super.update(timeDelta);
+		bg.update(timeDelta);
 		handleInput();
 	}
 

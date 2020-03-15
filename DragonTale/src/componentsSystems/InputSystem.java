@@ -14,7 +14,7 @@ import network.Session;
 public class InputSystem {
 
 
-		public static void update(int id) {
+		public static void update(int id, long timeDelta) {
 			
 			PlayerData playerDataComponent = (PlayerData) EntityManager.getInstance().getEntityComponent(id,
 					EntityManager.PlayerDataID);
@@ -106,7 +106,10 @@ public class InputSystem {
 			movementComponent.left = (Controls.keyState[Controls.LEFT]);
 			movementComponent.setJumping(id,Controls.keyState[Controls.JUMP]);
 			movementComponent.gliding =  (Controls.keyState[Controls.GLIDE]);
-
+			
+			movementComponent.up = Controls.keyState[Controls.UP];
+			movementComponent.down =  (Controls.keyState[Controls.DOWN]);
+			
 			if (Controls.isPressed(Controls.SCRATCH)) {
 				EntityManager.getInstance().setattack(id);
 				Session.getInstance().SendCommand(new WorldPacket(WorldPacket.MELEE_ATTACK, null));

@@ -59,8 +59,8 @@ public class World {
 		
 	}
 
-	public void update() {
-		EntityManager.getInstance().update();
+	public void update(long timeDelta) {
+		EntityManager.getInstance().update(timeDelta);
 	}
 
 	public void draw(Graphics g) {

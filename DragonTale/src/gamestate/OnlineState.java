@@ -71,11 +71,11 @@ public class OnlineState extends GameState {
 	}
 
 	@Override
-	public void update() {
-		super.update();
+	public void update(long timeDelta) {
+		super.update(timeDelta);
 		dispatchCommands();
 		dispatchWorldPackets();
-		World.getInstance().update();
+		World.getInstance().update(timeDelta);
 		handleInput();
 		bg.setPosition(tileMap.getx(), tileMap.gety());
 	}

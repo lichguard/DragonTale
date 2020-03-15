@@ -18,7 +18,7 @@ public class LoadState extends GameState{
 		
 	}
 	@Override
-	public void update() {
+	public void update(long timeDelta) {
 		// TODO Auto-generated method stub
 		
 	}

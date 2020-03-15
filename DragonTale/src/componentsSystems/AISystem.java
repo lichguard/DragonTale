@@ -6,7 +6,7 @@ import entity.Spawner;
 public class AISystem implements IComponentSystem {
 	
 	
-	public static void update(int id) {
+	public static void update(int id, long timeDelta) {
 		
 		Movement movementComponent= (Movement) EntityManager.getInstance().getEntityComponent(id, EntityManager.MovementID);
 		if (movementComponent == null)

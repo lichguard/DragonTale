@@ -164,16 +164,16 @@ public class EntityManager {
 
 	}
 
-	public void update() {
+	public void update(long timeDelta) {
 		for (int i = 0; i < entityCount; i++) {
 			int id = entities[i];
 
-			componentsSystems.AnimationSystem.update(id);
-			componentsSystems.PhysicsSystem.update(id);
-			componentsSystems.AISystem.update(id);
-			componentsSystems.NetoworkSystem.update(id);
-			componentsSystems.InputSystem.update(id);
-			componentsSystems.RegenPower.update(id);
+			componentsSystems.AnimationSystem.update(id,timeDelta);
+			componentsSystems.PhysicsSystem.update(id,timeDelta);
+			componentsSystems.AISystem.update(id,timeDelta);
+			componentsSystems.NetoworkSystem.update(id,timeDelta);
+			componentsSystems.InputSystem.update(id,timeDelta);
+			componentsSystems.RegenPower.update(id,timeDelta);
 		}
 		
 		cameraSystem();

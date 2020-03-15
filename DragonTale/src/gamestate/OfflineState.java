@@ -56,9 +56,9 @@ public class OfflineState extends GameState {
 	}
 
 	@Override
-	public void update() {
+	public void update(long timeDelta) {
 		handleInput();
-		World.getInstance().update();
+		World.getInstance().update(timeDelta);
 		bg.setPosition(tileMap.getx(), tileMap.gety());
 	}
 

@@ -3,7 +3,7 @@ import component.*;
 
 public class AnimationSystem implements IComponentSystem {
 
-	public static void update(int id) {
+	public static void update(int id, long timeDelta) {
 
 		// check if requiredComponent Exists
 		Animation animationComponent = (Animation) EntityManager.getInstance().getEntityComponent(id,

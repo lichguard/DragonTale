@@ -62,7 +62,7 @@ public class Gameplay extends Canvas implements Runnable {
 	public void run() {
 		long startFPS = System.nanoTime();
 		long startUPS = System.nanoTime();
-		requestFocus();
+		//requestFocus();
 			
 		while (running) {
 			
@@ -71,7 +71,7 @@ public class Gameplay extends Canvas implements Runnable {
 			FPS = (System.nanoTime() - startFPS) / 1_000_000l;
 			
 			if (UPS >= targetUPSTime) {
-				update();
+				update(UPS);
 				startUPS = System.nanoTime();
 			}
 			if (FPS >= targetFPSTime) {
@@ -104,8 +104,8 @@ public class Gameplay extends Canvas implements Runnable {
 		bs.show();
 	}
 
-	public void update() {
-		GameStateManager.getInstance().update();
+	public void update(long timeDelta) {
+		GameStateManager.getInstance().update(timeDelta);
 		Controls.update();
 	}
 

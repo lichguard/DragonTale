@@ -7,7 +7,7 @@ public class NetoworkSystem {
 
 	public static final int UPDATEINTEVAL = 0;
 
-	public static void update(int id) {
+	public static void update(int id, long timeDelta) {
 
 		getEntityStatefromNetwork(id);
 		brodcastEntityStateToNetowrk(id);
@@ -25,9 +25,18 @@ public class NetoworkSystem {
 			healthComponent.health = networkComponent.last_packet.health;
 
 		if (id != Session.getInstance().handle) {
+			
 			Position positionComponent = (Position) EntityManager.getInstance().getEntityComponent(id,
 					EntityManager.PositionID);
-			if (positionComponent != null) {
+			//networkComponent.last_packet.x != 0 is while witing for the first packet to arrive
+			
+		
+			
+			if (positionComponent != null && networkComponent.interpolation_start != 0 &&
+					networkComponent.last_packet.x != 0) {
+				
+		
+				
 				float t = (System.currentTimeMillis() - networkComponent.interpolation_start)
 						/ (float) networkComponent.ping;
 
@@ -39,6 +48,19 @@ public class NetoworkSystem {
 						networkComponent.last_packet.y * (1.0f - t) + networkComponent.new_packet.y * t);
 				positionComponent.setMapPosition();
 				// }
+/*
+				if (id == 1)
+				{
+					System.out.println("last_packet: " + networkComponent.last_packet.x);
+					System.out.println("new_packet: " + networkComponent.new_packet.x);
+					System.out.println("t:" + t);
+					System.out.println("networkComponent.interpolation_start:" + networkComponent.interpolation_start);
+					
+					System.out.println(positionComponent.x + ", " + positionComponent.y);
+					System.out.println(" ");
+				}
+				*/
+
 			}
 			Animation AnimationComponent = (Animation) EntityManager.getInstance().getEntityComponent(id,
 					EntityManager.AnimationID);

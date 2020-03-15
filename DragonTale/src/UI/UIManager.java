@@ -45,7 +45,7 @@ public class UIManager {
 		unregisterControl(msgbox);
 	}
 
-	public void update() {
+	public void update(long timeDelta) {
 		
 		if (Controls.isPressed(Controls.LMB)) {
 			for (Control control : controls) {

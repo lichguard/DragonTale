@@ -18,9 +18,9 @@ public abstract class GameState {
 		}
 	}
 
-	public void update()
+	public void update(long timeDelta)
 	{
-		uimanager.update();
+		uimanager.update(timeDelta);
 	}
 
 	public void draw(Graphics g)

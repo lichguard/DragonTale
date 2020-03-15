@@ -71,14 +71,14 @@ public class GameStateManager {
 		}
 	}
 
-	public void update() {
+	public void update(long timeDelta) {
 
 		if (requestedState != currentState && currentState == LOADSTATE)
 			setState(requestedState);
 		else if (requestedState != currentState)
 			setState(LOADSTATE);
 
-		gameStates[currentState].update();
+		gameStates[currentState].update(timeDelta);
 	}
 
 	public void draw(Graphics g) {

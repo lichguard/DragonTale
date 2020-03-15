@@ -43,7 +43,7 @@ public class Background {
 		this.dx = dx;
 		this.dy = dy;
 	}
-	public  void update()
+	public  void update(long timeDelta)
 	{
 		x += dx;
 		y += dy;

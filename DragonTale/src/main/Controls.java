@@ -50,8 +50,8 @@ public class Controls implements KeyListener, MouseListener {
 		else if(i == KeyEvent.VK_F) keyState[FIREBALL] = b;
 		else if(i == KeyEvent.VK_E) keyState[GLIDE] = b;
 		else if(i == KeyEvent.VK_ENTER) keyState[ENTER] = b;
-		else if(i == KeyEvent.VK_UP) keyState[UP] = b;
-		else if(i == KeyEvent.VK_DOWN) keyState[DOWN] = b;
+		else if(i == KeyEvent.VK_W) keyState[UP] = b;
+		else if(i == KeyEvent.VK_S) keyState[DOWN] = b;
 		else if(i == KeyEvent.VK_ESCAPE) keyState[ESCAPE] = b;
 		else if(i == KeyEvent.VK_TAB) keyState[TAB] = b;
 

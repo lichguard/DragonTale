@@ -6,7 +6,7 @@ import main.World;
 
 public class PhysicsSystem implements IComponentSystem {
 
-	public static void update(int id) {
+	public static void update(int id, long timeDelta) {
 
 		Position positionComponent=(Position) EntityManager.getInstance().getEntityComponent(id, EntityManager.PositionID);
 		if (positionComponent == null)
@@ -20,11 +20,10 @@ public class PhysicsSystem implements IComponentSystem {
 		if (movementComponent == null)
 			return;
 		
-
-		
 		
 		Animation animationComponent=(Animation) EntityManager.getInstance().getEntityComponent(id, EntityManager.AnimationID);
 		if (animationComponent != null) {
+			
 			if (movementComponent.left) {
 				animationComponent.facingRight = false;
 			} else if (movementComponent.right) {
@@ -34,69 +33,94 @@ public class PhysicsSystem implements IComponentSystem {
 			} else if (velocityComponent.dx < 0.0f) {
 				animationComponent.facingRight = false;
 			}
+			
 		}
 
 		Collision collisionComponent=(Collision) EntityManager.getInstance().getEntityComponent(id, EntityManager.CollisionID);
 	
-		if (movementComponent.left) {
-			velocityComponent.dx -= movementComponent.moveSpeed;
-			if (velocityComponent.dx < -movementComponent.maxSpeed)
-				velocityComponent.dx = -movementComponent.maxSpeed;
-		} else if (movementComponent.right) {
-			velocityComponent.dx += movementComponent.moveSpeed;
-			if (velocityComponent.dx > movementComponent.maxSpeed)
-				velocityComponent.dx = movementComponent.maxSpeed;
-		} else {
-			if (velocityComponent.dx > 0) {
-				velocityComponent.dx -= movementComponent.stopSpeed;
-				if (velocityComponent.dx < 0)
-					velocityComponent.dx = 0;
-			} else if (velocityComponent.dx < 0) {
-				velocityComponent.dx += movementComponent.stopSpeed;
-				if (velocityComponent.dx > 0)
-					velocityComponent.dx = 0;
-			}
-		}
+		//falling
+		//swimming
+		//walking
+		//gliding
+		//
 
-		if (movementComponent.jumping && (!movementComponent.falling)) {
-			velocityComponent.dy = movementComponent.jumpStart;
-			
-				movementComponent.falling = true;
-			
-		}
-
+		//x axis
 		if (collisionComponent.swimming) {
-			
-			if (velocityComponent.dy < movementComponent.maxGlideSpeed)
-				velocityComponent.dy += movementComponent.fallSpeed * 0.2f;
-			else
-				velocityComponent.dy -= movementComponent.fallSpeed * 0.4f;
-	
-			
+			velocityComponent.dx = calcNewXVelocity(movementComponent.left, movementComponent.right,
+					velocityComponent.dx, movementComponent.swimSpeed, movementComponent.stopSpeed,
+					movementComponent.maxSwimSpeed, timeDelta);
+		} else {
+			velocityComponent.dx = calcNewXVelocity(movementComponent.left, movementComponent.right,
+					velocityComponent.dx, movementComponent.moveSpeed, movementComponent.stopSpeed,
+					movementComponent.maxSpeed, timeDelta);
 		}
 		
-		if (movementComponent.falling && !collisionComponent.swimming) {
+		
+		
+		if (movementComponent.jumping && (!movementComponent.falling)) {
+			velocityComponent.dy = movementComponent.jumpStart;
+			movementComponent.falling = true;
+			movementComponent.jumpstarttime = System.currentTimeMillis();
+		}
+
+		
+
+		
+		if (movementComponent.falling) {
 			
 			if (velocityComponent.dy > 0 && movementComponent.gliding) {
 
 				if (velocityComponent.dy < movementComponent.maxGlideSpeed)
-					velocityComponent.dy += movementComponent.fallSpeed * 0.1f;
+					velocityComponent.dy += movementComponent.fallSpeed * 0.1f * timeDelta;
 				else
-					velocityComponent.dy -= movementComponent.fallSpeed;
-			} else
-				velocityComponent.dy += movementComponent.fallSpeed ;
+					velocityComponent.dy -= movementComponent.fallSpeed * timeDelta;
+			} else {
+				velocityComponent.dy += movementComponent.fallSpeed * timeDelta ;
+			}
+			
+			if (velocityComponent.dy > 0)
+				movementComponent.jumping = false;
 
+			
+			if (movementComponent.jumping && System.currentTimeMillis() - movementComponent.jumpstarttime < 100)
+				velocityComponent.dy -= movementComponent.stopJumpSpeed * timeDelta;
+
+			if (velocityComponent.dy > movementComponent.maxFallSpeed)
+				velocityComponent.dy = movementComponent.maxFallSpeed;
+			
+		} else if (movementComponent.doublejump != 0)
+			movementComponent.doublejump = 0;
+
+		
+		/*
+		 if (movementComponent.falling && !collisionComponent.swimming) {
+			
+			if (velocityComponent.dy > 0 && movementComponent.gliding) {
+
+				if (velocityComponent.dy < movementComponent.maxGlideSpeed)
+					velocityComponent.dy += movementComponent.fallSpeed * 0.1f * timeDelta;
+				else
+					velocityComponent.dy -= movementComponent.fallSpeed * timeDelta;
+			} else {
+				velocityComponent.dy += movementComponent.fallSpeed * timeDelta ;
+			}
+			
 			if (velocityComponent.dy > 0)
 				movementComponent.jumping = false;
 
 			if (velocityComponent.dy < 0 && !movementComponent.jumping)
-				velocityComponent.dy += movementComponent.stopJumpSpeed;
+				velocityComponent.dy += movementComponent.stopJumpSpeed * timeDelta;
 
 			if (velocityComponent.dy > movementComponent.maxFallSpeed)
 				velocityComponent.dy = movementComponent.maxFallSpeed;
+			
 		} else if (movementComponent.doublejump != 0)
 			movementComponent.doublejump = 0;
-
+		 */
+		
+		
+		
+		
 		if (collisionComponent != null)
 			checkTileMapCollision(id,positionComponent, movementComponent, velocityComponent,collisionComponent);
 		
@@ -106,6 +130,26 @@ public class PhysicsSystem implements IComponentSystem {
 		
 	}
 
+	private static float calcNewXVelocity(Boolean minusDir, Boolean plusDir, float currentSpeed, float moveSpeed, float stopSpeed,
+			float maxSpeed, long timeDelta) {
+
+		if (minusDir) {
+			currentSpeed = Math.max(currentSpeed - moveSpeed * timeDelta, -maxSpeed);
+			// moving right
+		} else if (plusDir) {
+
+			currentSpeed = Math.min(currentSpeed + moveSpeed * timeDelta, maxSpeed);
+		} else {
+			// stopping
+			if (currentSpeed > 0) {
+				currentSpeed = Math.max(currentSpeed - stopSpeed * timeDelta, 0);
+			} else if (currentSpeed < 0) {
+				currentSpeed = Math.min(currentSpeed + stopSpeed * timeDelta, 0);
+			}
+		}
+		return currentSpeed;
+	}
+	
 	private static void checkTileMapCollision(int id, Position positionComponent, Movement movementComponent, Velocity velocityComponent,Collision collisionComponent) {
 		
 		int tileSize = World.getInstance().tm.getTileSize();

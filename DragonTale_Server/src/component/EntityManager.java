@@ -67,7 +67,9 @@ public class EntityManager {
 		addEntityComponent(id, new Health());
 		addEntityComponent(id, new Broadcast(id,worldSocket));
 		System.out.println("CREATE Broadcast FOR ID " + id);
+		
 		addEntityComponent(id, new Velocity());
+		
 		addEntityComponent(id, new Movement());
 		addEntityComponent(id, new Inventory());
 		addEntityComponent(id, new Collision());
